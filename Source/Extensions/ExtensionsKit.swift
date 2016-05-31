@@ -19,7 +19,7 @@ public func UIColorFromHexWithAlpha(hex: UInt32, alpha: Float) -> UIColor {
 }
 
 public func AppName() -> String {
-    return NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleDisplayName") as! String
+    return NSBundle.mainBundle().objectForInfoDictionaryKey(kCFBundleNameKey as String) as! String
 }
 
 extension NSObject {

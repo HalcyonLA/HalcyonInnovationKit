@@ -9,10 +9,13 @@
 import Foundation
 import CoreData
 import FastEasyMapping
+import XCGLogger
 
 public class DataModel: NSObject {
     
     static let shared = DataModel()
+    
+    let log = XCGLogger.defaultInstance()
     
     // MARK: - Core Data stack
     
@@ -107,10 +110,9 @@ public class DataModel: NSObject {
     
     // MARK: - Fetch
     
-    public class func getEntity<T: NSManagedObject>(entity: T.Type, objectId: NSNumber) -> T? {
+    public class func getEntity<T: NSManagedObject where T: MappingProtocol>(entity: T.Type, objectId: NSNumber) -> T? {
         let className = String(AnyObject.Type)
-        let variable = "\(className.lowercaseFirst)Id"
-        let predicate = NSPredicate.init(format: "(%K == %@)", variable, objectId)
+        let predicate = NSPredicate.init(format: "(%K == %@)", T.primaryKey(), objectId)
         let items = DataModel.fetchEntity(entity, predicate: predicate)
         return items!.first as T?
     }
@@ -163,36 +165,72 @@ public class DataModel: NSObject {
     
     // MARK: - Mapping
     
-    public class func deserializeObject(object: [String : AnyObject]?, mapping: FEMMapping) -> AnyObject? {
-        if (object == nil || object?.count == 0) {
+    public class func deserializeObject<T: NSManagedObject>(object: AnyObject?, mapping: DataMapping<T>) -> T? {
+        if let obj = object as? [String: AnyObject] {
+            do {
+                if (obj.count == 0) {
+                    return nil
+                }
+                
+                let cdObject = FEMDeserializer.objectFromRepresentation(obj, mapping: mapping, context: DataModel.shared.managedObjectContext)
+                
+                if (cdObject is T) {
+                    return cdObject as! T
+                } else {
+                    return nil
+                }
+            } catch let error as NSError {
+                DataModel.shared.log.error(error.localizedDescription)
+                return nil
+            }
+        } else {
             return nil
         }
-        
-        return FEMDeserializer.objectFromRepresentation(object!, mapping: mapping, context: DataModel.shared.managedObjectContext)
     }
     
-    public class func deserializeArray(array: [AnyObject]?, mapping: FEMMapping) -> [AnyObject]? {
-        if (array == nil || array?.count == 0) {
+    public class func deserializeArray<T: NSManagedObject>(array: AnyObject?, mapping: DataMapping<T>) -> [T]? {
+        if let collection = array as? [AnyObject] {
+            do {
+                if (collection.count == 0) {
+                    return nil
+                }
+                
+                let cdArray = FEMDeserializer.collectionFromRepresentation(collection, mapping: mapping, context: DataModel.shared.managedObjectContext)
+                
+                if (cdArray is [T]) {
+                    return cdArray as! [T]
+                } else {
+                    return nil
+                }
+            } catch let error as NSError {
+                DataModel.shared.log.error(error.localizedDescription)
+                return nil
+            }
+        } else {
             return nil
         }
-        
-        return FEMDeserializer.collectionFromRepresentation(array!, mapping: mapping, context: DataModel.shared.managedObjectContext)
     }
 }
 
 // MARK: - NSManagedObject Subclass
 
-public extension NSManagedObject {
-    public func delete() {
-        DataModel.deleteObject(self)
-    }
-    
-    public class func fetch(objectId: NSNumber) -> Self? {
+public protocol MappingProtocol {
+    static func primaryKey() -> String
+}
+
+extension MappingProtocol where Self: NSManagedObject {
+    public static func fetch(objectId: NSNumber) -> Self? {
         return _fetch(objectId)
     }
     
     //helper for get correct object type
-    private class func _fetch<T: NSManagedObject>(id: NSNumber) -> T? {
+    private static func _fetch<T: NSManagedObject>(id: NSNumber) -> T? {
         return DataModel.getEntity(self, objectId: id) as? T
+    }
+}
+
+public extension NSManagedObject {
+    public func delete() {
+        DataModel.deleteObject(self)
     }
 }
