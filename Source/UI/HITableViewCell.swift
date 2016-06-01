@@ -8,8 +8,8 @@
 
 import Foundation
 
-class HITableViewCell: UITableViewCell {
-    override func layoutSubviews() {
+public class HITableViewCell: UITableViewCell {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         self.layoutMargins = UIEdgeInsetsZero
     }

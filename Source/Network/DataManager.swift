@@ -213,10 +213,15 @@ public class DataManager: NSObject {
         }
         
         func cleanFinishedRequests(task: NSURLSessionDataTask?) {
-            for var i in 0..<requests.count {
-                if (requests[i].task == nil || requests[i].task! == task) {
-                    requests.removeAtIndex(i)
-                    i -= 1
+            synced(self) {
+                var nullTasks = self.requests.filter({ $0.task == nil })
+                if (task != nil) {
+                    nullTasks += self.requests.filter({ $0.task === task })
+                }
+                for (_, request) in nullTasks.enumerate() {
+                    if let index = self.requests.indexOf(request) {
+                        self.requests.removeAtIndex(index)
+                    }
                 }
             }
         }
