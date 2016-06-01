@@ -107,6 +107,17 @@ import FFGlobalAlertController
     }
 }
 
+public extension UIImageView {
+    public func setImageWithString(urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
+        if urlString == nil || urlString?.length == 0 {
+            self.image = placeholderImage
+        } else {
+            let url = NSURL.init(string: urlString!)!
+            self.setImageWithURL(url, placeholderImage: placeholderImage, usingActivityIndicatorStyle: activityIndicatorStyle)
+        }
+    }
+}
+
 public extension UITextField {
     public func setPlaceholderColor(color: UIColor) {
         if (self.placeholder?.length > 0) {

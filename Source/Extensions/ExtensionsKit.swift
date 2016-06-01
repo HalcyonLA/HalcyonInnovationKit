@@ -22,6 +22,12 @@ public func AppName() -> String {
     return NSBundle.mainBundle().objectForInfoDictionaryKey(kCFBundleNameKey as String) as! String
 }
 
+public func synced(lock: AnyObject, closure: () -> ()) {
+    objc_sync_enter(lock)
+    closure()
+    objc_sync_exit(lock)
+}
+
 public func +=<K, V> (inout left: [K : V], right: [K : V]) { for (k, v) in right { left[k] = v } }
 
 public func +<K, V> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k, v) in  right { new[k] = v }; return new }
