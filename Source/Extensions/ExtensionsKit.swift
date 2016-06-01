@@ -167,7 +167,7 @@ extension String {
         if (scanner.scanString(start, intoString: nil)) {
             var result: NSString?
             if (scanner.scanUpToString(end, intoString: &result)) {
-                return String(result)
+                return String(result!)
             }
         }
         return nil
