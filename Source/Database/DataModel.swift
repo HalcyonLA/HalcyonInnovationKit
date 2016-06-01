@@ -111,10 +111,13 @@ public class DataModel: NSObject {
     // MARK: - Fetch
     
     public class func getEntity<T: NSManagedObject where T: MappingProtocol>(entity: T.Type, objectId: NSNumber) -> T? {
-        let className = String(AnyObject.Type)
         let predicate = NSPredicate.init(format: "(%K == %@)", T.primaryKey(), objectId)
         let items = DataModel.fetchEntity(entity, predicate: predicate)
-        return items!.first as T?
+        if (items?.count > 0) {
+            return items!.first! as T
+        } else {
+            return nil
+        }
     }
     
     public class func fetchEntity<T: NSManagedObject>(entity: T.Type, predicate: NSPredicate?, descriptors: [NSSortDescriptor]? = nil) -> [T]? {
@@ -167,20 +170,15 @@ public class DataModel: NSObject {
     
     public class func deserializeObject<T: NSManagedObject>(object: AnyObject?, mapping: DataMapping<T>) -> T? {
         if let obj = object as? [String: AnyObject] {
-            do {
-                if (obj.count == 0) {
-                    return nil
-                }
-                
-                let cdObject = FEMDeserializer.objectFromRepresentation(obj, mapping: mapping, context: DataModel.shared.managedObjectContext)
-                
-                if (cdObject is T) {
-                    return cdObject as! T
-                } else {
-                    return nil
-                }
-            } catch let error as NSError {
-                DataModel.shared.log.error(error.localizedDescription)
+            if (obj.count == 0) {
+                return nil
+            }
+            
+            let cdObject = FEMDeserializer.objectFromRepresentation(obj, mapping: mapping, context: DataModel.shared.managedObjectContext)
+            
+            if (cdObject is T) {
+                return cdObject as! T
+            } else {
                 return nil
             }
         } else {
@@ -190,20 +188,15 @@ public class DataModel: NSObject {
     
     public class func deserializeArray<T: NSManagedObject>(array: AnyObject?, mapping: DataMapping<T>) -> [T]? {
         if let collection = array as? [AnyObject] {
-            do {
-                if (collection.count == 0) {
-                    return nil
-                }
-                
-                let cdArray = FEMDeserializer.collectionFromRepresentation(collection, mapping: mapping, context: DataModel.shared.managedObjectContext)
-                
-                if (cdArray is [T]) {
-                    return cdArray as! [T]
-                } else {
-                    return nil
-                }
-            } catch let error as NSError {
-                DataModel.shared.log.error(error.localizedDescription)
+            if (collection.count == 0) {
+                return nil
+            }
+            
+            let cdArray = FEMDeserializer.collectionFromRepresentation(collection, mapping: mapping, context: DataModel.shared.managedObjectContext)
+            
+            if (cdArray is [T]) {
+                return cdArray as! [T]
+            } else {
                 return nil
             }
         } else {
