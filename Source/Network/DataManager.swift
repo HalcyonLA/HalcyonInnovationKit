@@ -27,7 +27,7 @@ public typealias DataManagerCompletion = (response: DataManagerResponse) -> Void
 public class DataManagerRequest: NSObject {
     
     public var path: String
-    public var parameters: [String : AnyObject]? = nil
+    public var parameters: [String : AnyObject] = [:]
     public var files: [String : MediaData]? = nil
     public weak var sender: AnyObject? = nil
     public weak var loadingView: UIView? = nil
@@ -64,6 +64,8 @@ public class DataManager: NSObject {
     
     public static var logEnabled = true
     public static var secured = true
+    
+    private let securedKeys = ["password", "token"]
     
     public static let shared = DataManager()
     
@@ -160,9 +162,6 @@ public class DataManager: NSObject {
     public func post(request: DataManagerRequest) -> NSURLSessionDataTask? {
         
         var params = request.parameters
-        if (params == nil) {
-            params = [String:String]()
-        }
         
         if (request.showActivityIndicator) {
             self.addNetworkActivity()
@@ -178,19 +177,13 @@ public class DataManager: NSObject {
         
         var urlLogString = ""
         do {
-            let data = try NSJSONSerialization.dataWithJSONObject(params!, options: NSJSONWritingOptions())
-            json = String.init(data: data, encoding: NSUTF8StringEncoding)!
+            json = params.jsonString
             
             var debugJSON = ""
             #if DEBUG
                 debugJSON = json
             #else
-                do {
-                    let data = try NSJSONSerialization.dataWithJSONObject(securedParametersForLog(params!), options: NSJSONWritingOptions())
-                    debugJSON = String.init(data: data, encoding: NSUTF8StringEncoding)!
-                } catch {
-                    
-                }
+                debugJSON = securedParametersForLog(params).jsonString
             #endif
             
             urlLogString = "\(path) : \(debugJSON)"
@@ -204,9 +197,8 @@ public class DataManager: NSObject {
         
         let bodyBlock = { (formData: AFMultipartFormData) -> Void in
             if (request.files?.count > 0) {
-                for (_, key) in request.files!.keys.enumerate() {
-                    let data = request.files![key]!
-                    formData.appendPartWithFileData(data.data!, name: key, fileName: data.name!, mimeType: data.contentType!)
+                for (key, value) in request.files! {
+                    formData.appendPartWithFileData(value.data!, name: key, fileName: value.name!, mimeType: value.contentType!)
                 }
             }
         }
@@ -330,9 +322,18 @@ public class DataManager: NSObject {
             return parameters
         }
         var logParameters = parameters
-        for (_, key) in logParameters.keys.enumerate() {
-            if logParameters[key] is String {
-                logParameters[key] = "<secured>"
+        for (key, value) in logParameters {
+            if value is String {
+                var secured = false
+                for (_, securedKey) in securedKeys.enumerate() {
+                    if key.lowercaseString.containsString(securedKey) {
+                        secured = true
+                        break
+                    }
+                }
+                if (secured) {
+                    logParameters[key] = "<secured>"
+                }
             }
         }
         return logParameters

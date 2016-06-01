@@ -21,8 +21,8 @@ public class DataMapping<T: NSManagedObject where T: MappingProtocol>: FEMMappin
     }
     
     public func addNumberAttributes(attributes: [String : String]) {
-        for (_, key) in attributes.keys.enumerate() {
-            let attribute = FEMAttribute.init(property: key, keyPath: attributes[key], map: { (value) -> AnyObject? in
+        for (property, path) in attributes {
+            let attribute = FEMAttribute.init(property: property, keyPath: path, map: { (value) -> AnyObject? in
                 if let number = value as? NSNumber {
                     return number
                 } else if let string = value as? String {

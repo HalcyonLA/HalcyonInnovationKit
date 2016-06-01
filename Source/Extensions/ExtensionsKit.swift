@@ -22,6 +22,18 @@ public func AppName() -> String {
     return NSBundle.mainBundle().objectForInfoDictionaryKey(kCFBundleNameKey as String) as! String
 }
 
+public func +=<K, V> (inout left: [K : V], right: [K : V]) { for (k, v) in right { left[k] = v } }
+
+public func +<K, V> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k, v) in  right { new[k] = v }; return new }
+
+public func -<K, V: Comparable> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k,v) in right { if let n = new[k] where n == v { new.removeValueForKey(k)}}; return new }
+
+public func -<K, V> (left: [K : V], right: [K]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for k in right {  new.removeValueForKey(k)}; return new }
+
+public func -=<K, V: Comparable> (inout left: [K : V], right: [K : V]){for (k,v) in right { if let n = left[k] where n == v { left.removeValueForKey(k)}}}
+
+public func -=<K, V> (inout left: [K : V], right: [K]) {for k in right { left.removeValueForKey(k)}}
+
 extension NSObject {
     public var className: String {
         return self.classForCoder.className
@@ -173,8 +185,8 @@ extension String {
                             "&gt;":">"]
         
         var string = self
-        for (_, key) in replacements.keys.enumerate() {
-            string = string.stringByReplacingOccurrencesOfString(key, withString: replacements[key]!)
+        for (key, value) in replacements {
+            string = string.stringByReplacingOccurrencesOfString(key, withString: value)
         }
         return string
     }
@@ -268,6 +280,18 @@ public extension Dictionary {
             return "\(keyStr)=\(valueStr.urlEncodedValue)"
         })
         return parts.joinWithSeparator("&")
+    }
+    
+    public var jsonString: String {
+        do {
+            let stringData = try NSJSONSerialization.dataWithJSONObject(self as! AnyObject, options: NSJSONWritingOptions.PrettyPrinted)
+            if let string = String(data: stringData, encoding: NSUTF8StringEncoding) {
+                return string
+            }
+        } catch _ {
+            
+        }
+        return ""
     }
 }
 
