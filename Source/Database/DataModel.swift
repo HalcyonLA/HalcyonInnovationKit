@@ -177,6 +177,7 @@ public class DataModel: NSObject {
             let cdObject = FEMDeserializer.objectFromRepresentation(obj, mapping: mapping, context: DataModel.shared.managedObjectContext)
             
             if let tObj = cdObject as? T {
+                saveContext()
                 return tObj
             } else {
                 return nil
@@ -195,6 +196,7 @@ public class DataModel: NSObject {
             let cdArray = FEMDeserializer.collectionFromRepresentation(collection, mapping: mapping, context: DataModel.shared.managedObjectContext)
             
             if let arr = cdArray as? [T] {
+                saveContext()
                 return arr
             } else {
                 return nil
