@@ -11,6 +11,7 @@ import Foundation
 public class HITableViewCell: UITableViewCell {
     override public func layoutSubviews() {
         super.layoutSubviews()
+        self.separatorInset = UIEdgeInsetsZero
         self.layoutMargins = UIEdgeInsetsZero
     }
 }
