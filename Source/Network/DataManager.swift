@@ -177,19 +177,16 @@ public class DataManager: NSObject {
         
         var urlLogString = path
         if (params.count > 0) {
-            do {
-                json = params.jsonString
-                
-                var debugJSON = ""
-                #if DEBUG
-                    debugJSON = json
-                #else
-                    debugJSON = securedParametersForLog(params).jsonString
-                #endif
-                
+            json = params.jsonString
+            
+            var debugJSON = ""
+            #if DEBUG
+                debugJSON = json
+            #else
+                debugJSON = securedParametersForLog(params).jsonString
+            #endif
+            if (debugJSON.length > 0) {
                 urlLogString = "\(path) : \(debugJSON)"
-            } catch {
-                urlLogString = path
             }
         }
         
