@@ -125,7 +125,7 @@ public class DataModel: NSObject {
         
         let fetch = NSFetchRequest.init()
         fetch.includesPendingChanges = true
-        fetch.entity = NSEntityDescription.entityForName(String(AnyObject.Type), inManagedObjectContext: moc)
+        fetch.entity = NSEntityDescription.entityForName(String(T), inManagedObjectContext: moc)
         fetch.returnsObjectsAsFaults = false
         fetch.predicate = predicate
         fetch.sortDescriptors = descriptors
