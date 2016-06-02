@@ -175,20 +175,22 @@ public class DataManager: NSObject {
         let urlString = apiURL.stringByAppendingString(path)
         var json = "{}"
         
-        var urlLogString = ""
-        do {
-            json = params.jsonString
-            
-            var debugJSON = ""
-            #if DEBUG
-                debugJSON = json
-            #else
-                debugJSON = securedParametersForLog(params).jsonString
-            #endif
-            
-            urlLogString = "\(path) : \(debugJSON)"
-        } catch {
-            urlLogString = path
+        var urlLogString = path
+        if (params.count > 0) {
+            do {
+                json = params.jsonString
+                
+                var debugJSON = ""
+                #if DEBUG
+                    debugJSON = json
+                #else
+                    debugJSON = securedParametersForLog(params).jsonString
+                #endif
+                
+                urlLogString = "\(path) : \(debugJSON)"
+            } catch {
+                urlLogString = path
+            }
         }
         
         if (!request.log) {
