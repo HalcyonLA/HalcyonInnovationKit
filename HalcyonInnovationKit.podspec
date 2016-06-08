@@ -6,7 +6,7 @@ s.name = "HalcyonInnovationKit"
 s.module_name = "HalcyonInnovationKit"
 s.summary = "Halcyon Innovation development kit."
 s.requires_arc = true
-s.version = "1.0.8"
+s.version = "1.0.9"
 s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
 s.license = { :type => "MIT", :file => "LICENSE" }
@@ -22,7 +22,7 @@ s.dependency 'AFNetworking', '~> 3.1.0'
 s.dependency 'FastEasyMapping', '~> 1.0.2'
 s.dependency 'MBProgressHUD', '~> 0.9.2'
 s.dependency 'FFGlobalAlertController', '~> 1.0.2'
-s.dependency 'SDWebImage', '~> 3.7.6'
+s.dependency 'SDWebImage', '~> 3.8.1'
 s.dependency 'XCGLogger', '~> 3.3'
 
 s.source_files = "Source/**/*.{swift,h,m}"
