@@ -307,6 +307,38 @@ public extension NSAttributedString {
     }
 }
 
+extension NSRange {
+    
+    init(location:Int, length:Int) {
+        self.location = location
+        self.length = length
+    }
+    
+    init(_ location:Int, _ length:Int) {
+        self.location = location
+        self.length = length
+    }
+    
+    init(range:Range <Int>) {
+        self.location = range.startIndex
+        self.length = range.endIndex - range.startIndex
+    }
+    
+    init(_ range:Range <Int>) {
+        self.location = range.startIndex
+        self.length = range.endIndex - range.startIndex
+    }
+    
+    var startIndex:Int { get { return location } }
+    var endIndex:Int { get { return location + length } }
+    var asRange:Range<Int> { get { return location..<location + length } }
+    var isEmpty:Bool { get { return length == 0 } }
+    
+    func contains(index:Int) -> Bool {
+        return index >= location && index < endIndex
+    }
+}
+
 public extension NSNumber {
     public func priceValue() -> String {
         let priceFormatter = NSNumberFormatter.init()
