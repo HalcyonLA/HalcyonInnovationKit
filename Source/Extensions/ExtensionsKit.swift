@@ -406,13 +406,13 @@ public extension UIImage {
     
     public func scaledToFitSize(size: CGSize, scale: Float = 0) -> UIImage {
         let aspect = self.size.width / self.size.height;
-        var size = CGSizeZero
+        var imageSize = CGSizeZero
         if (size.width / aspect <= size.height) {
-            size = CGSizeMake(size.width, size.width / aspect)
+            imageSize = CGSizeMake(size.width, size.width / aspect)
         } else {
-            size = CGSizeMake(size.height * aspect, size.height)
+            imageSize = CGSizeMake(size.height * aspect, size.height)
         }
-        return self.scaledToSize(size, scale: scale)
+        return self.scaledToSize(imageSize, scale: scale)
     }
     
     public func cropToSquare() -> UIImage {
