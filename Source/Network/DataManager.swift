@@ -118,16 +118,7 @@ public class DataManager: NSObject {
     // MARK: Loading Indicator
     
     public static func showLoading(show: Bool, inView: UIView) -> MBProgressHUD? {
-        if (show) {
-            let hud = MBProgressHUD.showHUDAddedTo(inView, animated: true)
-            hud.mode = .Indeterminate
-            hud.labelText = "Loading"
-            hud.removeFromSuperViewOnHide = true
-            return hud
-        } else {
-            MBProgressHUD.hideAllHUDsForView(inView, animated: true)
-            return nil
-        }
+        return inView.showLoadingHUD(show)
     }
     
     // MARK: Error check

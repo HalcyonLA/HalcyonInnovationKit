@@ -8,6 +8,7 @@
 
 import Foundation
 import FFGlobalAlertController
+import MBProgressHUD
 
 @IBDesignable public extension UIView {
     var width:      CGFloat { return self.frame.size.width }
@@ -52,6 +53,19 @@ import FFGlobalAlertController
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
+    }
+    
+    public func showLoadingHUD(show: Bool) -> MBProgressHUD? {
+        if (show) {
+            let hud = MBProgressHUD.showHUDAddedTo(self, animated: true)
+            hud.mode = .Indeterminate
+            hud.label.text = "Loading"
+            hud.removeFromSuperViewOnHide = true
+            return hud
+        } else {
+            MBProgressHUD.hideHUDForView(self, animated: true)
+            return nil
+        }
     }
     
     public func shake() {
