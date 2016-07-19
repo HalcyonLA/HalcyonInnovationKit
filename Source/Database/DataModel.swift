@@ -125,7 +125,7 @@ public class DataModel: NSObject {
         
         let fetch = NSFetchRequest.init()
         fetch.includesPendingChanges = true
-        fetch.entity = NSEntityDescription.entityForName(String(T), inManagedObjectContext: moc)
+        fetch.entity = NSEntityDescription.entityForName("\(entity)", inManagedObjectContext: moc)
         fetch.returnsObjectsAsFaults = false
         fetch.predicate = predicate
         fetch.sortDescriptors = descriptors
@@ -138,10 +138,18 @@ public class DataModel: NSObject {
         }
     }
     
+    public class func fetchAllEntities<T: NSManagedObject>(entity: T.Type) -> [T]? {
+        return fetchEntity(entity, predicate: nil)
+    }
+    
     public class func resetAllEntities<T: NSManagedObject>(entity: T.Type) {
+        self.resetEntities(entity, predicate: nil)
+    }
+    
+    public class func resetEntities<T: NSManagedObject>(entity: T.Type, predicate: NSPredicate?) {
         let moc = DataModel.shared.managedObjectContext
         
-        let data = DataModel.fetchEntity(entity, predicate: nil)
+        let data = DataModel.fetchEntity(entity, predicate: predicate)
         if (data != nil) {
             for (_, object) in data!.enumerate() {
                 moc.deleteObject(object)
@@ -227,5 +235,13 @@ extension MappingProtocol where Self: NSManagedObject {
 public extension NSManagedObject {
     public func delete() {
         DataModel.deleteObject(self)
+    }
+    
+    public static func resetAll() {
+        DataModel.resetAllEntities(self.self)
+    }
+    
+    public static func reset(predicate: NSPredicate) {
+        DataModel.resetEntities(self.self, predicate: predicate)
     }
 }
