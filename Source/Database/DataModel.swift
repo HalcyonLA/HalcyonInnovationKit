@@ -13,7 +13,7 @@ import XCGLogger
 
 public class DataModel: NSObject {
     
-    static let shared = DataModel()
+    public static let shared = DataModel()
     
     let log = XCGLogger.defaultInstance()
     
@@ -70,7 +70,7 @@ public class DataModel: NSObject {
         return coordinator
     }()
     
-    private lazy var managedObjectContext: NSManagedObjectContext = {
+    public lazy var managedObjectContext: NSManagedObjectContext = {
         // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) This property is optional since there are legitimate error conditions that could cause the creation of the context to fail.
         let coordinator = self.persistentStoreCoordinator
         var managedObjectContext = NSManagedObjectContext()
