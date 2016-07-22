@@ -8,6 +8,8 @@
 
 import Foundation
 
+public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .Default
+
 public class HIViewController: UIViewController {
     
     private var oldKbHeight = CGFloat(0)
@@ -34,6 +36,10 @@ public class HIViewController: UIViewController {
     
     public func shouldUseCloseGesture() -> Bool {
         return true
+    }
+    
+    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return HIViewControllerStatusBarStyle
     }
     
     public func keyboardWillAppear(notification: NSNotification) {
