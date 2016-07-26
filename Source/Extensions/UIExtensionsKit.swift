@@ -202,6 +202,7 @@ public extension Reusable {
 }
 
 extension UITableViewCell: Reusable { }
+extension UITableViewHeaderFooterView: Reusable { }
 extension UICollectionReusableView: Reusable { }
 
 public extension UIScrollView {
@@ -228,6 +229,19 @@ public extension UITableView {
     
     public func dequeueReusableCellWithClass<T: UITableViewCell where T: Reusable>(cellClass: T.Type, indexPath: NSIndexPath) -> T {
         return self.dequeueReusableCellWithIdentifier(T.reuseIdentifier, forIndexPath: indexPath) as! T
+    }
+    
+    public func registerReusableHeaderFooterViewClass(headerFooterViewClass: Reusable.Type, withNib: Bool = false) -> UITableView {
+        self.registerClass(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
+        if withNib {
+            let nib = UINib(nibName: headerFooterViewClass.reuseIdentifier, bundle: nil)
+            self.registerNib(nib, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
+        }
+        return self
+    }
+    
+    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView where T: Reusable>(headerFooterViewClass: T.Type = T.self) -> T? {
+        return self.dequeueReusableHeaderFooterViewWithIdentifier(T.reuseIdentifier) as? T
     }
 }
 
