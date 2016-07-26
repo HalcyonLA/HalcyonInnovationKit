@@ -202,7 +202,7 @@ public extension Reusable {
 }
 
 extension UITableViewCell: Reusable { }
-extension UICollectionViewCell: Reusable { }
+extension UICollectionReusableView: Reusable { }
 
 public extension UIScrollView {
     public func scrollToEnd(animated: Bool = true) {
@@ -243,6 +243,10 @@ public extension UICollectionView {
     
     public func dequeueReusableCellWithClass<T: UICollectionViewCell where T: Reusable>(cellClass: T.Type, indexPath: NSIndexPath) -> T {
         return self.dequeueReusableCellWithReuseIdentifier(T.reuseIdentifier, forIndexPath: indexPath) as! T
+    }
+    
+    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView where T: Reusable>(elementKind: String, cellClass: T.Type, indexPath: NSIndexPath) -> T {
+        return self.dequeueReusableSupplementaryViewOfKind(elementKind, withReuseIdentifier: T.reuseIdentifier, forIndexPath: indexPath) as! T
     }
 }
 
