@@ -24,10 +24,17 @@ public class HIViewController: UIViewController {
     
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillAppear(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillDisappear(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        let names = [UIKeyboardWillShowNotification, UIKeyboardWillHideNotification, UIKeyboardWillChangeFrameNotification]
+        for (_, name) in names.enumerate() {
+            NSNotificationCenter.defaultCenter().removeObserver(self, name: name, object: nil)
+        }
     }
     
     @IBAction public func closeKeyboard() {
@@ -53,19 +60,27 @@ public class HIViewController: UIViewController {
     }
     
     public func keyboardWillChangeFrame(notification: NSNotification) {
-        var kbEndFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
+        
+        let userInfo = notification.userInfo!
+        
+        var kbEndFrame = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
         kbEndFrame = self.view.convertRect(kbEndFrame, fromView: nil)
         
-        var kbStartFrame = notification.userInfo![UIKeyboardFrameBeginUserInfoKey]!.CGRectValue()
+        var kbStartFrame = userInfo[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue()
         kbStartFrame = self.view.convertRect(kbStartFrame, fromView: nil)
         
-        let kbHeight = CGRectGetHeight(self.view.frame) - CGRectGetMinY(kbEndFrame);
-        let kbOffset = kbHeight - oldKbHeight // = CGRectGetMinY(kbStartFrame) - CGRectGetMinY(kbEndFrame)
+        var kbHeight = CGRectGetHeight(self.view.frame) - CGRectGetMinY(kbEndFrame)
+        if kbHeight < 0 {
+            kbHeight = 0
+        }
+        
+        let kbOffset = kbHeight - oldKbHeight
         oldKbHeight = kbHeight
         
         UIView.beginAnimations(nil, context: nil)
-        UIView.setAnimationDuration(notification.userInfo![UIKeyboardAnimationDurationUserInfoKey]!.doubleValue)
-        UIView.setAnimationCurve(notification.userInfo![UIKeyboardAnimationCurveUserInfoKey] as! UIViewAnimationCurve)
+        UIView.setAnimationDuration(userInfo[UIKeyboardAnimationDurationUserInfoKey]!.doubleValue)
+        let curve = UIViewAnimationCurve.init(rawValue: userInfo[UIKeyboardAnimationCurveUserInfoKey]!.integerValue)!
+        UIView.setAnimationCurve(curve)
         UIView.setAnimationBeginsFromCurrentState(true)
         
         self.viewWillAdjustForKeyboardFrameChange(kbOffset)
