@@ -69,13 +69,21 @@ public class DataManager: NSObject {
     
     public static let shared = DataManager()
     
-    let log = XCGLogger.defaultInstance()
+    public var securityPolicy: AFSecurityPolicy {
+        set {
+            sessionManager.securityPolicy = newValue
+        }
+        get {
+            return sessionManager.securityPolicy
+        }
+    }
+    
+    private let log = XCGLogger.defaultInstance()
     
     public static var GlobalLoadingView: UIView { return UIApplication.sharedApplication().keyWindow! }
     
-    var networkActivityCount = 0
-    let sessionManager = AFHTTPSessionManager()
-    
+    private var networkActivityCount = 0
+    private let sessionManager = AFHTTPSessionManager()
     private var requests = [DataManagerRequest]()
     
     private var apiURL: String {
