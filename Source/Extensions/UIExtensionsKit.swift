@@ -263,26 +263,6 @@ public extension UICollectionView {
     }
 }
 
-public extension UIAlertController {
-    public class func show(title title: String, message: NSObject?) {
-        var msg: String?
-        if (message != nil) {
-            if (message is String) {
-                msg = message! as? String
-            } else {
-                msg = message!.description
-            }
-        }
-        let alert = UIAlertController.init(title: title, message: msg, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction.init(title: "OK", style: .Cancel, handler: nil))
-        alert.show()
-    }
-    
-    public class func showError(message: String) {
-        UIAlertController.show(title: "Error", message: message)
-    }
-}
-
 // MARK: Storyboard helpers
 
 public extension UIStoryboard {
