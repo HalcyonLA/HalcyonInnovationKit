@@ -8,7 +8,6 @@
 
 import Foundation
 import MBProgressHUD
-import ObjectiveC
 
 @IBDesignable public extension UIView {
     var width:      CGFloat { return self.frame.size.width }
@@ -261,5 +260,74 @@ public extension UICollectionView {
     
     public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView where T: Reusable>(elementKind: String, cellClass: T.Type, indexPath: NSIndexPath) -> T {
         return self.dequeueReusableSupplementaryViewOfKind(elementKind, withReuseIdentifier: T.reuseIdentifier, forIndexPath: indexPath) as! T
+    }
+}
+
+public extension UIAlertController {
+    public class func show(title title: String, message: NSObject?) {
+        var msg: String?
+        if (message != nil) {
+            if (message is String) {
+                msg = message! as? String
+            } else {
+                msg = message!.description
+            }
+        }
+        let alert = UIAlertController.init(title: title, message: msg, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction.init(title: "OK", style: .Cancel, handler: nil))
+        alert.show()
+    }
+    
+    public class func showError(message: String) {
+        UIAlertController.show(title: "Error", message: message)
+    }
+}
+
+// MARK: Storyboard helpers
+
+public extension UIStoryboard {
+    class func main() -> UIStoryboard! {
+        guard let mainStoryboardName = NSBundle.mainBundle().infoDictionary?["UIMainStoryboardFile"] as? String else {
+            assertionFailure("No UIMainStoryboardFile found in main bundle")
+            return nil
+        }
+        return UIStoryboard(name: mainStoryboardName, bundle: nil)
+    }
+}
+
+protocol StoryboardInstantiable {
+    static var storyboardIdentifier: String {get}
+    static func instantiateFromStoryboard(storyboard: UIStoryboard) -> Self
+}
+
+extension UIViewController: StoryboardInstantiable {
+    static var storyboardIdentifier: String {
+        // Get the name of current class
+        let classString = NSStringFromClass(self)
+        let components = classString.componentsSeparatedByString(".")
+        assert(components.count > 0, "Failed extract class name from \(classString)")
+        return components.last!
+    }
+    
+    public class func instantiateFromStoryboard(storyboard: UIStoryboard) -> Self {
+        return instantiateFromStoryboard(storyboard, type: self)
+    }
+    
+    public class func storyboardInstance(storyboard: String) -> Self {
+        return storyboardInstance(storyboard, type: self)
+    }
+    
+    public class func mainStoryboardInstance() -> Self {
+        return instantiateFromStoryboard(UIStoryboard.main(), type: self)
+    }
+    
+    
+    private class func instantiateFromStoryboard<T: UIViewController>(storyboard: UIStoryboard, type: T.Type) -> T {
+        return storyboard.instantiateViewControllerWithIdentifier(self.storyboardIdentifier) as! T
+    }
+    
+    private class func storyboardInstance<T: UIViewController>(storyboard: String, type: T.Type) -> T {
+        let sb = UIStoryboard(name: storyboard, bundle: nil)
+        return sb.instantiateViewControllerWithIdentifier(self.storyboardIdentifier) as! T
     }
 }
