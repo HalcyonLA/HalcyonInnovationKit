@@ -285,6 +285,20 @@ public extension NSURL {
     }
 }
 
+public extension Array {
+    public var jsonString: String {
+        do {
+            let stringData = try NSJSONSerialization.dataWithJSONObject(self as! AnyObject, options: NSJSONWritingOptions(rawValue: 0))
+            if let string = String(data: stringData, encoding: NSUTF8StringEncoding) {
+                return string
+            }
+        } catch _ {
+            
+        }
+        return ""
+    }
+}
+
 public extension Dictionary {
     public var queryString: String {
         let parts = map({(key, value) -> String in
@@ -297,7 +311,7 @@ public extension Dictionary {
     
     public var jsonString: String {
         do {
-            let stringData = try NSJSONSerialization.dataWithJSONObject(self as! AnyObject, options: NSJSONWritingOptions.PrettyPrinted)
+            let stringData = try NSJSONSerialization.dataWithJSONObject(self as! AnyObject, options: NSJSONWritingOptions(rawValue: 0))
             if let string = String(data: stringData, encoding: NSUTF8StringEncoding) {
                 return string
             }
