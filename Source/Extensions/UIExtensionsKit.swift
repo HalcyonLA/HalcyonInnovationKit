@@ -210,16 +210,36 @@ extension UICollectionReusableView: Reusable { }
 public extension UIScrollView {
     public func scrollToEnd(animated: Bool = true) {
         var offset = CGPointZero
+        let inset = contentInset
         if (contentSize.height > contentSize.width) {
-            offset = CGPointMake(0, contentSize.height - self.height)
+            offset = CGPointMake(0, contentSize.height - self.height + inset.bottom)
         } else {
-            offset = CGPointMake(contentSize.width - self.width, 0)
+            offset = CGPointMake(contentSize.width - self.width + inset.right, 0)
         }
         self.setContentOffset(offset, animated: animated)
     }
 }
 
 public extension UITableView {
+    
+    public override func scrollToEnd(animated: Bool = true) {
+        if let dataSource = self.dataSource {
+            var section = dataSource.numberOfSectionsInTableView?(self)
+            if section == nil {
+                section = 0
+            } else {
+                section! -= 1
+            }
+            if section >= 0 {
+                let row = dataSource.tableView(self, numberOfRowsInSection: section!) - 1
+                if row >= 0 {
+                    let indexPath = NSIndexPath(forRow: row, inSection: section!)
+                    self.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: animated)
+                }
+            }
+        }
+    }
+    
     public func registerReusable(cellClass: Reusable.Type, withNib: Bool = true) -> UITableView {
         self.registerClass(cellClass, forCellReuseIdentifier: cellClass.reuseIdentifier)
         if withNib {

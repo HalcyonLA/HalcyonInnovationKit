@@ -142,7 +142,7 @@ extension String {
     
     /// Trims white space and new line characters, returns a new string
     public func trimmed() -> String {
-        return self.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).joinWithSeparator("")
+        return self.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     }
     
     public var urlEncodedValue: String {
@@ -199,7 +199,7 @@ extension String {
     
     public func cleanWhitespaces() -> String {
         do {
-            let regex = try NSRegularExpression.init(pattern: "  +", options: .CaseInsensitive)
+            let regex = try NSRegularExpression.init(pattern: "\\s\\s+/", options: .CaseInsensitive)
             let string = regex.stringByReplacingMatchesInString(self, options: NSMatchingOptions(), range: self.allRange(), withTemplate: " ")
             return string.trimmed()
         } catch {
