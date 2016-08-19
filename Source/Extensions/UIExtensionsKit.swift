@@ -45,6 +45,9 @@ import MBProgressHUD
         }
     }
     
+    public func applyFullAutoresizingMask() {
+        self.autoresizingMask = [.FlexibleWidth, .FlexibleHeight, .FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleLeftMargin, .FlexibleRightMargin]
+    }
     
     public func screenshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.mainScreen().scale)

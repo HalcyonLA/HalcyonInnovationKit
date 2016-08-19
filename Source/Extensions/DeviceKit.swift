@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum DeviceMaxHeight: Float {
+public enum DeviceMaxHeight: CGFloat {
     case iPhone4     = 480.0
     case iPhone5     = 568.0
     case iPhone6     = 667.0
@@ -34,16 +34,16 @@ public extension UIDevice {
         return NSString(string: UIDevice.currentDevice().systemVersion).floatValue
     }
     
-    public class func deviceHeight() -> Float {
-        let w = Float(UIScreen.mainScreen().bounds.width)
-        let h = Float(UIScreen.mainScreen().bounds.height)
-        return fmax(w, h)
+    public class func deviceHeight() -> CGFloat {
+        let w = UIScreen.mainScreen().bounds.width
+        let h = UIScreen.mainScreen().bounds.height
+        return max(w, h)
     }
     
-    public class func deviceWidth() -> Float {
-        let w = Float(UIScreen.mainScreen().bounds.width)
-        let h = Float(UIScreen.mainScreen().bounds.height)
-        return fmin(w, h)
+    public class func deviceWidth() -> CGFloat {
+        let w = UIScreen.mainScreen().bounds.width
+        let h = UIScreen.mainScreen().bounds.height
+        return min(w, h)
     }
     
     public class func deviceType() -> DeviceType {
