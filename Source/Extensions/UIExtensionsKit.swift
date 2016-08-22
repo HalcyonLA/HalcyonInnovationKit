@@ -8,6 +8,7 @@
 
 import Foundation
 import MBProgressHUD
+import MapKit
 
 @IBDesignable public extension UIView {
     var width:      CGFloat { return self.frame.size.width }
@@ -206,6 +207,7 @@ public extension Reusable {
 extension UITableViewCell: Reusable { }
 extension UITableViewHeaderFooterView: Reusable { }
 extension UICollectionReusableView: Reusable { }
+extension MKAnnotationView: Reusable { }
 
 public extension UIScrollView {
     public func scrollToEnd(animated: Bool = true) {
@@ -283,6 +285,21 @@ public extension UICollectionView {
     
     public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView where T: Reusable>(elementKind: String, cellClass: T.Type, indexPath: NSIndexPath) -> T {
         return self.dequeueReusableSupplementaryViewOfKind(elementKind, withReuseIdentifier: T.reuseIdentifier, forIndexPath: indexPath) as! T
+    }
+}
+
+public extension MKMapView {
+    public func dequeueReusableAnnotationViewWithClass<T: MKAnnotationView where T: Reusable>(annotationViewClass: T.Type, annotation: MKAnnotation) -> T {
+        
+        let identifier = annotationViewClass.reuseIdentifier
+        
+        var annotationView = self.dequeueReusableAnnotationViewWithIdentifier(identifier)
+        if annotationView == nil {
+            annotationView = T(annotation: annotation, reuseIdentifier: identifier)
+        } else {
+            annotationView?.annotation = annotation
+        }
+        return annotationView as! T
     }
 }
 
