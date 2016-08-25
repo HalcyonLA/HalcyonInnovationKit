@@ -26,7 +26,11 @@ public class DataMapping<T: NSManagedObject where T: MappingProtocol>: FEMMappin
                 if let number = value as? NSNumber {
                     return number
                 } else if let string = value as? String {
-                    return NSNumberFormatter().numberFromString(string)
+                    let formatter = NSNumberFormatter()
+                    formatter.locale = NSLocale(localeIdentifier: "en_US")
+                    formatter.numberStyle = .DecimalStyle
+                    let number = formatter.numberFromString(string)
+                    return number
                 }
                 return nil
                 }, reverseMap: nil)
