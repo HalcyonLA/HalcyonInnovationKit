@@ -326,6 +326,12 @@ public extension NSAttributedString {
     public func sizeWithMaxSize(size: CGSize) -> CGSize {
         return self.boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil).size
     }
+    
+    public class func image(image: UIImage) -> NSAttributedString {
+        let attachment = NSTextAttachment()
+        attachment.image = image
+        return NSAttributedString(attachment: attachment)
+    }
 }
 
 extension NSRange {

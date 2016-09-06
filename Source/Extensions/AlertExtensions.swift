@@ -8,7 +8,13 @@
 
 import Foundation
 
+public protocol AlertErrorDelegate: NSObjectProtocol {
+    func shouldShowError(error: NSError) -> Bool
+    func textForError(error: NSError) -> String
+}
+
 public extension UIAlertController {
+    
     public class func show(title title: String, message: NSObject?) {
         var msg: String?
         if (message != nil) {
@@ -47,12 +53,23 @@ public extension UIAlertController {
 }
 
 public extension NSError {
+    
+    public static var errorDelegate: AlertErrorDelegate?
+    
     public func showAlert() {
-        UIAlertController.showError(self.localizedDescription)
+        
+        if let delegate = NSError.errorDelegate {
+            if delegate.shouldShowError(self) {
+                UIAlertController.showError(delegate.textForError(self))
+            }
+        } else {
+            UIAlertController.showError(self.localizedDescription)
+        }
     }
 }
 
 var AssociatedWindow: UInt8 = 0
+var OriginalWindow: UInt8 = 1
 
 private extension UIAlertController {
     var alertWindow: UIWindow? {
@@ -60,7 +77,20 @@ private extension UIAlertController {
             return objc_getAssociatedObject(self, &AssociatedWindow) as? UIWindow
         }
         set {
+            if newValue != nil {
+                originalWindow = UIApplication.sharedApplication().keyWindow
+            } else {
+                originalWindow?.makeKeyAndVisible()
+            }
             objc_setAssociatedObject(self, &AssociatedWindow, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    var originalWindow: UIWindow? {
+        get {
+            return objc_getAssociatedObject(self, &OriginalWindow) as? UIWindow
+        }
+        set {
+            objc_setAssociatedObject(self, &OriginalWindow, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
