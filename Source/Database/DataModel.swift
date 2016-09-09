@@ -280,6 +280,9 @@ public class DataModel: NSObject {
 // MARK: - NSManagedObject Subclass
 
 public protocol MappingProtocol {
+    /**
+     If you don't need to use primary key - return "_"
+     */
     static func primaryKey() -> String
 }
 

@@ -17,7 +17,9 @@ public class DataMapping<T: NSManagedObject where T: MappingProtocol>: FEMMappin
     public required init(type: T.Type) {
         self.type = type
         super.init(entityName: String(T))
-        self.primaryKey = T.primaryKey()
+        if T.primaryKey() != "_" {
+            self.primaryKey = T.primaryKey()
+        }
     }
     
     public func addNumberAttributes(attributes: [String : String]) {
