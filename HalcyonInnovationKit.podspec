@@ -6,7 +6,7 @@ s.name = "HalcyonInnovationKit"
 s.module_name = "HalcyonInnovationKit"
 s.summary = "Halcyon Innovation development kit."
 s.requires_arc = true
-s.version = "1.1.1"
+s.version = "1.1.2"
 s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
 s.license = { :type => "MIT", :file => "LICENSE" }

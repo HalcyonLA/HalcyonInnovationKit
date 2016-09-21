@@ -242,6 +242,7 @@ open class DataModel: NSObject {
     
     // MARK: - Mapping
     
+    @discardableResult
     open class func deserializeObject<T: NSManagedObject>(_ object: AnyObject?, mapping: DataMapping<T>) -> T? {
         if let obj = object as? [String: AnyObject] {
             if (obj.count == 0) {
@@ -261,6 +262,7 @@ open class DataModel: NSObject {
         }
     }
     
+    @discardableResult
     open class func deserializeArray<T: NSManagedObject>(_ array: AnyObject?, mapping: DataMapping<T>) -> [T]? {
         if let collection = array as? [AnyObject] {
             if (collection.count == 0) {
