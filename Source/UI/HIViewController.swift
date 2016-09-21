@@ -8,68 +8,68 @@
 
 import Foundation
 
-public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .Default
+public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
 
-public class HIViewController: UIViewController {
+open class HIViewController: UIViewController {
     
-    private var oldKbHeight = CGFloat(0)
-    private var closeGesture: UITapGestureRecognizer? = nil
+    fileprivate var oldKbHeight = CGFloat(0)
+    fileprivate var closeGesture: UITapGestureRecognizer? = nil
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
-        closeGesture = UITapGestureRecognizer.init(target: self, action: #selector(closeKeyboard))
-        closeGesture!.enabled = false
+        closeGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
+        closeGesture!.isEnabled = false
         self.view.addGestureRecognizer(closeGesture!)
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillAppear(_:)), name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillDisappear(_:)), name: UIKeyboardWillHideNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let names = [UIKeyboardWillShowNotification, UIKeyboardWillHideNotification, UIKeyboardWillChangeFrameNotification]
-        for (_, name) in names.enumerate() {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: name, object: nil)
+        let names = [NSNotification.Name.UIKeyboardWillShow, NSNotification.Name.UIKeyboardWillHide, NSNotification.Name.UIKeyboardWillChangeFrame]
+        for (_, name) in names.enumerated() {
+            NotificationCenter.default.removeObserver(self, name: name, object: nil)
         }
     }
     
-    @IBAction public func closeKeyboard() {
+    @IBAction open func closeKeyboard() {
         self.view.endEditing(true)
     }
     
-    public func shouldUseCloseGesture() -> Bool {
+    open func shouldUseCloseGesture() -> Bool {
         return true
     }
     
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
         return HIViewControllerStatusBarStyle
     }
     
-    public func keyboardWillAppear(notification: NSNotification) {
+    open func keyboardWillAppear(_ notification: Notification) {
         if (shouldUseCloseGesture()) {
-            closeGesture?.enabled = true
+            closeGesture?.isEnabled = true
         }
     }
     
-    public func keyboardWillDisappear(notification: NSNotification) {
-        closeGesture?.enabled = false
+    open func keyboardWillDisappear(_ notification: Notification) {
+        closeGesture?.isEnabled = false
     }
     
-    public func keyboardWillChangeFrame(notification: NSNotification) {
+    open func keyboardWillChangeFrame(_ notification: Notification) {
         
-        let userInfo = notification.userInfo!
+        let userInfo = (notification as NSNotification).userInfo!
         
-        var kbEndFrame = userInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
-        kbEndFrame = self.view.convertRect(kbEndFrame, fromView: nil)
+        var kbEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
+        kbEndFrame = self.view.convert(kbEndFrame!, from: nil)
         
-        var kbStartFrame = userInfo[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue()
-        kbStartFrame = self.view.convertRect(kbStartFrame, fromView: nil)
+        var kbStartFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
+        kbStartFrame = self.view.convert(kbStartFrame!, from: nil)
         
-        var kbHeight = CGRectGetHeight(self.view.frame) - CGRectGetMinY(kbEndFrame)
+        var kbHeight = self.view.frame.height - (kbEndFrame?.minY)!
         if kbHeight < 0 {
             kbHeight = 0
         }
@@ -78,8 +78,8 @@ public class HIViewController: UIViewController {
         oldKbHeight = kbHeight
         
         UIView.beginAnimations(nil, context: nil)
-        UIView.setAnimationDuration(userInfo[UIKeyboardAnimationDurationUserInfoKey]!.doubleValue)
-        let curve = UIViewAnimationCurve.init(rawValue: userInfo[UIKeyboardAnimationCurveUserInfoKey]!.integerValue)!
+        UIView.setAnimationDuration((userInfo[UIKeyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue)
+        let curve = UIViewAnimationCurve.init(rawValue: (userInfo[UIKeyboardAnimationCurveUserInfoKey]! as AnyObject).intValue)!
         UIView.setAnimationCurve(curve)
         UIView.setAnimationBeginsFromCurrentState(true)
         
@@ -88,7 +88,7 @@ public class HIViewController: UIViewController {
         UIView.commitAnimations()
     }
     
-    public func viewWillAdjustForKeyboardFrameChange(keyboardOffset: CGFloat) {
+    open func viewWillAdjustForKeyboardFrameChange(_ keyboardOffset: CGFloat) {
         
     }
 }

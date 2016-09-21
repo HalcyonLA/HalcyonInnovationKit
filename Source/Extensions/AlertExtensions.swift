@@ -9,13 +9,13 @@
 import Foundation
 
 public protocol AlertErrorDelegate: NSObjectProtocol {
-    func shouldShowError(error: NSError) -> Bool
-    func textForError(error: NSError) -> String
+    func shouldShowError(_ error: NSError) -> Bool
+    func textForError(_ error: NSError) -> String
 }
 
 public extension UIAlertController {
     
-    public class func show(title title: String, message: NSObject?) {
+    public class func show(title: String, message: NSObject?) {
         var msg: String?
         if (message != nil) {
             if (message is String) {
@@ -24,30 +24,30 @@ public extension UIAlertController {
                 msg = message!.description
             }
         }
-        let alert = UIAlertController.init(title: title, message: msg, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction.init(title: "OK", style: .Cancel, handler: nil))
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         alert.show()
     }
     
-    public class func showError(message: String) {
-        UIAlertController.show(title: "Error", message: message)
+    public class func showError(_ message: String) {
+        UIAlertController.show(title: "Error", message: message as NSObject?)
     }
     
     public func show() {
         show(true)
     }
     
-    public func show(animated: Bool) {
-        alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+    public func show(_ animated: Bool) {
+        alertWindow = UIWindow(frame: UIScreen.main.bounds)
         alertWindow!.rootViewController = AlertShowController()
         alertWindow!.windowLevel = UIWindowLevelAlert + 1
         alertWindow!.makeKeyAndVisible()
-        alertWindow!.rootViewController?.presentViewController(self, animated: true, completion: nil)
+        alertWindow!.rootViewController?.present(self, animated: true, completion: nil)
     }
     
-    public override func viewDidDisappear(animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        alertWindow?.hidden = true
+        alertWindow?.isHidden = true
         alertWindow = nil
     }
 }
@@ -78,7 +78,7 @@ private extension UIAlertController {
         }
         set {
             if newValue != nil {
-                originalWindow = UIApplication.sharedApplication().keyWindow
+                originalWindow = UIApplication.shared.keyWindow
             } else {
                 originalWindow?.makeKeyAndVisible()
             }
@@ -96,7 +96,7 @@ private extension UIAlertController {
 }
 
 private class AlertShowController: UIViewController {
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    override var preferredStatusBarStyle : UIStatusBarStyle {
         return HIViewControllerStatusBarStyle
     }
 }

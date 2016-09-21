@@ -8,13 +8,13 @@
 
 import Foundation
 
-public class MediaData: NSObject {
+open class MediaData: NSObject {
     
-    public var data: NSData?
-    public var name: String?
-    public var contentType: String?
+    open var data: Data?
+    open var name: String?
+    open var contentType: String?
     
-    public init(data: NSData, name: String, contentType: String) {
+    public init(data: Data, name: String, contentType: String) {
         super.init()
         self.data = data
         self.name = name

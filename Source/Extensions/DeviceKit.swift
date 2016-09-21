@@ -25,24 +25,24 @@ public enum DeviceMaxHeight: CGFloat {
     case iPhone6Plus
     case iPad
     case iPadPro
-    case Unknown
+    case unknown
 }
 
 public extension UIDevice {
     
     public class func systemVersion() -> Float  {
-        return NSString(string: UIDevice.currentDevice().systemVersion).floatValue
+        return NSString(string: UIDevice.current.systemVersion).floatValue
     }
     
     public class func deviceHeight() -> CGFloat {
-        let w = UIScreen.mainScreen().bounds.width
-        let h = UIScreen.mainScreen().bounds.height
+        let w = UIScreen.main.bounds.width
+        let h = UIScreen.main.bounds.height
         return max(w, h)
     }
     
     public class func deviceWidth() -> CGFloat {
-        let w = UIScreen.mainScreen().bounds.width
-        let h = UIScreen.mainScreen().bounds.height
+        let w = UIScreen.main.bounds.width
+        let h = UIScreen.main.bounds.height
         return min(w, h)
     }
     
@@ -54,15 +54,15 @@ public extension UIDevice {
         if isPadPro()     { return DeviceType.iPadPro     }
         if isPad()        { return DeviceType.iPad        }
         if isPhone()      { return DeviceType.iPhone      }
-        return DeviceType.Unknown
+        return DeviceType.unknown
     }
     
     public class func isPhone() -> Bool {
-        return UIDevice.currentDevice().userInterfaceIdiom == .Phone
+        return UIDevice.current.userInterfaceIdiom == .phone
     }
     
     public class func isPad() -> Bool {
-        return UIDevice.currentDevice().userInterfaceIdiom == .Pad
+        return UIDevice.current.userInterfaceIdiom == .pad
     }
     
     public class func isPhone4() -> Bool {

@@ -10,35 +10,35 @@ import Foundation
 import QuartzCore
 import Accelerate
 
-public func UIColorFromHex(hex: UInt32) -> UIColor {
+public func UIColorFromHex(_ hex: UInt32) -> UIColor {
     return UIColor.init(hex: hex)
 }
 
-public func UIColorFromHexWithAlpha(hex: UInt32, alpha: Float) -> UIColor {
+public func UIColorFromHexWithAlpha(_ hex: UInt32, alpha: Float) -> UIColor {
     return UIColor.init(hex: hex, alpha: alpha)
 }
 
 public func AppName() -> String {
-    return NSBundle.mainBundle().objectForInfoDictionaryKey(kCFBundleNameKey as String) as! String
+    return Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
 }
 
-public func synced(lock: AnyObject, closure: () -> ()) {
+public func synced(_ lock: AnyObject, closure: () -> ()) {
     objc_sync_enter(lock)
     closure()
     objc_sync_exit(lock)
 }
 
-public func +=<K, V> (inout left: [K : V], right: [K : V]) { for (k, v) in right { left[k] = v } }
+public func +=<K, V> ( left: inout [K : V], right: [K : V]) { for (k, v) in right { left[k] = v } }
 
 public func +<K, V> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k, v) in  right { new[k] = v }; return new }
 
-public func -<K, V: Comparable> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k,v) in right { if let n = new[k] where n == v { new.removeValueForKey(k)}}; return new }
+public func -<K, V: Comparable> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k,v) in right { if let n = new[k] , n == v { new.removeValue(forKey: k)}}; return new }
 
-public func -<K, V> (left: [K : V], right: [K]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for k in right {  new.removeValueForKey(k)}; return new }
+public func -<K, V> (left: [K : V], right: [K]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for k in right {  new.removeValue(forKey: k)}; return new }
 
-public func -=<K, V: Comparable> (inout left: [K : V], right: [K : V]){for (k,v) in right { if let n = left[k] where n == v { left.removeValueForKey(k)}}}
+public func -=<K, V: Comparable> ( left: inout [K : V], right: [K : V]){for (k,v) in right { if let n = left[k] , n == v { left.removeValue(forKey: k)}}}
 
-public func -=<K, V> (inout left: [K : V], right: [K]) {for k in right { left.removeValueForKey(k)}}
+public func -=<K, V> ( left: inout [K : V], right: [K]) {for k in right { left.removeValue(forKey: k)}}
 
 extension NSObject {
     public var className: String {
@@ -46,7 +46,7 @@ extension NSObject {
     }
     
     public static var className: String {
-        return String(self)
+        return String(describing: self)
     }
 }
 
@@ -59,7 +59,7 @@ extension UIColor {
         self.init(red: red, green: green, blue: blue, alpha: CGFloat(alpha))
     }
     
-    public class func hex(hex: UInt32) -> UIColor {
+    public class func hex(_ hex: UInt32) -> UIColor {
         return UIColor.init(hex: hex)
     }
 }
@@ -69,12 +69,12 @@ extension NSString {
         return String(self).trimmed()
     }
     
-    public func stringBetweenStrings(start: NSString, end: NSString) -> NSString? {
+    public func stringBetweenStrings(_ start: NSString, end: NSString) -> NSString? {
         return String(self).stringBetweenStrings(start, end: end)
     }
     
     public func fileName() -> NSString? {
-        return NSURL(fileURLWithPath: self as String).pathExtension
+        return URL(fileURLWithPath: self as String).pathExtension as NSString?
     }
     
     public func clearHtmlElements() -> NSString {
@@ -93,28 +93,28 @@ extension NSString {
         return NSMakeRange(0, self.length)
     }
     
-    public func sizeForMaxSize(textSize: CGSize, font: UIFont) -> CGSize {
+    public func sizeForMaxSize(_ textSize: CGSize, font: UIFont) -> CGSize {
         return String(self).sizeForMaxSize(textSize, font: font)
     }
     
-    public func widthForHeight(height: CGFloat, font: UIFont) -> CGFloat {
+    public func widthForHeight(_ height: CGFloat, font: UIFont) -> CGFloat {
         return String(self).widthForHeight(height, font: font)
     }
     
-    public func heightForWidth(width: CGFloat, font: UIFont) -> CGFloat {
+    public func heightForWidth(_ width: CGFloat, font: UIFont) -> CGFloat {
         return String(self).heightForWidth(width, font: font)
     }
 }
 
 extension String {
     public subscript(integerIndex: Int) -> Character {
-        let index = startIndex.advancedBy(integerIndex)
+        let index = characters.index(startIndex, offsetBy: integerIndex)
         return self[index]
     }
     
     public subscript(integerRange: Range<Int>) -> String {
-        let start = startIndex.advancedBy(integerRange.startIndex)
-        let end = startIndex.advancedBy(integerRange.endIndex)
+        let start = characters.index(startIndex, offsetBy: integerRange.lowerBound)
+        let end = characters.index(startIndex, offsetBy: integerRange.upperBound)
         let range = start..<end
         return self[range]
     }
@@ -125,13 +125,13 @@ extension String {
     
     public var capitalizeFirst: String {
         var result = self
-        result.replaceRange(startIndex...startIndex, with: String(self[startIndex]).capitalizedString)
+        result.replaceSubrange(startIndex...startIndex, with: String(self[startIndex]).capitalized)
         return result
     }
     
     public var lowercaseFirst: String {
         var result = self
-        result.replaceRange(startIndex...startIndex, with: String(self[startIndex]).lowercaseString)
+        result.replaceSubrange(startIndex...startIndex, with: String(self[startIndex]).lowercased())
         return result
     }
     
@@ -142,23 +142,23 @@ extension String {
     
     /// Trims white space and new line characters, returns a new string
     public func trimmed() -> String {
-        return self.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
     
     public var urlEncodedValue: String {
-        let allowedSet = NSCharacterSet(charactersInString: "=\"#%/<>?@\\^`{|}&: ").invertedSet
-        let escapedString = stringByAddingPercentEncodingWithAllowedCharacters(allowedSet)
+        let allowedSet = CharacterSet(charactersIn: "=\"#%/<>?@\\^`{|}&: ").inverted
+        let escapedString = addingPercentEncoding(withAllowedCharacters: allowedSet)
         return escapedString ?? self
     }
     
     public var queryDictionary: [String: String] {
-        let parameters = componentsSeparatedByString("&")
+        let parameters = components(separatedBy: "&")
         var dictionary = [String: String]()
         for parameter in parameters {
-            let keyValue = parameter.componentsSeparatedByString("=")
+            let keyValue = parameter.components(separatedBy: "=")
             if keyValue.count == 2 {
-                if let key = keyValue[0].stringByRemovingPercentEncoding,
-                    value = keyValue[1].stringByRemovingPercentEncoding {
+                if let key = keyValue[0].removingPercentEncoding,
+                    let value = keyValue[1].removingPercentEncoding {
                     dictionary[key] = value
                 }
             }
@@ -166,13 +166,13 @@ extension String {
         return dictionary
     }
     
-    public func stringBetweenStrings(start: String, end: String) -> String? {
-        let scanner = NSScanner.init(string: self)
+    public func stringBetweenStrings(_ start: String, end: String) -> String? {
+        let scanner = Scanner.init(string: self)
         scanner.charactersToBeSkipped = nil
-        scanner.scanUpToString(start, intoString: nil)
-        if (scanner.scanString(start, intoString: nil)) {
+        scanner.scanUpTo(start, into: nil)
+        if (scanner.scanString(start, into: nil)) {
             var result: NSString?
-            if (scanner.scanUpToString(end, intoString: &result)) {
+            if (scanner.scanUpTo(end, into: &result)) {
                 return String(result!)
             }
         }
@@ -180,7 +180,7 @@ extension String {
     }
     
     public func fileName() -> String? {
-        return NSURL(fileURLWithPath: self).pathExtension
+        return URL(fileURLWithPath: self).pathExtension
     }
     
     public func clearHtmlElements() -> String {
@@ -192,15 +192,15 @@ extension String {
         
         var string = self
         for (key, value) in replacements {
-            string = string.stringByReplacingOccurrencesOfString(key, withString: value)
+            string = string.replacingOccurrences(of: key, with: value)
         }
         return string
     }
     
     public func cleanWhitespaces() -> String {
         do {
-            let regex = try NSRegularExpression.init(pattern: "\\s\\s+/", options: .CaseInsensitive)
-            let string = regex.stringByReplacingMatchesInString(self, options: NSMatchingOptions(), range: self.allRange(), withTemplate: " ")
+            let regex = try NSRegularExpression.init(pattern: "\\s\\s+/", options: .caseInsensitive)
+            let string = regex.stringByReplacingMatches(in: self, options: NSRegularExpression.MatchingOptions(), range: self.allRange(), withTemplate: " ")
             return string.trimmed()
         } catch {
             return self
@@ -208,76 +208,80 @@ extension String {
     }
     
     public func onlyDigits() -> String {
-        return self.stringByReplacingOccurrencesOfString("[^0-9]", withString: "", options: .RegularExpressionSearch, range: self.rangeFromNSRange(self.allRange()))
+        return self.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression, range: self.rangeFromNSRange(self.allRange()))
     }
     
     public func allRange() -> NSRange {
         return NSMakeRange(0, self.length)
     }
     
-    public func rangeFromNSRange(nsRange : NSRange) -> Range<String.Index>? {
-        let from16 = utf16.startIndex.advancedBy(nsRange.location, limit: utf16.endIndex)
-        let to16 = from16.advancedBy(nsRange.length, limit: utf16.endIndex)
-        if let from = String.Index(from16, within: self),
-            let to = String.Index(to16, within: self) {
-            return from ..< to
+    public func rangeFromNSRange(_ nsRange : NSRange) -> Range<String.Index>? {
+        let utf16view = utf16
+        if let from16 = utf16view.index(utf16view.startIndex, offsetBy: nsRange.location, limitedBy: utf16view.endIndex) {
+            if let to16 = utf16view.index(from16, offsetBy: nsRange.length, limitedBy: utf16view.endIndex) {
+                if let from = String.Index(from16, within: self),
+                    let to = String.Index(to16, within: self) {
+                    return from ..< to
+                }
+            }
         }
         return nil
     }
     
-    public func NSRangeFromRange(range : Range<String.Index>) -> NSRange {
+    public func NSRangeFromRange(_ range : Range<String.Index>) -> NSRange {
         let utf16view = self.utf16
-        let from = String.UTF16View.Index(range.startIndex, within: utf16view)
-        let to = String.UTF16View.Index(range.endIndex, within: utf16view)
-        return NSMakeRange(utf16view.startIndex.distanceTo(from), from.distanceTo(to))
+        let from = String.UTF16View.Index(range.lowerBound, within: utf16view)
+        let to = String.UTF16View.Index(range.upperBound, within: utf16view)
+        let range = NSMakeRange(utf16view.distance(from: utf16view.startIndex, to: from), utf16view.distance(from: from, to: to))
+        return range
     }
     
-    public func sizeForMaxSize(textSize: CGSize, font: UIFont) -> CGSize {
-        var result = CGSizeMake(0, font.lineHeight)
+    public func sizeForMaxSize(_ textSize: CGSize, font: UIFont) -> CGSize {
+        var result = CGSize(width: 0, height: font.lineHeight)
         if (self.length > 0) {
             let attributes = [NSFontAttributeName:font]
-            let frame = NSString.init(string: self).boundingRectWithSize(textSize, options: .UsesLineFragmentOrigin, attributes: attributes, context: nil)
+            let frame = NSString.init(string: self).boundingRect(with: textSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             result = frame.size
         }
         return result
     }
     
-    public func widthForHeight(height: CGFloat, font: UIFont) -> CGFloat {
-        return self.sizeForMaxSize(CGSizeMake(CGFloat.max, height), font: font).width
+    public func widthForHeight(_ height: CGFloat, font: UIFont) -> CGFloat {
+        return self.sizeForMaxSize(CGSize(width: CGFloat.greatestFiniteMagnitude, height: height), font: font).width
     }
     
-    public func heightForWidth(width: CGFloat, font: UIFont) -> CGFloat {
-        return self.sizeForMaxSize(CGSizeMake(width, CGFloat.max), font: font).height
+    public func heightForWidth(_ width: CGFloat, font: UIFont) -> CGFloat {
+        return self.sizeForMaxSize(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), font: font).height
     }
 }
 
 public extension NSArray {
     public func toString() -> String {
         var string = ""
-        for (_, str) in self.enumerate() {
+        for (_, str) in self.enumerated() {
             string += "\(str),"
         }
         if (string.length > 0) {
-            string.removeRange(string.rangeFromNSRange(NSMakeRange(string.length - 1, 1))!)
+            string.removeSubrange(string.rangeFromNSRange(NSMakeRange(string.length - 1, 1))!)
         }
         return string
     }
 }
 
 public extension NSMutableArray {
-    public func moveObject(fromIndex: Int, toIndex: Int) {
+    public func moveObject(_ fromIndex: Int, toIndex: Int) {
         let object = self[fromIndex]
-        self.removeObjectAtIndex(fromIndex)
-        self.insertObject(object, atIndex: toIndex)
+        self.removeObject(at: fromIndex)
+        self.insert(object, at: toIndex)
     }
 }
 
-public extension NSURL {
-    public func URLByAppendingQueryString(queryString: String) -> NSURL {
+public extension URL {
+    public func URLByAppendingQueryString(_ queryString: String) -> URL {
         if !queryString.isEmpty {
             let delimiter = (self.query == nil ? "?" : "&")
             let URLString = "\(self.absoluteString)\(delimiter)\(queryString)"
-            if let URL = NSURL(string: URLString) {
+            if let URL = URL(string: URLString) {
                 return URL
             }
         }
@@ -288,8 +292,8 @@ public extension NSURL {
 public extension Array {
     public var jsonString: String {
         do {
-            let stringData = try NSJSONSerialization.dataWithJSONObject(self as! AnyObject, options: NSJSONWritingOptions(rawValue: 0))
-            if let string = String(data: stringData, encoding: NSUTF8StringEncoding) {
+            let stringData = try JSONSerialization.data(withJSONObject: self as AnyObject, options: JSONSerialization.WritingOptions(rawValue: 0))
+            if let string = String(data: stringData, encoding: String.Encoding.utf8) {
                 return string
             }
         } catch _ {
@@ -306,13 +310,13 @@ public extension Dictionary {
             let valueStr = "\(value)"
             return "\(keyStr)=\(valueStr.urlEncodedValue)"
         })
-        return parts.joinWithSeparator("&")
+        return parts.joined(separator: "&")
     }
     
     public var jsonString: String {
         do {
-            let stringData = try NSJSONSerialization.dataWithJSONObject(self as! AnyObject, options: NSJSONWritingOptions(rawValue: 0))
-            if let string = String(data: stringData, encoding: NSUTF8StringEncoding) {
+            let stringData = try JSONSerialization.data(withJSONObject: self as AnyObject, options: JSONSerialization.WritingOptions(rawValue: 0))
+            if let string = String(data: stringData, encoding: String.Encoding.utf8) {
                 return string
             }
         } catch _ {
@@ -323,11 +327,11 @@ public extension Dictionary {
 }
 
 public extension NSAttributedString {
-    public func sizeWithMaxSize(size: CGSize) -> CGSize {
-        return self.boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil).size
+    public func sizeWithMaxSize(_ size: CGSize) -> CGSize {
+        return self.boundingRect(with: size, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).size
     }
     
-    public class func image(image: UIImage) -> NSAttributedString {
+    public class func image(_ image: UIImage) -> NSAttributedString {
         let attachment = NSTextAttachment()
         attachment.image = image
         return NSAttributedString(attachment: attachment)
@@ -347,70 +351,76 @@ extension NSRange {
     }
     
     init(range:Range <Int>) {
-        self.location = range.startIndex
-        self.length = range.endIndex - range.startIndex
+        self.location = range.lowerBound
+        self.length = range.upperBound - range.lowerBound
     }
     
     init(_ range:Range <Int>) {
-        self.location = range.startIndex
-        self.length = range.endIndex - range.startIndex
+        self.location = range.lowerBound
+        self.length = range.upperBound - range.lowerBound
     }
     
     var startIndex:Int { get { return location } }
     var endIndex:Int { get { return location + length } }
-    var asRange:Range<Int> { get { return location..<location + length } }
+    var asRange:CountableRange<Int> { get { return location..<location + length } }
     var isEmpty:Bool { get { return length == 0 } }
     
-    func contains(index:Int) -> Bool {
+    func contains(_ index:Int) -> Bool {
         return index >= location && index < endIndex
+    }
+}
+
+public extension Bool {
+    public var stringValue: String {
+        return self ? "1" : "0"
     }
 }
 
 public extension NSNumber {
     public func priceValue() -> String {
-        let priceFormatter = NSNumberFormatter.init()
-        priceFormatter.numberStyle = .CurrencyStyle
+        let priceFormatter = NumberFormatter.init()
+        priceFormatter.numberStyle = .currency
         priceFormatter.currencyCode = "USD"
         priceFormatter.currencySymbol = "$"
         priceFormatter.maximumFractionDigits = 2
-        priceFormatter.locale = NSLocale.init(localeIdentifier: "en_US")
+        priceFormatter.locale = Locale.init(identifier: "en_US")
         
         let isInteger = fmod(self.floatValue, 1.0) == 0
         if (isInteger) {
             priceFormatter.maximumFractionDigits = 0
         }
-        return priceFormatter.stringFromNumber(self)!
+        return priceFormatter.string(from: self)!
     }
 }
 
-public extension NSDate {
+public extension Date {
     
-    public func stringWithFormat(dateFormat: String, enLocale: Bool = true) -> String {
-        let dateFormatter = NSDateFormatter.init()
+    public func stringWithFormat(_ dateFormat: String, enLocale: Bool = true) -> String {
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         if (enLocale) {
-            dateFormatter.locale = NSLocale.init(localeIdentifier: "en_US")
+            dateFormatter.locale = Locale(identifier: "en_US")
         }
-        return dateFormatter.stringFromDate(self)
+        return dateFormatter.string(from: self)
     }
     
-    public class func dateFromString(dateString: String, dateFormat: String, enLocale: Bool = true) -> NSDate {
-        let dateFormatter = NSDateFormatter.init()
+    public static func dateFromString(_ dateString: String, dateFormat: String, enLocale: Bool = true) -> Date {
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         if (enLocale) {
-            dateFormatter.locale = NSLocale.init(localeIdentifier: "en_US")
+            dateFormatter.locale = Locale(identifier: "en_US")
         }
-        return dateFormatter.dateFromString(dateString)!
+        return dateFormatter.date(from: dateString)!
     }
     
-    public func isBetweenDates(startDate: NSDate, endDate: NSDate) -> Bool {
-        return self.compare(startDate) != .OrderedAscending && self.compare(endDate) != .OrderedDescending
+    public func isBetweenDates(_ startDate: Date, endDate: Date) -> Bool {
+        return self.compare(startDate) != .orderedAscending && self.compare(endDate) != .orderedDescending
     }
 
-    public func isTheSameDay(date: NSDate) -> Bool {
-        let components: NSCalendarUnit = [.Year, .Month, .Day]
-        let selfDay = NSCalendar.currentCalendar().components(components, fromDate: self)
-        let otherDay = NSCalendar.currentCalendar().components(components, fromDate: date)
+    public func isTheSameDay(_ date: Date) -> Bool {
+        let components: NSCalendar.Unit = [.year, .month, .day]
+        let selfDay = (Calendar.current as NSCalendar).components(components, from: self)
+        let otherDay = (Calendar.current as NSCalendar).components(components, from: date)
         if (selfDay.day == otherDay.day && selfDay.month == otherDay.month && selfDay.year == otherDay.year) {
             return true
         } else {
@@ -419,64 +429,64 @@ public extension NSDate {
     }
     
     public func isToday() -> Bool {
-        return self.isTheSameDay(NSDate())
+        return self.isTheSameDay(Date())
     }
     
     public func isYesterday() -> Bool {
-        return self.isTheSameDay(NSDate().dateByAddingTimeInterval(-24 * 3600))
+        return self.isTheSameDay(Date().addingTimeInterval(-24 * 3600))
     }
 }
 
 public extension UIImage {
     
-    public func tintColor(tintColor: UIColor) -> UIImage {
+    public func tintColor(_ tintColor: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
         let context = UIGraphicsGetCurrentContext()
         
-        CGContextTranslateCTM(context, 0, self.size.height)
-        CGContextScaleCTM(context, 1.0, -1.0)
+        context?.translateBy(x: 0, y: self.size.height)
+        context?.scaleBy(x: 1.0, y: -1.0)
         
-        let rect = CGRectMake(0, 0, self.size.width, self.size.height)
+        let rect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
         
         // image drawing code here
-        CGContextSetBlendMode(context, CGBlendMode.Normal)
-        CGContextDrawImage(context, rect, self.CGImage)
+        context?.setBlendMode(CGBlendMode.normal)
+        context?.draw(self.cgImage!, in: rect)
         
         // draw tint color, preserving alpha values of original image
-        CGContextSetBlendMode(context, CGBlendMode.SourceIn);
+        context?.setBlendMode(CGBlendMode.sourceIn);
         tintColor.setFill()
-        CGContextFillRect(context, rect);
+        context?.fill(rect);
         
         let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
-        return image
+        return image!
     }
     
-    public func scaledToSize(size: CGSize, scale: Float = 0) -> UIImage {
+    public func scaledToSize(_ size: CGSize, scale: Float = 0) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, CGFloat(scale))
-        self.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
     
-    public func scaledToFitSize(size: CGSize, scale: Float = 0) -> UIImage {
+    public func scaledToFitSize(_ size: CGSize, scale: Float = 0) -> UIImage {
         let aspect = self.size.width / self.size.height;
-        var imageSize = CGSizeZero
+        var imageSize = CGSize.zero
         if (size.width / aspect <= size.height) {
-            imageSize = CGSizeMake(size.width, size.width / aspect)
+            imageSize = CGSize(width: size.width, height: size.width / aspect)
         } else {
-            imageSize = CGSizeMake(size.height * aspect, size.height)
+            imageSize = CGSize(width: size.height * aspect, height: size.height)
         }
         return self.scaledToSize(imageSize, scale: scale)
     }
     
     public func cropToSquare() -> UIImage {
         
-        var cropSquare = CGRectZero
+        var cropSquare = CGRect.zero
         
         let edge = fmin(self.size.width, self.size.height)
         var posX = (self.size.width - edge) / 2
@@ -489,19 +499,19 @@ public extension UIImage {
             posY = ceil(posY)
         }
         
-        if (self.imageOrientation == UIImageOrientation.Left || self.imageOrientation == .Right) {
-            cropSquare = CGRectMake(posY, posX, edge, edge)
+        if (self.imageOrientation == UIImageOrientation.left || self.imageOrientation == .right) {
+            cropSquare = CGRect(x: posY, y: posX, width: edge, height: edge)
         } else {
-            cropSquare = CGRectMake(posX, posY, edge, edge)
+            cropSquare = CGRect(x: posX, y: posY, width: edge, height: edge)
         }
         
-        let imageRef = CGImageCreateWithImageInRect(self.CGImage!, cropSquare)
-        let image = UIImage.init(CGImage: imageRef!, scale: self.scale, orientation: self.imageOrientation)
+        let imageRef = self.cgImage!.cropping(to: cropSquare)
+        let image = UIImage(cgImage: imageRef!, scale: self.scale, orientation: self.imageOrientation)
         
         return image
     }
     
-    public class func imageWithColor(color: UIColor, size: CGSize = CGSizeMake(1, 1)) -> UIImage {
+    public class func imageWithColor(_ color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
         var imageSize = size
         if (imageSize.width == 0) {
             imageSize.width = 1
@@ -510,34 +520,34 @@ public extension UIImage {
             imageSize.height = 1
         }
         
-        let rect = CGRectMake(0, 0, size.width, size.height)
-        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.mainScreen().scale)
+        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale)
         let context = UIGraphicsGetCurrentContext()
         
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, rect);
+        context?.setFillColor(color.cgColor)
+        context?.fill(rect);
         
         let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
-        return image;
+        return image!;
     }
     
-    public func applyAlpha(alpha: Float) -> UIImage {
+    public func applyAlpha(_ alpha: Float) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
         
         let context = UIGraphicsGetCurrentContext()
-        let rect = CGRectMake(0, 0, self.size.width, self.size.height)
+        let rect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
         
-        CGContextScaleCTM(context, 1, -1);
-        CGContextTranslateCTM(context, 0, -rect.size.height);
-        CGContextSetAlpha(context, CGFloat(alpha));
-        CGContextDrawImage(context, rect, self.CGImage);
+        context?.scaleBy(x: 1, y: -1);
+        context?.translateBy(x: 0, y: -rect.size.height);
+        context?.setAlpha(CGFloat(alpha));
+        context?.draw(self.cgImage!, in: rect);
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
     
     public func applyLightEffect() -> UIImage? {
@@ -552,11 +562,11 @@ public extension UIImage {
         return applyBlurWithRadius(20, tintColor: UIColor(white: 0.11, alpha: 0.73), saturationDeltaFactor: 1.8)
     }
     
-    public func applyTintEffectWithColor(tintColor: UIColor) -> UIImage? {
+    public func applyTintEffectWithColor(_ tintColor: UIColor) -> UIImage? {
         let effectColorAlpha: CGFloat = 0.6
         var effectColor = tintColor
         
-        let componentCount = CGColorGetNumberOfComponents(tintColor.CGColor)
+        let componentCount = tintColor.cgColor.numberOfComponents
         
         if componentCount == 2 {
             var b: CGFloat = 0
@@ -576,45 +586,45 @@ public extension UIImage {
         return applyBlurWithRadius(10, tintColor: effectColor, saturationDeltaFactor: -1.0, maskImage: nil)
     }
     
-    public func applyBlurWithRadius(blurRadius: CGFloat, tintColor: UIColor?, saturationDeltaFactor: CGFloat, maskImage: UIImage? = nil) -> UIImage? {
+    public func applyBlurWithRadius(_ blurRadius: CGFloat, tintColor: UIColor?, saturationDeltaFactor: CGFloat, maskImage: UIImage? = nil) -> UIImage? {
         // Check pre-conditions.
         if (size.width < 1 || size.height < 1) {
             print("*** error: invalid size: \(size.width) x \(size.height). Both dimensions must be >= 1: \(self)")
             return nil
         }
-        if self.CGImage == nil {
+        if self.cgImage == nil {
             print("*** error: image must be backed by a CGImage: \(self)")
             return nil
         }
-        if maskImage != nil && maskImage!.CGImage == nil {
+        if maskImage != nil && maskImage!.cgImage == nil {
             print("*** error: maskImage must be backed by a CGImage: \(maskImage)")
             return nil
         }
         
         let __FLT_EPSILON__ = CGFloat(FLT_EPSILON)
-        let screenScale = UIScreen.mainScreen().scale
-        let imageRect = CGRect(origin: CGPointZero, size: size)
+        let screenScale = UIScreen.main.scale
+        let imageRect = CGRect(origin: CGPoint.zero, size: size)
         var effectImage = self
         
         let hasBlur = blurRadius > __FLT_EPSILON__
         let hasSaturationChange = fabs(saturationDeltaFactor - 1.0) > __FLT_EPSILON__
         
         if hasBlur || hasSaturationChange {
-            func createEffectBuffer(context: CGContext?) -> vImage_Buffer {
-                let data = CGBitmapContextGetData(context)
-                let width = vImagePixelCount(CGBitmapContextGetWidth(context))
-                let height = vImagePixelCount(CGBitmapContextGetHeight(context))
-                let rowBytes = CGBitmapContextGetBytesPerRow(context)
+            func createEffectBuffer(_ context: CGContext?) -> vImage_Buffer {
+                let data = context?.data
+                let width = vImagePixelCount((context?.width)!)
+                let height = vImagePixelCount((context?.height)!)
+                let rowBytes = context?.bytesPerRow
                 
-                return vImage_Buffer(data: data, height: height, width: width, rowBytes: rowBytes)
+                return vImage_Buffer(data: data, height: height, width: width, rowBytes: rowBytes!)
             }
             
             UIGraphicsBeginImageContextWithOptions(size, false, screenScale)
             let effectInContext = UIGraphicsGetCurrentContext()
             
-            CGContextScaleCTM(effectInContext, 1.0, -1.0)
-            CGContextTranslateCTM(effectInContext, 0, -size.height)
-            CGContextDrawImage(effectInContext, imageRect, self.CGImage)
+            effectInContext?.scaleBy(x: 1.0, y: -1.0)
+            effectInContext?.translateBy(x: 0, y: -size.height)
+            effectInContext?.draw(self.cgImage!, in: imageRect)
             
             var effectInBuffer = createEffectBuffer(effectInContext)
             
@@ -640,7 +650,9 @@ public extension UIImage {
                 //
                 
                 let inputRadius = blurRadius * screenScale
-                var radius = UInt32(floor(inputRadius * 3.0 * CGFloat(sqrt(2 * M_PI)) / 4 + 0.5))
+                let sqrtValue = CGFloat(sqrt(2 * M_PI)) / 4
+                let radiusValue = inputRadius * 3.0 * sqrtValue
+                var radius = UInt32(floor(radiusValue + 0.5))
                 if radius % 2 != 1 {
                     radius += 1 // force radius to be odd so that the three box-blur methodology works.
                 }
@@ -665,7 +677,7 @@ public extension UIImage {
                 
                 let divisor: CGFloat = 256
                 let matrixSize = floatingPointSaturationMatrix.count
-                var saturationMatrix = [Int16](count: matrixSize, repeatedValue: 0)
+                var saturationMatrix = [Int16](repeating: 0, count: matrixSize)
                 
                 for i: Int in 0 ..< matrixSize {
                     saturationMatrix[i] = Int16(round(floatingPointSaturationMatrix[i] * divisor))
@@ -680,13 +692,13 @@ public extension UIImage {
             }
             
             if !effectImageBuffersAreSwapped {
-                effectImage = UIGraphicsGetImageFromCurrentImageContext()
+                effectImage = UIGraphicsGetImageFromCurrentImageContext()!
             }
             
             UIGraphicsEndImageContext()
             
             if effectImageBuffersAreSwapped {
-                effectImage = UIGraphicsGetImageFromCurrentImageContext()
+                effectImage = UIGraphicsGetImageFromCurrentImageContext()!
             }
             
             UIGraphicsEndImageContext()
@@ -695,28 +707,28 @@ public extension UIImage {
         // Set up output context.
         UIGraphicsBeginImageContextWithOptions(size, false, screenScale)
         let outputContext = UIGraphicsGetCurrentContext()
-        CGContextScaleCTM(outputContext, 1.0, -1.0)
-        CGContextTranslateCTM(outputContext, 0, -size.height)
+        outputContext?.scaleBy(x: 1.0, y: -1.0)
+        outputContext?.translateBy(x: 0, y: -size.height)
         
         // Draw base image.
-        CGContextDrawImage(outputContext, imageRect, self.CGImage)
+        outputContext?.draw(self.cgImage!, in: imageRect)
         
         // Draw effect image.
         if hasBlur {
-            CGContextSaveGState(outputContext)
+            outputContext?.saveGState()
             if let image = maskImage {
-                CGContextClipToMask(outputContext, imageRect, image.CGImage);
+                outputContext?.clip(to: imageRect, mask: image.cgImage!);
             }
-            CGContextDrawImage(outputContext, imageRect, effectImage.CGImage)
-            CGContextRestoreGState(outputContext)
+            outputContext?.draw(effectImage.cgImage!, in: imageRect)
+            outputContext?.restoreGState()
         }
         
         // Add in color tint.
         if let color = tintColor {
-            CGContextSaveGState(outputContext)
-            CGContextSetFillColorWithColor(outputContext, color.CGColor)
-            CGContextFillRect(outputContext, imageRect)
-            CGContextRestoreGState(outputContext)
+            outputContext?.saveGState()
+            outputContext?.setFillColor(color.cgColor)
+            outputContext?.fill(imageRect)
+            outputContext?.restoreGState()
         }
         
         // Output image is ready.

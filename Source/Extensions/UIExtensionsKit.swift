@@ -16,11 +16,11 @@ import MapKit
     
     @IBInspectable var borderColor:UIColor? {
         set {
-            layer.borderColor = newValue!.CGColor
+            layer.borderColor = newValue!.cgColor
         }
         get {
             if let color = layer.borderColor {
-                return UIColor(CGColor:color)
+                return UIColor(cgColor:color)
             } else {
                 return nil
             }
@@ -47,26 +47,26 @@ import MapKit
     }
     
     public func applyFullAutoresizingMask() {
-        self.autoresizingMask = [.FlexibleWidth, .FlexibleHeight, .FlexibleTopMargin, .FlexibleBottomMargin, .FlexibleLeftMargin, .FlexibleRightMargin]
+        self.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin]
     }
     
     public func screenshot() -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.mainScreen().scale)
-        self.drawViewHierarchyInRect(self.bounds, afterScreenUpdates: false)
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
+        self.drawHierarchy(in: self.bounds, afterScreenUpdates: false)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
     
-    public func showLoadingHUD(show: Bool) -> MBProgressHUD? {
+    public func showLoadingHUD(_ show: Bool) -> MBProgressHUD? {
         if (show) {
-            let hud = MBProgressHUD.showHUDAddedTo(self, animated: true)
-            hud.mode = .Indeterminate
+            let hud = MBProgressHUD.showAdded(to: self, animated: true)
+            hud.mode = .indeterminate
             hud.label.text = "Loading"
             hud.removeFromSuperViewOnHide = true
             return hud
         } else {
-            MBProgressHUD.hideHUDForView(self, animated: true)
+            MBProgressHUD.hide(for: self, animated: true)
             return nil
         }
     }
@@ -75,83 +75,88 @@ import MapKit
         let kAnimationShake = "Shake"
         let shakeAnimation = self.shakeAnimation()
         
-        self.layer.removeAnimationForKey(kAnimationShake)
-        self.layer.addAnimation(shakeAnimation, forKey: kAnimationShake)
+        self.layer.removeAnimation(forKey: kAnimationShake)
+        self.layer.add(shakeAnimation, forKey: kAnimationShake)
     }
 
-    private func shakeAnimation() -> CAAnimation {
+    fileprivate func shakeAnimation() -> CAAnimation {
         let frameValues = [transformTranslateX(10.0), transformTranslateX(-10.0), transformTranslateX(6.0), transformTranslateX(-6.0),transformTranslateX(3.0), transformTranslateX(-3.0), transformTranslateX(0.0)]
-        let frameTimes = [NSNumber.init(float: 0.14), NSNumber.init(float: 0.28), NSNumber.init(float: 0.42) ,NSNumber.init(float: 0.57), NSNumber.init(float: 0.71), NSNumber.init(float: 0.85), NSNumber.init(float: 1)]
+        let frameTimes = [NSNumber(value: 0.14 as Float), NSNumber(value: 0.28 as Float), NSNumber(value: 0.42 as Float) ,NSNumber(value: 0.57 as Float), NSNumber(value: 0.71 as Float), NSNumber(value: 0.85 as Float), NSNumber(value: 1 as Float)]
         return self.animationWithValues(frameValues, times: frameTimes, duration: 0.5)
     }
     
-    private func transformTranslateX(translate: Float) -> NSValue {
-        return NSValue.init(CATransform3D: self.transform3DTranslateX(translate))
+    fileprivate func transformTranslateX(_ translate: Float) -> NSValue {
+        return NSValue(caTransform3D: self.transform3DTranslateX(translate))
     }
     
-    private func transformTranslateY(translate: Float) -> NSValue {
-        return NSValue.init(CATransform3D: self.transform3DTranslateY(translate))
+    fileprivate func transformTranslateY(_ translate: Float) -> NSValue {
+        return NSValue(caTransform3D: self.transform3DTranslateY(translate))
     }
     
-    private func transformScale(scale: Float) -> NSValue {
-        return NSValue.init(CATransform3D: self.transform3DScale(scale))
+    fileprivate func transformScale(_ scale: Float) -> NSValue {
+        return NSValue(caTransform3D: self.transform3DScale(scale))
     }
     
-    private func transform3DScale(scale: Float) -> CATransform3D {
+    fileprivate func transform3DScale(_ scale: Float) -> CATransform3D {
         // Add scale on current transform.
         return CATransform3DScale(self.layer.transform, CGFloat(scale), CGFloat(scale), 1)
     }
     
-    private func transform3DTranslateX(translate: Float) -> CATransform3D {
+    fileprivate func transform3DTranslateX(_ translate: Float) -> CATransform3D {
         // Add scale on current transform.
         return CATransform3DTranslate(self.layer.transform, CGFloat(translate), 1, 1)
     }
     
-    private func transform3DTranslateY(translate: Float) -> CATransform3D {
+    fileprivate func transform3DTranslateY(_ translate: Float) -> CATransform3D {
         // Add scale on current transform.
         return CATransform3DTranslate(self.layer.transform, 1, CGFloat(translate), 1)
     }
     
-    private func animationWithValues(values: [NSValue], times: [NSNumber], duration: Float) -> CAKeyframeAnimation {
-        let animation = CAKeyframeAnimation.init(keyPath: "transform")
+    fileprivate func animationWithValues(_ values: [NSValue], times: [NSNumber], duration: Float) -> CAKeyframeAnimation {
+        let animation = CAKeyframeAnimation(keyPath: "transform")
         animation.values = values
         animation.keyTimes = times
         animation.fillMode = kCAFillModeForwards
-        animation.timingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionEaseOut)
-        animation.removedOnCompletion = false
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        animation.isRemovedOnCompletion = false
         animation.duration = Double(duration)
         return animation
     }
 }
 
 public extension UIImageView {
-    public func setImageWithString(urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
+    public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
         if urlString == nil || urlString?.length == 0 {
             self.image = placeholderImage
         } else {
-            let url = NSURL.init(string: urlString!)!
-            self.setImageWithURL(url, placeholderImage: placeholderImage, usingActivityIndicatorStyle: activityIndicatorStyle)
+            let url = URL(string: urlString!)!
+            if let placeholder = placeholderImage {
+                sd_setImage(with: url, placeholderImage: placeholder)
+                //setImageWith(url, placeholderImage: placeholder, usingActivityIndicatorStyle: activityIndicatorStyle)
+            } else {
+                setImageWith(url, usingActivityIndicatorStyle: activityIndicatorStyle)
+            }
         }
     }
 }
 
 public extension UITextField {
-    public func setPlaceholderColor(color: UIColor) {
-        if (self.placeholder?.length > 0) {
-            self.attributedPlaceholder = NSAttributedString.init(string: self.placeholder!, attributes: [NSForegroundColorAttributeName:color])
+    public func setPlaceholderColor(_ color: UIColor) {
+        if placeholder != nil && placeholder!.length > 0 {
+            self.attributedPlaceholder = NSAttributedString(string: self.placeholder!, attributes: [NSForegroundColorAttributeName:color])
         }
     }
     
-    public func setLeftPaddinng(padding: Float) {
-        self.leftView = UIView.init(frame: CGRectMake(0, 0, CGFloat(padding), 1))
-        self.leftViewMode = .Always
+    public func setLeftPaddinng(_ padding: Float) {
+        self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(padding), height: 1))
+        self.leftViewMode = .always
     }
 }
 
 public extension UITextView {
     public func clearInsets() {
         self.textContainer.lineFragmentPadding = 0
-        self.textContainerInset = UIEdgeInsetsZero
+        self.textContainerInset = UIEdgeInsets.zero
     }
 }
 
@@ -164,15 +169,15 @@ public extension UIButton {
         }
     }
     
-    public func setBackgroundImageWithColor(backgroundColor: UIColor) {
+    public func setBackgroundImageWithColor(_ backgroundColor: UIColor) {
         let background = UIImage.imageWithColor(backgroundColor)
-        self.setBackgroundImage(background, forState: .Normal)
+        self.setBackgroundImage(background, for: UIControlState())
     }
 }
 
 public extension UIViewController {
     public class func top() -> UIViewController {
-        var top = UIApplication.sharedApplication().keyWindow!.rootViewController!
+        var top = UIApplication.shared.keyWindow!.rootViewController!
         while top.presentedViewController != nil {
             top = top.presentedViewController!
         }
@@ -182,13 +187,13 @@ public extension UIViewController {
     public func prepareForTransparency() {
         self.providesPresentationContextTransitionStyle = true;
         self.definesPresentationContext = true;
-        self.modalPresentationStyle = .OverCurrentContext;
+        self.modalPresentationStyle = .overCurrentContext;
     }
 }
 
 public extension UIBarButtonItem {
-    public class func spacerWithWidth(width: Float) -> UIBarButtonItem {
-        let spacer = UIBarButtonItem.init(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
+    public class func spacerWithWidth(_ width: Float) -> UIBarButtonItem {
+        let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         spacer.width = CGFloat(width)
         return spacer
     }
@@ -200,7 +205,7 @@ public protocol Reusable: class {
 
 public extension Reusable {
     static var reuseIdentifier: String {
-        return String(self)
+        return String(describing: self)
     }
 }
 
@@ -210,90 +215,121 @@ extension UICollectionReusableView: Reusable { }
 extension MKAnnotationView: Reusable { }
 
 public extension UIScrollView {
-    public func scrollToEnd(animated: Bool = true) {
-        var offset = CGPointZero
+    public func scrollToEnd(_ animated: Bool = true) {
+        var offset = CGPoint.zero
         let inset = contentInset
         if (contentSize.height > contentSize.width) {
-            offset = CGPointMake(0, contentSize.height - self.height + inset.bottom)
+            offset = CGPoint(x: 0, y: contentSize.height - self.height + inset.bottom)
         } else {
-            offset = CGPointMake(contentSize.width - self.width + inset.right, 0)
+            offset = CGPoint(x: contentSize.width - self.width + inset.right, y: 0)
         }
         self.setContentOffset(offset, animated: animated)
+    }
+    
+    public var topRefreshControl: UIRefreshControl? {
+        set {
+            if #available(iOS 10.0, *) {
+                self.refreshControl = newValue
+            } else {
+                if let control = newValue {
+                    control.tag = 1234
+                    control.layer.masksToBounds = true
+                    self.insertSubview(control, at: 0)
+                } else {
+                    topRefreshControl?.removeFromSuperview()
+                }
+            }
+        }
+        get {
+            if #available(iOS 10.0, *) {
+                return self.refreshControl
+            } else {
+                return self.subviews.filter({ (view) -> Bool in
+                    if let control = view as? UIRefreshControl {
+                        if control.tag == 1234 {
+                            return true
+                        }
+                    }
+                    return false
+                }).first as? UIRefreshControl
+            }
+        }
+    }
+    
+    public func topRefreshControl(refreshControl: UIRefreshControl) {
+        
     }
 }
 
 public extension UITableView {
     
-    public override func scrollToEnd(animated: Bool = true) {
+    public override func scrollToEnd(_ animated: Bool = true) {
         if let dataSource = self.dataSource {
-            var section = dataSource.numberOfSectionsInTableView?(self)
+            var section = dataSource.numberOfSections?(in: self)
             if section == nil {
                 section = 0
             } else {
                 section! -= 1
             }
-            if section >= 0 {
+            if section! >= 0 {
                 let row = dataSource.tableView(self, numberOfRowsInSection: section!) - 1
                 if row >= 0 {
-                    let indexPath = NSIndexPath(forRow: row, inSection: section!)
-                    self.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: animated)
+                    let indexPath = IndexPath(row: row, section: section!)
+                    self.scrollToRow(at: indexPath, at: .bottom, animated: animated)
                 }
             }
         }
     }
     
-    public func registerReusable(cellClass: Reusable.Type, withNib: Bool = true) -> UITableView {
-        self.registerClass(cellClass, forCellReuseIdentifier: cellClass.reuseIdentifier)
+    public func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
+        self.register(cellClass, forCellReuseIdentifier: cellClass.reuseIdentifier)
         if withNib {
             let nib = UINib(nibName: cellClass.reuseIdentifier, bundle: nil)
-            self.registerNib(nib, forCellReuseIdentifier: cellClass.reuseIdentifier)
+            self.register(nib, forCellReuseIdentifier: cellClass.reuseIdentifier)
         }
-        return self
     }
     
-    public func dequeueReusableCellWithClass<T: UITableViewCell where T: Reusable>(cellClass: T.Type, indexPath: NSIndexPath) -> T {
-        return self.dequeueReusableCellWithIdentifier(T.reuseIdentifier, forIndexPath: indexPath) as! T
+    public func dequeueReusableCellWithClass<T: UITableViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T where T: Reusable {
+        return self.dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
-    public func registerReusableHeaderFooterViewClass(headerFooterViewClass: Reusable.Type, withNib: Bool = false) -> UITableView {
-        self.registerClass(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
+    public func registerReusableHeaderFooterViewClass(_ headerFooterViewClass: Reusable.Type, withNib: Bool = false) {
+        self.register(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
         if withNib {
             let nib = UINib(nibName: headerFooterViewClass.reuseIdentifier, bundle: nil)
-            self.registerNib(nib, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
+            self.register(nib, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
         }
-        return self
     }
     
-    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView where T: Reusable>(headerFooterViewClass: T.Type = T.self) -> T? {
-        return self.dequeueReusableHeaderFooterViewWithIdentifier(T.reuseIdentifier) as? T
+    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView>(_ headerFooterViewClass: T.Type = T.self) -> T? where T: Reusable {
+        return self.dequeueReusableHeaderFooterView(withIdentifier: T.reuseIdentifier) as? T
     }
 }
 
 public extension UICollectionView {
-    public func registerReusable(cellClass: Reusable.Type, withNib: Bool = true) -> UICollectionView {
-        self.registerClass(cellClass, forCellWithReuseIdentifier: cellClass.reuseIdentifier)
+    public func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
+        self.register(cellClass, forCellWithReuseIdentifier: cellClass.reuseIdentifier)
         if withNib {
             let nib = UINib(nibName: cellClass.reuseIdentifier, bundle: nil)
-            self.registerNib(nib, forCellWithReuseIdentifier: cellClass.reuseIdentifier)
+            self.register(nib, forCellWithReuseIdentifier: cellClass.reuseIdentifier)
         }
-        return self
     }
     
-    public func dequeueReusableCellWithClass<T: UICollectionViewCell where T: Reusable>(cellClass: T.Type, indexPath: NSIndexPath) -> T {
-        return self.dequeueReusableCellWithReuseIdentifier(T.reuseIdentifier, forIndexPath: indexPath) as! T
+    public func dequeueReusableCellWithClass<T: UICollectionViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T where T: Reusable {
+        return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
-    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView where T: Reusable>(elementKind: String, cellClass: T.Type, indexPath: NSIndexPath) -> T {
-        return self.dequeueReusableSupplementaryViewOfKind(elementKind, withReuseIdentifier: T.reuseIdentifier, forIndexPath: indexPath) as! T
+    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView>(_ elementKind: String, cellClass: T.Type, indexPath: IndexPath) -> T where T: Reusable {
+        return self.dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
 }
 
 public extension MKMapView {
-    public func dequeueReusableAnnotationViewWithClass<T: MKAnnotationView where T: Reusable>(annotationViewClass: T.Type, annotation: MKAnnotation) -> T {
+    public func dequeueReusableAnnotationViewWithClass<T: MKAnnotationView>(_ annotationViewClass: T.Type, annotation: MKAnnotation) -> T where T: Reusable {
         
         let identifier = annotationViewClass.reuseIdentifier
         
-        var annotationView = self.dequeueReusableAnnotationViewWithIdentifier(identifier)
+        var annotationView = self.dequeueReusableAnnotationView(withIdentifier: identifier)
         if annotationView == nil {
             annotationView = T(annotation: annotation, reuseIdentifier: identifier)
         } else {
@@ -307,7 +343,7 @@ public extension MKMapView {
 
 public extension UIStoryboard {
     class func main() -> UIStoryboard! {
-        guard let mainStoryboardName = NSBundle.mainBundle().infoDictionary?["UIMainStoryboardFile"] as? String else {
+        guard let mainStoryboardName = Bundle.main.infoDictionary?["UIMainStoryboardFile"] as? String else {
             assertionFailure("No UIMainStoryboardFile found in main bundle")
             return nil
         }
@@ -317,23 +353,23 @@ public extension UIStoryboard {
 
 protocol StoryboardInstantiable {
     static var storyboardIdentifier: String {get}
-    static func instantiateFromStoryboard(storyboard: UIStoryboard) -> Self
+    static func instantiateFromStoryboard(_ storyboard: UIStoryboard) -> Self
 }
 
 extension UIViewController: StoryboardInstantiable {
     static var storyboardIdentifier: String {
         // Get the name of current class
         let classString = NSStringFromClass(self)
-        let components = classString.componentsSeparatedByString(".")
+        let components = classString.components(separatedBy: ".")
         assert(components.count > 0, "Failed extract class name from \(classString)")
         return components.last!
     }
     
-    public class func instantiateFromStoryboard(storyboard: UIStoryboard) -> Self {
+    public class func instantiateFromStoryboard(_ storyboard: UIStoryboard) -> Self {
         return instantiateFromStoryboard(storyboard, type: self)
     }
     
-    public class func storyboardInstance(storyboard: String) -> Self {
+    public class func storyboardInstance(_ storyboard: String) -> Self {
         return storyboardInstance(storyboard, type: self)
     }
     
@@ -342,12 +378,12 @@ extension UIViewController: StoryboardInstantiable {
     }
     
     
-    private class func instantiateFromStoryboard<T: UIViewController>(storyboard: UIStoryboard, type: T.Type) -> T {
-        return storyboard.instantiateViewControllerWithIdentifier(self.storyboardIdentifier) as! T
+    fileprivate class func instantiateFromStoryboard<T: UIViewController>(_ storyboard: UIStoryboard, type: T.Type) -> T {
+        return storyboard.instantiateViewController(withIdentifier: self.storyboardIdentifier) as! T
     }
     
-    private class func storyboardInstance<T: UIViewController>(storyboard: String, type: T.Type) -> T {
+    fileprivate class func storyboardInstance<T: UIViewController>(_ storyboard: String, type: T.Type) -> T {
         let sb = UIStoryboard(name: storyboard, bundle: nil)
-        return sb.instantiateViewControllerWithIdentifier(self.storyboardIdentifier) as! T
+        return sb.instantiateViewController(withIdentifier: self.storyboardIdentifier) as! T
     }
 }

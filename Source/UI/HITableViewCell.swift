@@ -8,10 +8,10 @@
 
 import Foundation
 
-public class HITableViewCell: UITableViewCell {
-    override public func layoutSubviews() {
+open class HITableViewCell: UITableViewCell {
+    override open func layoutSubviews() {
         super.layoutSubviews()
-        self.separatorInset = UIEdgeInsetsZero
-        self.layoutMargins = UIEdgeInsetsZero
+        self.separatorInset = UIEdgeInsets.zero
+        self.layoutMargins = UIEdgeInsets.zero
     }
 }

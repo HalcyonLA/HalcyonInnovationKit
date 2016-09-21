@@ -11,38 +11,38 @@ import CoreData
 import FastEasyMapping
 import XCGLogger
 
-public class DataModel: NSObject {
+open class DataModel: NSObject {
     
-    public static let shared = DataModel()
-    public static var dbName = AppName()
+    open static let shared = DataModel()
+    open static var dbName = AppName()
     
-    private var _managedObjectModel: NSManagedObjectModel?
-    private var _persistentStoreCoordinator: NSPersistentStoreCoordinator?
-    private var _managedObjectContext: NSManagedObjectContext?
+    fileprivate var _managedObjectModel: NSManagedObjectModel?
+    fileprivate var _persistentStoreCoordinator: NSPersistentStoreCoordinator?
+    fileprivate var _managedObjectContext: NSManagedObjectContext?
     
-    let log = XCGLogger.defaultInstance()
+    let log = XCGLogger.default
     
     // MARK: - Core Data stack
     
-    private lazy var applicationDocumentsDirectory: NSURL = {
-        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+    fileprivate lazy var applicationDocumentsDirectory: URL = {
+        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return urls[urls.count-1]
     }()
     
-    private var managedObjectModel: NSManagedObjectModel {
+    fileprivate var managedObjectModel: NSManagedObjectModel {
         get {
             if let moc = _managedObjectModel {
                 return moc
             } else {
                 // The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
-                let modelURL = NSBundle.mainBundle().URLForResource(DataModel.dbName, withExtension: "momd")!
-                _managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)!
+                let modelURL = Bundle.main.url(forResource: DataModel.dbName, withExtension: "momd")!
+                _managedObjectModel = NSManagedObjectModel(contentsOf: modelURL)!
                 return _managedObjectModel!
             }
         }
     }
     
-    public var persistentStoreCoordinator: NSPersistentStoreCoordinator {
+    open var persistentStoreCoordinator: NSPersistentStoreCoordinator {
         get {
             if let coordinator = _persistentStoreCoordinator {
                 return coordinator
@@ -50,17 +50,17 @@ public class DataModel: NSObject {
                 // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
                 // Create the coordinator and store
                 let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-                let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("\(DataModel.dbName).sqlite")
+                let url = self.applicationDocumentsDirectory.appendingPathComponent("\(DataModel.dbName).sqlite")
                 var failureReason = "There was an error creating or loading the application's saved data."
                 do {
-                    try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
+                    try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
                 } catch {
                     
                     func reportAboutBadPersistentStore() {
                         // Report any error we got.
                         var dict = [String: AnyObject]()
-                        dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
-                        dict[NSLocalizedFailureReasonErrorKey] = failureReason
+                        dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data" as AnyObject?
+                        dict[NSLocalizedFailureReasonErrorKey] = failureReason as AnyObject?
                         
                         dict[NSUnderlyingErrorKey] = error as NSError
                         let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
@@ -71,9 +71,9 @@ public class DataModel: NSObject {
                     }
                     
                     do {
-                        try NSFileManager.defaultManager().removeItemAtPath(url.path!)
+                        try FileManager.default.removeItem(atPath: url.path)
                         do {
-                            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
+                            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
                         } catch {
                             reportAboutBadPersistentStore()
                         }
@@ -89,14 +89,14 @@ public class DataModel: NSObject {
         }
     }
     
-    public var managedObjectContext: NSManagedObjectContext {
+    open var managedObjectContext: NSManagedObjectContext {
         get {
             if let moc = _managedObjectContext {
                 return moc
             } else {
                 /// Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) This property is optional since there are legitimate error conditions that could cause the creation of the context to fail.
                 let coordinator = self.persistentStoreCoordinator
-                var managedObjectContext = NSManagedObjectContext()
+                let managedObjectContext = NSManagedObjectContext()
                 
                 managedObjectContext.persistentStoreCoordinator = coordinator
                 _managedObjectContext = managedObjectContext
@@ -107,7 +107,7 @@ public class DataModel: NSObject {
     
     // MARK: - Core Data Saving support
     
-    public func saveContext () {
+    open func saveContext () {
         func save () {
             if managedObjectContext.hasChanges {
                 do {
@@ -121,74 +121,78 @@ public class DataModel: NSObject {
                 }
             }
         }
-        if (NSThread.isMainThread()) {
+        if (Thread.isMainThread) {
             save()
         } else {
-            NSOperationQueue.mainQueue().addOperationWithBlock({
+            OperationQueue.main.addOperation({
                 save()
             })
         }
     }
     
-    public class func saveContext() {
+    open class func saveContext() {
         DataModel.shared.saveContext()
     }
     
     // MARK: - Fetch
     
-    public class func getEntity<T: NSManagedObject where T: MappingProtocol>(entity: T.Type, objectId: NSNumber) -> T? {
-        let predicate = NSPredicate.init(format: "(%K == %@)", T.primaryKey(), objectId)
+    open class func getEntity<T: NSManagedObject>(_ entity: T.Type, objectId: NSNumber) -> T? where T: MappingProtocol {
+        let predicate = NSPredicate(format: "(%K == %@)", T.primaryKey(), objectId)
         let items = DataModel.fetchEntity(entity, predicate: predicate)
-        if (items?.count > 0) {
-            return items!.first! as T
-        } else {
-            return nil
-        }
+        return items.first
     }
     
-    public class func fetchEntity<T: NSManagedObject>(entity: T.Type, predicate: NSPredicate?, descriptors: [NSSortDescriptor]? = nil) -> [T]? {
+    open class func fetchEntity<T: NSManagedObject>(_ entity: T.Type, predicate: NSPredicate?, descriptors: [NSSortDescriptor]? = nil) -> [T] {
         let moc = DataModel.shared.managedObjectContext
         
-        let fetchRequest = NSFetchRequest.init()
+        let fetchRequest = NSFetchRequest<T>(entityName: "\(entity)")
         fetchRequest.includesPendingChanges = true
-        fetchRequest.entity = NSEntityDescription.entityForName("\(entity)", inManagedObjectContext: moc)
+        fetchRequest.entity = NSEntityDescription.entity(forEntityName: "\(entity)", in: moc)
         fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.predicate = predicate
         fetchRequest.sortDescriptors = descriptors
         
         do {
-            let results = try moc.executeFetchRequest(fetchRequest)
-            return results as? [T]
+            let results = try moc.fetch(fetchRequest)
+            if let array = results as? [T] {
+                return array
+            } else {
+                return []
+            }
         } catch {
-            return nil
+            return []
         }
     }
     
-    public class func fetchEntity<T: NSManagedObject>(entity: T.Type, fetchModificate: (fetchRequest: NSFetchRequest) -> Void) -> [T]? {
+    open class func fetchEntity<T: NSManagedObject>(_ entity: T.Type, fetchModificate: (_ fetchRequest: NSFetchRequest<T>) -> Void) -> [T] {
         let moc = DataModel.shared.managedObjectContext
         
-        let fetchRequest = NSFetchRequest.init()
+        let fetchRequest = NSFetchRequest<T>(entityName: "\(entity)")
         fetchRequest.includesPendingChanges = true
-        fetchRequest.entity = NSEntityDescription.entityForName("\(entity)", inManagedObjectContext: moc)
+        fetchRequest.entity = NSEntityDescription.entity(forEntityName: "\(entity)", in: moc)
         fetchRequest.returnsObjectsAsFaults = false
         
-        fetchModificate(fetchRequest: fetchRequest)
+        fetchModificate(fetchRequest)
         
         do {
-            let results = try moc.executeFetchRequest(fetchRequest)
-            return results as? [T]
+            let results = try moc.fetch(fetchRequest)
+            if let array = results as? [T] {
+                return array
+            } else {
+                return []
+            }
         } catch {
-            return nil
+            return []
         }
     }
     
-    public class func resetAll() {
+    open class func resetAll() {
         let model = DataModel.shared
         if let store = model.persistentStoreCoordinator.persistentStores.last {
-            let storeURL = store.URL!
+            let storeURL = store.url!
             do {
-                try model.persistentStoreCoordinator.removePersistentStore(store)
-                try NSFileManager.defaultManager().removeItemAtURL(storeURL)
+                try model.persistentStoreCoordinator.remove(store)
+                try FileManager.default.removeItem(at: storeURL)
                 model._persistentStoreCoordinator = nil
                 model._managedObjectContext = nil
                 model._managedObjectModel = nil
@@ -200,34 +204,34 @@ public class DataModel: NSObject {
         }
     }
     
-    public class func fetchAllEntities<T: NSManagedObject>(entity: T.Type) -> [T]? {
+    open class func fetchAllEntities<T: NSManagedObject>(_ entity: T.Type) -> [T] {
         return fetchEntity(entity, predicate: nil)
     }
     
-    public class func resetAllEntities<T: NSManagedObject>(entity: T.Type) {
+    open class func resetAllEntities<T: NSManagedObject>(_ entity: T.Type) {
         self.resetEntities(entity, predicate: nil)
     }
     
-    public class func resetEntities<T: NSManagedObject>(entity: T.Type, predicate: NSPredicate?) {
+    open class func resetEntities<T: NSManagedObject>(_ entity: T.Type, predicate: NSPredicate?) {
         let moc = DataModel.shared.managedObjectContext
         
         let data = DataModel.fetchEntity(entity, predicate: predicate)
-        if (data != nil) {
-            for (_, object) in data!.enumerate() {
-                moc.deleteObject(object)
+        if data.count > 0 {
+            for (_, object) in data.enumerated() {
+                moc.delete(object)
             }
-        }
-        do {
-            try moc.save()
-        } catch {
-            
+            do {
+                try moc.save()
+            } catch {
+                
+            }
         }
     }
     
-    public class func deleteObject(object: NSManagedObject) {
+    open class func deleteObject(_ object: NSManagedObject) {
         let moc = object.managedObjectContext
         if (moc != nil) {
-            moc!.deleteObject(object)
+            moc!.delete(object)
             do {
                 try moc!.save()
             } catch {
@@ -238,13 +242,13 @@ public class DataModel: NSObject {
     
     // MARK: - Mapping
     
-    public class func deserializeObject<T: NSManagedObject>(object: AnyObject?, mapping: DataMapping<T>) -> T? {
+    open class func deserializeObject<T: NSManagedObject>(_ object: AnyObject?, mapping: DataMapping<T>) -> T? {
         if let obj = object as? [String: AnyObject] {
             if (obj.count == 0) {
                 return nil
             }
             
-            let cdObject = FEMDeserializer.objectFromRepresentation(obj, mapping: mapping, context: DataModel.shared.managedObjectContext)
+            let cdObject = FEMDeserializer.object(fromRepresentation: obj, mapping: mapping, context: DataModel.shared.managedObjectContext)
             
             if let tObj = cdObject as? T {
                 saveContext()
@@ -257,13 +261,13 @@ public class DataModel: NSObject {
         }
     }
     
-    public class func deserializeArray<T: NSManagedObject>(array: AnyObject?, mapping: DataMapping<T>) -> [T]? {
+    open class func deserializeArray<T: NSManagedObject>(_ array: AnyObject?, mapping: DataMapping<T>) -> [T]? {
         if let collection = array as? [AnyObject] {
             if (collection.count == 0) {
                 return nil
             }
             
-            let cdArray = FEMDeserializer.collectionFromRepresentation(collection, mapping: mapping, context: DataModel.shared.managedObjectContext)
+            let cdArray = FEMDeserializer.collection(fromRepresentation: collection, mapping: mapping, context: DataModel.shared.managedObjectContext)
             
             if let arr = cdArray as? [T] {
                 saveContext()
@@ -287,12 +291,12 @@ public protocol MappingProtocol {
 }
 
 extension MappingProtocol where Self: NSManagedObject {
-    public static func fetch(objectId: NSNumber) -> Self? {
+    public static func fetch(_ objectId: NSNumber) -> Self? {
         return _fetch(objectId)
     }
     
     //helper for get correct object type
-    private static func _fetch<T: NSManagedObject>(id: NSNumber) -> T? {
+    fileprivate static func _fetch<T: NSManagedObject>(_ id: NSNumber) -> T? {
         return DataModel.getEntity(self, objectId: id) as? T
     }
 }
@@ -306,7 +310,7 @@ public extension NSManagedObject {
         DataModel.resetAllEntities(self.self)
     }
     
-    public static func reset(predicate: NSPredicate) {
+    public static func reset(_ predicate: NSPredicate) {
         DataModel.resetEntities(self.self, predicate: predicate)
     }
 }

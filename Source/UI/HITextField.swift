@@ -9,21 +9,21 @@
 import Foundation
 
 @IBDesignable
-public class HITextField: UITextField {
+open class HITextField: UITextField {
     
-    @IBInspectable public var image: UIImage? {
+    @IBInspectable open var image: UIImage? {
         didSet {
             invalidateImageView()
         }
     }
     
-    @IBInspectable public var leftViewWidth: CGFloat = 0 {
+    @IBInspectable open var leftViewWidth: CGFloat = 0 {
         didSet {
             invalidateImageView()
         }
     }
     
-    @IBInspectable public var placeholderTextColor: UIColor? {
+    @IBInspectable open var placeholderTextColor: UIColor? {
         didSet {
             self.setPlaceholderColor(placeholderTextColor!)
         }
@@ -33,20 +33,20 @@ public class HITextField: UITextField {
         super.init(coder: aDecoder)
     }
     
-    private func invalidateImageView() {
+    fileprivate func invalidateImageView() {
         if (leftViewWidth <= 0 || image == nil) {
             self.leftView = nil
             self.rightView = nil
         } else {
-            let imageView = UIImageView.init(image: image)
-            imageView.frame = CGRectMake(0, 0, leftViewWidth, CGRectGetHeight(self.frame))
-            imageView.contentMode = .Center
+            let imageView = UIImageView(image: image)
+            imageView.frame = CGRect(x: 0, y: 0, width: leftViewWidth, height: self.frame.height)
+            imageView.contentMode = .center
             self.leftView = imageView
-            self.leftViewMode = .Always
+            self.leftViewMode = .always
             
-            let rightView = UIView.init(frame: CGRectMake(0, 0, 5, 5))
+            let rightView = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 5))
             self.rightView = rightView
-            self.rightViewMode = .Always
+            self.rightViewMode = .always
         }
     }
     
