@@ -9,6 +9,7 @@
 import Foundation
 import QuartzCore
 import Accelerate
+import MapKit
 
 public func UIColorFromHex(_ hex: UInt32) -> UIColor {
     return UIColor.init(hex: hex)
@@ -39,6 +40,16 @@ public func -<K, V> (left: [K : V], right: [K]) -> [K : V]{var new = [K : V](); 
 public func -=<K, V: Comparable> ( left: inout [K : V], right: [K : V]){for (k,v) in right { if let n = left[k] , n == v { left.removeValue(forKey: k)}}}
 
 public func -=<K, V> ( left: inout [K : V], right: [K]) {for k in right { left.removeValue(forKey: k)}}
+
+extension CLLocationCoordinate2D: Equatable {
+    public func isZero() -> Bool {
+        return self.latitude == 0.0 && self.longitude == 0.0
+    }
+}
+
+public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+    return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+}
 
 extension NSObject {
     public var className: String {
