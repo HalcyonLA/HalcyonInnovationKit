@@ -127,6 +127,7 @@ open class DataManager: NSObject {
     
     // MARK: Loading Indicator
     
+    @discardableResult
     open static func showLoading(_ show: Bool, inView: UIView) -> MBProgressHUD? {
         return inView.showLoadingHUD(show)
     }
@@ -159,7 +160,7 @@ open class DataManager: NSObject {
     }
     
     // MARK: Public
-    
+    @discardableResult
     open func post(_ request: DataManagerRequest) -> URLSessionDataTask? {
         
         var params = request.parameters

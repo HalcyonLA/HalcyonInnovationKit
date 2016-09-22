@@ -243,8 +243,8 @@ open class DataModel: NSObject {
     // MARK: - Mapping
     
     @discardableResult
-    open class func deserializeObject<T: NSManagedObject>(_ object: AnyObject?, mapping: DataMapping<T>) -> T? {
-        if let obj = object as? [String: AnyObject] {
+    open class func deserializeObject<T: NSManagedObject>(_ object: Any?, mapping: DataMapping<T>) -> T? {
+        if let obj = object as? [String : Any] {
             if (obj.count == 0) {
                 return nil
             }
@@ -263,10 +263,10 @@ open class DataModel: NSObject {
     }
     
     @discardableResult
-    open class func deserializeArray<T: NSManagedObject>(_ array: AnyObject?, mapping: DataMapping<T>) -> [T]? {
-        if let collection = array as? [AnyObject] {
+    open class func deserializeArray<T: NSManagedObject>(_ array: Any?, mapping: DataMapping<T>) -> [T] {
+        if let collection = array as? [Any] {
             if (collection.count == 0) {
-                return nil
+                return []
             }
             
             let cdArray = FEMDeserializer.collection(fromRepresentation: collection, mapping: mapping, context: DataModel.shared.managedObjectContext)
@@ -275,10 +275,10 @@ open class DataModel: NSObject {
                 saveContext()
                 return arr
             } else {
-                return nil
+                return []
             }
         } else {
-            return nil
+            return []
         }
     }
 }
