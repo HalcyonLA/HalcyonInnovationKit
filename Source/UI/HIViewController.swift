@@ -14,6 +14,7 @@ open class HIViewController: UIViewController {
     
     fileprivate var oldKbHeight = CGFloat(0)
     fileprivate var closeGesture: UITapGestureRecognizer? = nil
+    open fileprivate(set) var keyboardAppeared: Bool = false
     
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +51,7 @@ open class HIViewController: UIViewController {
     }
     
     open func keyboardWillAppear(_ notification: Notification) {
+        keyboardAppeared = true
         if (shouldUseCloseGesture()) {
             closeGesture?.isEnabled = true
         }
@@ -57,6 +59,7 @@ open class HIViewController: UIViewController {
     
     open func keyboardWillDisappear(_ notification: Notification) {
         closeGesture?.isEnabled = false
+        keyboardAppeared = false
     }
     
     open func keyboardWillChangeFrame(_ notification: Notification) {
