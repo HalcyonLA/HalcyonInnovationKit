@@ -8,6 +8,7 @@
 
 import Foundation
 import AFNetworking
+import AFNetworking_RetryPolicy
 import MBProgressHUD
 import XCGLogger
 
@@ -294,7 +295,18 @@ open class DataManager: NSObject {
             cleanFinishedRequests(task)
         }
         
-        let task = sessionManager.post(urlString, parameters: ["json":json], constructingBodyWith: bodyBlock, progress: nil, success: successBlock, failure: failureBlock)
+        let task = sessionManager.post(urlString, parameters: ["json":json], constructingBodyWith: { (formData) in
+            if let data = formData {
+                bodyBlock(data)
+            }
+            }, progress: nil, success: { (task, responseObject) in
+                successBlock(task!, responseObject)
+            }, failure: { (taks, error) in
+                
+            }, retryCount: 3,
+               retryInterval: 2,
+               progressive: true,
+               fatalStatusCodes: [NSNumber(value: 404), NSNumber(value: 500)])
         if (task != nil) {
             requests.append(request)
         }
