@@ -23,7 +23,7 @@ public func AppName() -> String {
     return Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
 }
 
-public func synced(_ lock: AnyObject, closure: () -> ()) {
+public func synced(_ lock: Any, closure: () -> ()) {
     objc_sync_enter(lock)
     closure()
     objc_sync_exit(lock)

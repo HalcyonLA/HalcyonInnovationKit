@@ -113,16 +113,20 @@ open class DataManager: NSObject {
     // MARK: Network Acvitiy Indicator
     
     open func addNetworkActivity() {
-        if (networkActivityCount == 0) {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        synced(networkActivityCount) {
+            if networkActivityCount == 0 {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            }
+            networkActivityCount += 1
         }
-        networkActivityCount += 1
     }
     
     open func removeNetworkActivity() {
-        networkActivityCount -= 1
-        if (networkActivityCount == 0) {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        synced(networkActivityCount) {
+            networkActivityCount -= 1
+            if (networkActivityCount == 0) {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
         }
     }
     
