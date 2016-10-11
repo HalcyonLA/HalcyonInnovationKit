@@ -282,10 +282,11 @@ public extension UITableView {
     }
     
     public func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
-        self.register(cellClass, forCellReuseIdentifier: cellClass.reuseIdentifier)
+        let reuseIdentifier = cellClass.reuseIdentifier
+        self.register(cellClass, forCellReuseIdentifier: reuseIdentifier)
         if withNib {
-            let nib = UINib(nibName: cellClass.reuseIdentifier, bundle: nil)
-            self.register(nib, forCellReuseIdentifier: cellClass.reuseIdentifier)
+            let nib = UINib(nibName: reuseIdentifier, bundle: nil)
+            self.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
     }
     
@@ -294,10 +295,11 @@ public extension UITableView {
     }
     
     public func registerReusableHeaderFooterViewClass(_ headerFooterViewClass: Reusable.Type, withNib: Bool = false) {
-        self.register(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
+        let reuseIdentifier = headerFooterViewClass.reuseIdentifier
+        self.register(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
         if withNib {
-            let nib = UINib(nibName: headerFooterViewClass.reuseIdentifier, bundle: nil)
-            self.register(nib, forHeaderFooterViewReuseIdentifier: headerFooterViewClass.reuseIdentifier)
+            let nib = UINib(nibName: reuseIdentifier, bundle: nil)
+            self.register(nib, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
         }
     }
     
@@ -308,10 +310,20 @@ public extension UITableView {
 
 public extension UICollectionView {
     public func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
-        self.register(cellClass, forCellWithReuseIdentifier: cellClass.reuseIdentifier)
+        let reuseIdentifier = cellClass.reuseIdentifier
+        self.register(cellClass, forCellWithReuseIdentifier: reuseIdentifier)
         if withNib {
-            let nib = UINib(nibName: cellClass.reuseIdentifier, bundle: nil)
-            self.register(nib, forCellWithReuseIdentifier: cellClass.reuseIdentifier)
+            let nib = UINib(nibName: reuseIdentifier, bundle: nil)
+            self.register(nib, forCellWithReuseIdentifier: reuseIdentifier)
+        }
+    }
+    
+    public func registerReusable(_ viewClass: Reusable.Type, elementKind: String, withNib: Bool = true) {
+        let reuseIdentifier = viewClass.reuseIdentifier
+        self.register(viewClass, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: reuseIdentifier)
+        if withNib {
+            let nib = UINib(nibName: reuseIdentifier, bundle: nil)
+            self.register(nib, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: reuseIdentifier)
         }
     }
     
@@ -319,7 +331,7 @@ public extension UICollectionView {
         return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
-    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView>(_ elementKind: String, cellClass: T.Type, indexPath: IndexPath) -> T where T: Reusable {
+    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView>(_ viewClass: T.Type, elementKind: String, indexPath: IndexPath) -> T where T: Reusable {
         return self.dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
 }
