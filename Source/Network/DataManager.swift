@@ -306,8 +306,8 @@ open class DataManager: NSObject {
             }, progress: nil, success: { (task, responseObject) in
                 successBlock(task!, responseObject)
             }, failure: { (taks, error) in
-                
-            }, retryCount: 3,
+                failureBlock(taks, error!)
+            }, retryCount: 2,
                retryInterval: 2,
                progressive: true,
                fatalStatusCodes: [NSNumber(value: 404), NSNumber(value: 500)])
