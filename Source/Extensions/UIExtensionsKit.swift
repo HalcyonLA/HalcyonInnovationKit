@@ -58,6 +58,7 @@ import MapKit
         return image!
     }
     
+    @discardableResult
     public func showLoadingHUD(_ show: Bool) -> MBProgressHUD? {
         if (show) {
             let hud = MBProgressHUD.showAdded(to: self, animated: true)
