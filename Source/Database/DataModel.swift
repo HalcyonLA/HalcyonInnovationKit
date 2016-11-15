@@ -297,6 +297,14 @@ extension MappingProtocol where Self: NSManagedObject {
         return _fetch(objectId)
     }
     
+    public static func fetch(_ objectId: Int64) -> Self? {
+        return _fetch(NSNumber(value: objectId))
+    }
+    
+    public static func fetch(_ objectId: Int16) -> Self? {
+        return _fetch(NSNumber(value: objectId))
+    }
+    
     //helper for get correct object type
     fileprivate static func _fetch<T: NSManagedObject>(_ id: NSNumber) -> T? {
         return DataModel.getEntity(self, objectId: id) as? T
