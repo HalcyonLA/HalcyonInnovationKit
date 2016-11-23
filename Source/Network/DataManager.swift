@@ -15,10 +15,16 @@ import XCGLogger
 open class DataManagerResponse: NSObject {
     open var response: AnyObject? = nil
     open var error: NSError? = nil
+    open var isCancelled: Bool = false
     
     fileprivate init(response: AnyObject?, error: NSError?) {
         self.response = response
         self.error = error
+        super.init()
+    }
+    
+    fileprivate init(isCancelled: Bool) {
+        self.isCancelled = isCancelled
         super.init()
     }
 }
@@ -170,12 +176,12 @@ open class DataManager: NSObject {
         
         var params = request.parameters
         
-        if (request.showActivityIndicator) {
+        if request.showActivityIndicator {
             self.addNetworkActivity()
         }
         
-        if (request.loadingView != nil) {
-            DataManager.showLoading(true, inView: request.loadingView!)
+        if let loadingView = request.loadingView {
+            DataManager.showLoading(true, inView: loadingView)
         }
         
         let path = request.path
@@ -183,7 +189,7 @@ open class DataManager: NSObject {
         var json = "{}"
         
         var urlLogString = path
-        if (params.count > 0) {
+        if params.count > 0 {
             json = params.jsonString
             
             var debugJSON = ""
@@ -192,12 +198,12 @@ open class DataManager: NSObject {
             #else
                 debugJSON = securedParametersForLog(params).jsonString
             #endif
-            if (debugJSON.length > 0) {
+            if debugJSON.length > 0 {
                 urlLogString = "\(path) : \(debugJSON)"
             }
         }
         
-        if (!request.log) {
+        if !request.log {
             log.severe(urlLogString)
         }
         
@@ -210,18 +216,18 @@ open class DataManager: NSObject {
         }
         
         func completionBlock() {
-            if (request.showActivityIndicator) {
+            if request.showActivityIndicator {
                 self.removeNetworkActivity()
             }
-            if (request.loadingView != nil) {
-                DataManager.showLoading(false, inView: request.loadingView!)
+            if let loadingView = request.loadingView {
+                DataManager.showLoading(false, inView: loadingView)
             }
         }
         
         func cleanFinishedRequests(_ task: URLSessionDataTask?) {
             synced(self) {
                 var nullTasks = self.requests.filter({ $0.task == nil })
-                if (task != nil) {
+                if task != nil {
                     nullTasks += self.requests.filter({ $0.task === task })
                 }
                 for (_, request) in nullTasks.enumerated() {
@@ -252,23 +258,19 @@ open class DataManager: NSObject {
                         let userInfo = [NSLocalizedDescriptionKey:errorDescription]
                         error = NSError(domain: self.apiURL, code: -10000, userInfo: userInfo)
                     }
-                    if (request.log || (!request.log && error != nil)) {
+                    if request.log || (!request.log && error != nil) {
                         if (error != nil) {
                             self.logString("error: \(error!.localizedDescription)", function: urlLogString)
                         } else {
                             self.logString("response: \(json)", function: urlLogString)
                         }
                     }
-                if (request.completion != nil) {
-                    request.completion!(DataManagerResponse(response: json as AnyObject?, error: error))
-                }
+                request.completion?(DataManagerResponse(response: json as AnyObject?, error: error))
             } else {
                 let userInfo = [NSLocalizedDescriptionKey:"Responce has inccorect data type"]
                 let error = NSError(domain: self.apiURL, code: -2, userInfo: userInfo)
                 self.logString("error: \(error.localizedDescription) - \(responseObject)", function: urlLogString)
-                if (request.completion != nil) {
-                    request.completion!(DataManagerResponse(response: nil, error: error))
-                }
+                request.completion?(DataManagerResponse(response: nil, error: error))
             }
             cleanFinishedRequests(task)
         }
@@ -276,25 +278,23 @@ open class DataManager: NSObject {
         let failureBlock = { (task: URLSessionDataTask?, err: Error) -> Void in
             completionBlock()
             let error = err as NSError
-            if (error.code == NSURLErrorCancelled) {
-                request.completion!(DataManagerResponse(response: nil, error: nil))
+            if error.code == NSURLErrorCancelled {
+                request.completion?(DataManagerResponse(isCancelled: true))
             } else {
                 self.logString("error: \(error.localizedDescription)", function: urlLogString, error: true)
                 
                 var data = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] as? Data
-                if (data == nil) {
+                if data == nil {
                     if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError {
                         data = underlyingError.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] as? Data
                     }
                 }
-                if (data != nil) {
+                if data != nil {
                     let errorString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
                     self.log.error("INVALID JSON ERROR : \(errorString)")
                 }
                 
-                if (request.completion != nil) {
-                    request.completion!(DataManagerResponse(response: nil, error: error))
-                }
+                request.completion?(DataManagerResponse(response: nil, error: error))
             }
             cleanFinishedRequests(task)
         }
@@ -311,7 +311,7 @@ open class DataManager: NSObject {
                retryInterval: 2,
                progressive: true,
                fatalStatusCodes: [NSNumber(value: 404), NSNumber(value: 500)])
-        if (task != nil) {
+        if task != nil {
             requests.append(request)
         }
         return task
@@ -319,7 +319,7 @@ open class DataManager: NSObject {
     
     open func cancelAllRequets() {
         for i in 0..<requests.count {
-            if (requests[i].task != nil) {
+            if requests[i].task != nil {
                 requests[i].task!.cancel()
             }
         }
@@ -329,7 +329,7 @@ open class DataManager: NSObject {
     open func cancelRequests(sender: AnyObject) {
         for var i in 0..<requests.count {
             let request = requests[i]
-            if (request.sender != nil && request.sender! === sender && request.task != nil) {
+            if request.sender != nil && request.sender! === sender && request.task != nil {
                 request.task!.cancel()
                 requests.remove(at: i)
                 i -= 1
@@ -340,7 +340,7 @@ open class DataManager: NSObject {
     // MARK: Helpers
     
     fileprivate func securedParametersForLog(_ parameters: [String : Any]) -> [String : Any] {
-        if (!DataManager.secured) {
+        if !DataManager.secured {
             return parameters
         }
         var logParameters = parameters
@@ -353,7 +353,7 @@ open class DataManager: NSObject {
                         break
                     }
                 }
-                if (secured) {
+                if secured {
                     logParameters[key] = "<secured>" as AnyObject?
                 }
             }
