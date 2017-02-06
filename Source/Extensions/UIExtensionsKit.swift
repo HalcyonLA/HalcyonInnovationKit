@@ -9,6 +9,7 @@
 import Foundation
 import MBProgressHUD
 import MapKit
+import SDWebImage
 
 @IBDesignable public extension UIView {
     var width:      CGFloat { return self.frame.size.width }
@@ -51,8 +52,8 @@ import MapKit
     }
     
     public func screenshot() -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
-        self.drawHierarchy(in: self.bounds, afterScreenUpdates: false)
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
+        self.drawHierarchy(in: bounds, afterScreenUpdates: false)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image!
@@ -76,41 +77,41 @@ import MapKit
         let kAnimationShake = "Shake"
         let shakeAnimation = self.shakeAnimation()
         
-        self.layer.removeAnimation(forKey: kAnimationShake)
-        self.layer.add(shakeAnimation, forKey: kAnimationShake)
+        layer.removeAnimation(forKey: kAnimationShake)
+        layer.add(shakeAnimation, forKey: kAnimationShake)
     }
 
     fileprivate func shakeAnimation() -> CAAnimation {
         let frameValues = [transformTranslateX(10.0), transformTranslateX(-10.0), transformTranslateX(6.0), transformTranslateX(-6.0),transformTranslateX(3.0), transformTranslateX(-3.0), transformTranslateX(0.0)]
         let frameTimes = [NSNumber(value: 0.14 as Float), NSNumber(value: 0.28 as Float), NSNumber(value: 0.42 as Float) ,NSNumber(value: 0.57 as Float), NSNumber(value: 0.71 as Float), NSNumber(value: 0.85 as Float), NSNumber(value: 1 as Float)]
-        return self.animationWithValues(frameValues, times: frameTimes, duration: 0.5)
+        return animationWithValues(frameValues, times: frameTimes, duration: 0.5)
     }
     
     fileprivate func transformTranslateX(_ translate: Float) -> NSValue {
-        return NSValue(caTransform3D: self.transform3DTranslateX(translate))
+        return NSValue(caTransform3D: transform3DTranslateX(translate))
     }
     
     fileprivate func transformTranslateY(_ translate: Float) -> NSValue {
-        return NSValue(caTransform3D: self.transform3DTranslateY(translate))
+        return NSValue(caTransform3D: transform3DTranslateY(translate))
     }
     
     fileprivate func transformScale(_ scale: Float) -> NSValue {
-        return NSValue(caTransform3D: self.transform3DScale(scale))
+        return NSValue(caTransform3D: transform3DScale(scale))
     }
     
     fileprivate func transform3DScale(_ scale: Float) -> CATransform3D {
         // Add scale on current transform.
-        return CATransform3DScale(self.layer.transform, CGFloat(scale), CGFloat(scale), 1)
+        return CATransform3DScale(layer.transform, CGFloat(scale), CGFloat(scale), 1)
     }
     
     fileprivate func transform3DTranslateX(_ translate: Float) -> CATransform3D {
         // Add scale on current transform.
-        return CATransform3DTranslate(self.layer.transform, CGFloat(translate), 1, 1)
+        return CATransform3DTranslate(layer.transform, CGFloat(translate), 1, 1)
     }
     
     fileprivate func transform3DTranslateY(_ translate: Float) -> CATransform3D {
         // Add scale on current transform.
-        return CATransform3DTranslate(self.layer.transform, 1, CGFloat(translate), 1)
+        return CATransform3DTranslate(layer.transform, 1, CGFloat(translate), 1)
     }
     
     fileprivate func animationWithValues(_ values: [NSValue], times: [NSNumber], duration: Float) -> CAKeyframeAnimation {
@@ -128,14 +129,12 @@ import MapKit
 public extension UIImageView {
     public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
         if urlString == nil || urlString?.length == 0 {
-            self.image = placeholderImage
+            image = placeholderImage
         } else {
-            let url = URL(string: urlString!)!
-            if let placeholder = placeholderImage {
-                sd_setImage(with: url, placeholderImage: placeholder)
-                //setImageWith(url, placeholderImage: placeholder, usingActivityIndicatorStyle: activityIndicatorStyle)
-            } else {
-                setImageWith(url, usingActivityIndicatorStyle: activityIndicatorStyle)
+            sd_setShowActivityIndicatorView(true)
+            sd_setIndicatorStyle(activityIndicatorStyle)
+            if let url = URL(string: urlString!) {
+                sd_setImage(with: url, placeholderImage: placeholderImage)
             }
         }
     }
@@ -143,30 +142,40 @@ public extension UIImageView {
 
 public extension UITextField {
     public func setPlaceholderColor(_ color: UIColor) {
-        if placeholder != nil && placeholder!.length > 0 {
-            self.attributedPlaceholder = NSAttributedString(string: self.placeholder!, attributes: [NSForegroundColorAttributeName:color])
+        if let text = placeholder {
+            attributedPlaceholder = NSAttributedString(string: text, attributes: [NSForegroundColorAttributeName:color])
         }
     }
     
-    public func setLeftPaddinng(_ padding: Float) {
-        self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(padding), height: 1))
-        self.leftViewMode = .always
+    public func setLeft(padding: CGFloat) {
+        leftView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
+        leftViewMode = .always
+    }
+    
+    public func setRight(padding: CGFloat) {
+        leftView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
+        leftViewMode = .always
+    }
+    
+    public func setPaddings(_ padding: CGFloat) {
+        setLeft(padding: padding)
+        setRight(padding: padding)
     }
 }
 
 public extension UITextView {
     public func clearInsets() {
-        self.textContainer.lineFragmentPadding = 0
-        self.textContainerInset = UIEdgeInsets.zero
+        textContainer.lineFragmentPadding = 0
+        textContainerInset = .zero
     }
 }
 
 public extension UIButton {
     public func backgroundToImage() {
-        if (self.backgroundColor != nil) {
-            self.setBackgroundImageWithColor(self.backgroundColor!)
-            self.backgroundColor = nil
-            self.layer.masksToBounds = true
+        if let color = backgroundColor {
+            setBackgroundImageWithColor(color)
+            backgroundColor = nil
+            layer.masksToBounds = true
         }
     }
     
@@ -255,10 +264,6 @@ public extension UIScrollView {
                 }).first as? UIRefreshControl
             }
         }
-    }
-    
-    public func topRefreshControl(refreshControl: UIRefreshControl) {
-        
     }
 }
 
@@ -389,7 +394,6 @@ extension UIViewController: StoryboardInstantiable {
     public class func mainStoryboardInstance() -> Self {
         return instantiateFromStoryboard(UIStoryboard.main(), type: self)
     }
-    
     
     fileprivate class func instantiateFromStoryboard<T: UIViewController>(_ storyboard: UIStoryboard, type: T.Type) -> T {
         return storyboard.instantiateViewController(withIdentifier: self.storyboardIdentifier) as! T
