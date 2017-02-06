@@ -15,7 +15,7 @@ import SDWebImage
     var width:      CGFloat { return self.frame.size.width }
     var height:     CGFloat { return self.frame.size.height }
     
-    @IBInspectable var borderColor:UIColor? {
+    @IBInspectable var borderColor: UIColor? {
         set {
             layer.borderColor = newValue!.cgColor
         }
@@ -153,8 +153,8 @@ public extension UITextField {
     }
     
     public func setRight(padding: CGFloat) {
-        leftView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
-        leftViewMode = .always
+        rightView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
+        rightViewMode = .always
     }
     
     public func setPaddings(_ padding: CGFloat) {
@@ -195,9 +195,9 @@ public extension UIViewController {
     }
     
     public func prepareForTransparency() {
-        self.providesPresentationContextTransitionStyle = true;
-        self.definesPresentationContext = true;
-        self.modalPresentationStyle = .overCurrentContext;
+        providesPresentationContextTransitionStyle = true
+        definesPresentationContext = true
+        modalPresentationStyle = .overCurrentContext
     }
 }
 

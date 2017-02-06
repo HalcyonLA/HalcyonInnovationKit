@@ -15,22 +15,24 @@ public protocol AlertErrorDelegate: NSObjectProtocol {
 
 public extension UIAlertController {
     
-    public class func show(title: String, message: NSObject?) {
+    public class func show(title: String, messageObject: NSObject?) {
         var msg: String?
-        if (message != nil) {
-            if (message is String) {
-                msg = message! as? String
-            } else {
-                msg = message!.description
-            }
+        if let message = messageObject as? String {
+            msg = message
+        } else if messageObject != nil {
+            msg = messageObject!.description
         }
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         alert.show()
     }
     
+    public class func show(title: String, message: String) {
+       show(title: title, messageObject: message as NSObject?)
+    }
+    
     public class func showError(_ message: String) {
-        UIAlertController.show(title: "Error", message: message as NSObject?)
+        UIAlertController.show(title: "Error", message: message)
     }
     
     public func show() {
