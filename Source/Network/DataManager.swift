@@ -262,14 +262,14 @@ open class DataManager: NSObject {
                         if (error != nil) {
                             self.logString("error: \(error!.localizedDescription)", function: urlLogString)
                         } else {
-                            self.logString("response: \(json)", function: urlLogString)
+                            self.logString("response: \(String(describing: json))", function: urlLogString)
                         }
                     }
                 request.completion?(DataManagerResponse(response: json as AnyObject?, error: error))
             } else {
                 let userInfo = [NSLocalizedDescriptionKey:"Responce has inccorect data type"]
                 let error = NSError(domain: self.apiURL, code: -2, userInfo: userInfo)
-                self.logString("error: \(error.localizedDescription) - \(responseObject)", function: urlLogString)
+                self.logString("error: \(error.localizedDescription) - \(String(describing: responseObject))", function: urlLogString)
                 request.completion?(DataManagerResponse(response: nil, error: error))
             }
             cleanFinishedRequests(task)
@@ -291,7 +291,7 @@ open class DataManager: NSObject {
                 }
                 if data != nil {
                     let errorString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
-                    self.log.error("INVALID JSON ERROR : \(errorString)")
+                    self.log.error("INVALID JSON ERROR : \(String(describing: errorString))")
                 }
                 
                 request.completion?(DataManagerResponse(response: nil, error: error))

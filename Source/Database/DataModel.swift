@@ -154,11 +154,7 @@ open class DataModel: NSObject {
         
         do {
             let results = try moc.fetch(fetchRequest)
-            if let array = results as? [T] {
-                return array
-            } else {
-                return []
-            }
+            return results
         } catch {
             return []
         }
@@ -176,11 +172,7 @@ open class DataModel: NSObject {
         
         do {
             let results = try moc.fetch(fetchRequest)
-            if let array = results as? [T] {
-                return array
-            } else {
-                return []
-            }
+            return results
         } catch {
             return []
         }
@@ -197,7 +189,7 @@ open class DataModel: NSObject {
                 model._managedObjectContext = nil
                 model._managedObjectModel = nil
                 //called for reinitiate coordinator
-                model.persistentStoreCoordinator
+                _ = model.persistentStoreCoordinator
             } catch {
                 
             }
