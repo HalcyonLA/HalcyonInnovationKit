@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
   s.requires_arc = true
-  s.version = "1.2.0"
+  s.version = "1.2.1"
   s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
   s.license = { :type => "MIT", :file => "LICENSE" }
@@ -44,7 +44,7 @@ Pod::Spec.new do |s|
   s.subspec 'Database' do |database|
   	database.framework = "CoreData"
 	database.source_files = "Source/Database/*.{swift}"
-	database.dependency 'FastEasyMapping', '~> 1.1.2'
+	database.dependency 'FastEasyMapping', '~> 1.2'
 	database.dependency 'XCGLogger', '~> 5.0.1'
 	database.dependency 'HalcyonInnovationKit/UI'
   end

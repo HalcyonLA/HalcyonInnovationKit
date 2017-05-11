@@ -46,7 +46,9 @@ public extension UIAlertController {
         alertWindow!.makeKeyAndVisible()
         alertWindow!.rootViewController?.present(self, animated: true, completion: nil)
     }
-    
+}
+
+extension UIAlertController {
     open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         alertWindow?.isHidden = true
