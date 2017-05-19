@@ -451,25 +451,30 @@ public extension Date {
 public extension UIImage {
     
     public func tintColor(_ tintColor: UIColor) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
         let context = UIGraphicsGetCurrentContext()
+        let insets = capInsets
         
-        context?.translateBy(x: 0, y: self.size.height)
+        context?.translateBy(x: 0, y: size.height)
         context?.scaleBy(x: 1.0, y: -1.0)
         
-        let rect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
+        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         
         // image drawing code here
         context?.setBlendMode(CGBlendMode.normal)
         context?.draw(self.cgImage!, in: rect)
         
         // draw tint color, preserving alpha values of original image
-        context?.setBlendMode(CGBlendMode.sourceIn);
+        context?.setBlendMode(CGBlendMode.sourceIn)
         tintColor.setFill()
-        context?.fill(rect);
+        context?.fill(rect)
         
-        let image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
+        var image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        if insets != .zero {
+            image = image!.resizableImage(withCapInsets: capInsets)
+        }
         
         return image!
     }
