@@ -61,6 +61,12 @@ extension NSObject {
     }
 }
 
+extension Array {
+    mutating func rearrange(from: Int, to: Int) {
+        insert(remove(at: from), at: to)
+    }
+}
+
 extension UIColor {
     public convenience init(hex: UInt32, alpha: Float = 1) {
         let divisor = CGFloat(255)

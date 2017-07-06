@@ -68,7 +68,11 @@ import SDWebImage
             hud.removeFromSuperViewOnHide = true
             return hud
         } else {
-            MBProgressHUD.hide(for: self, animated: true)
+            for view in subviews {
+                if let hud = view as? MBProgressHUD {
+                    hud.hide(animated: true)
+                }
+            }
             return nil
         }
     }
