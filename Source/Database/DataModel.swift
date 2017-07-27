@@ -121,7 +121,7 @@ open class DataModel: NSObject {
                 }
             }
         }
-        if (Thread.isMainThread) {
+        if Thread.isMainThread {
             save()
         } else {
             OperationQueue.main.addOperation({
@@ -236,8 +236,17 @@ open class DataModel: NSObject {
     
     @discardableResult
     open class func deserializeObject<T: NSManagedObject>(_ object: Any?, mapping: DataMapping<T>) -> T? {
-        if let obj = object as? [String : Any] {
-            if (obj.count == 0) {
+        
+        var convertedObject: [String : Any]?
+        
+        if let o = object as? NSDictionary {
+            convertedObject = o as? [String : Any]
+        } else if let o = object as? [String : Any] {
+            convertedObject = o
+        }
+        
+        if let obj = convertedObject {
+            guard obj.count > 0 else {
                 return nil
             }
             
@@ -256,8 +265,17 @@ open class DataModel: NSObject {
     
     @discardableResult
     open class func deserializeArray<T: NSManagedObject>(_ array: Any?, mapping: DataMapping<T>) -> [T] {
-        if let collection = array as? [Any] {
-            if (collection.count == 0) {
+        
+        var convertedArray: [Any]?
+        
+        if let a = array as? NSArray {
+            convertedArray = a as? [Any]
+        } else if let a = array as? [Any] {
+            convertedArray = a
+        }
+        
+        if let collection = convertedArray {
+            guard collection.count > 0 else {
                 return []
             }
             
