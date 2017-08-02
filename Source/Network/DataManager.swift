@@ -70,6 +70,7 @@ open class DataManager: NSObject {
     
     open static var BaseURL = ""
     open static var APIVersion = "1"
+    open static var globalParameters: [String : Any]?
     
     open static var logEnabled = true
     open static var secured = true
@@ -201,6 +202,11 @@ open class DataManager: NSObject {
             if debugJSON.length > 0 {
                 urlLogString = "\(path) : \(debugJSON)"
             }
+        }
+        
+        if let globalParameters = DataManager.globalParameters {
+            params += globalParameters
+            json = params.jsonString
         }
         
         if !request.log {
