@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
   s.requires_arc = true
-  s.version = "1.2.6"
+  s.version = "1.2.7"
   s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
   s.license = { :type => "MIT", :file => "LICENSE" }
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
 	ui.framework = "Accelerate"
 	ui.framework = "QuartzCore"
 	ui.source_files = "Source/{UI,Extensions}/*.{swift}"
-	ui.dependency 'SDWebImage', '~> 4.0.0'
+	ui.dependency 'SDWebImage', '~> 4.1.0'
 	ui.dependency 'MBProgressHUD', '~> 1.0.0'
   end
   
