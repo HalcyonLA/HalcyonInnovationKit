@@ -13,11 +13,11 @@ import MBProgressHUD
 import XCGLogger
 
 open class DataManagerResponse: NSObject {
-    open var response: AnyObject? = nil
+    open var response: Any? = nil
     open var error: NSError? = nil
     open var isCancelled: Bool = false
     
-    fileprivate init(response: AnyObject?, error: NSError?) {
+    fileprivate init(response: Any?, error: NSError?) {
         self.response = response
         self.error = error
         super.init()
@@ -271,7 +271,7 @@ open class DataManager: NSObject {
                             self.logString("response: \(String(describing: json))", function: urlLogString)
                         }
                     }
-                request.completion?(DataManagerResponse(response: json as AnyObject?, error: error))
+                request.completion?(DataManagerResponse(response: json as Any?, error: error))
             } else {
                 let userInfo = [NSLocalizedDescriptionKey:"Responce has inccorect data type"]
                 let error = NSError(domain: self.apiURL, code: -2, userInfo: userInfo)
@@ -360,7 +360,7 @@ open class DataManager: NSObject {
                     }
                 }
                 if secured {
-                    logParameters[key] = "<secured>" as AnyObject?
+                    logParameters[key] = "<secured>" as Any?
                 }
             }
         }

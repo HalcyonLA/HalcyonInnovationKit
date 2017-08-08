@@ -87,7 +87,7 @@ open class HIViewController: UIViewController {
         
         UIView.beginAnimations(nil, context: nil)
         UIView.setAnimationDuration((userInfo[UIKeyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue)
-        let curve = UIViewAnimationCurve.init(rawValue: (userInfo[UIKeyboardAnimationCurveUserInfoKey]! as AnyObject).intValue)!
+        let curve = UIViewAnimationCurve(rawValue: (userInfo[UIKeyboardAnimationCurveUserInfoKey]! as AnyObject).intValue)!
         UIView.setAnimationCurve(curve)
         UIView.setAnimationBeginsFromCurrentState(true)
         

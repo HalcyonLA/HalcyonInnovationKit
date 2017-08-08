@@ -12,11 +12,11 @@ import Accelerate
 import MapKit
 
 public func UIColorFromHex(_ hex: UInt32) -> UIColor {
-    return UIColor.init(hex: hex)
+    return UIColor(hex: hex)
 }
 
 public func UIColorFromHexWithAlpha(_ hex: UInt32, alpha: Float) -> UIColor {
-    return UIColor.init(hex: hex, alpha: alpha)
+    return UIColor(hex: hex, alpha: alpha)
 }
 
 public func AppName() -> String {
@@ -77,7 +77,7 @@ extension UIColor {
     }
     
     public class func hex(_ hex: UInt32) -> UIColor {
-        return UIColor.init(hex: hex)
+        return UIColor(hex: hex)
     }
 }
 
@@ -184,7 +184,7 @@ extension String {
     }
     
     public func stringBetweenStrings(_ start: String, end: String) -> String? {
-        let scanner = Scanner.init(string: self)
+        let scanner = Scanner(string: self)
         scanner.charactersToBeSkipped = nil
         scanner.scanUpTo(start, into: nil)
         if (scanner.scanString(start, into: nil)) {
@@ -216,7 +216,7 @@ extension String {
     
     public func cleanWhitespaces() -> String {
         do {
-            let regex = try NSRegularExpression.init(pattern: "\\s\\s+/", options: .caseInsensitive)
+            let regex = try NSRegularExpression(pattern: "\\s\\s+/", options: .caseInsensitive)
             let string = regex.stringByReplacingMatches(in: self, options: NSRegularExpression.MatchingOptions(), range: self.allRange(), withTemplate: " ")
             return string.trimmed()
         } catch {
@@ -257,7 +257,7 @@ extension String {
         var result = CGSize(width: 0, height: font.lineHeight)
         if (self.length > 0) {
             let attributes = [NSFontAttributeName:font]
-            let frame = NSString.init(string: self).boundingRect(with: textSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+            let frame = NSString(string: self).boundingRect(with: textSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             result = frame.size
         }
         return result
@@ -395,12 +395,12 @@ public extension Bool {
 
 public extension NSNumber {
     public func priceValue() -> String {
-        let priceFormatter = NumberFormatter.init()
+        let priceFormatter = NumberFormatter()
         priceFormatter.numberStyle = .currency
         priceFormatter.currencyCode = "USD"
         priceFormatter.currencySymbol = "$"
         priceFormatter.maximumFractionDigits = 2
-        priceFormatter.locale = Locale.init(identifier: "en_US")
+        priceFormatter.locale = Locale(identifier: "en_US")
         
         let isInteger = fmod(self.floatValue, 1.0) == 0
         if (isInteger) {

@@ -207,27 +207,38 @@ open class DataModel: NSObject {
     open class func resetEntities<T: NSManagedObject>(_ entity: T.Type, predicate: NSPredicate?) {
         let moc = DataModel.shared.managedObjectContext
         
-        let data = DataModel.fetchEntity(entity, predicate: predicate)
-        if data.count > 0 {
-            for (_, object) in data.enumerated() {
-                moc.delete(object)
-            }
+        if #available(iOS 9.0, *) {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "\(entity)")
+            fetchRequest.entity = NSEntityDescription.entity(forEntityName: "\(entity)", in: moc)
+            fetchRequest.predicate = predicate
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             do {
-                try moc.save()
-            } catch {
-                
+                try moc.execute(deleteRequest)
+            } catch let error as NSError {
+                NSLog("resetEntities error: %@", error.localizedDescription)
+            }
+        } else {
+            let data = DataModel.fetchEntity(entity, predicate: predicate)
+            if data.count > 0 {
+                for (_, object) in data.enumerated() {
+                    moc.delete(object)
+                }
+                do {
+                    try moc.save()
+                } catch {
+                    NSLog("resetEntities error: %@", error.localizedDescription)
+                }
             }
         }
     }
     
     open class func deleteObject(_ object: NSManagedObject) {
-        let moc = object.managedObjectContext
-        if (moc != nil) {
-            moc!.delete(object)
+        if let moc = object.managedObjectContext {
+            moc.delete(object)
             do {
-                try moc!.save()
-            } catch {
-                
+                try moc.save()
+            } catch let error as NSError {
+                NSLog("deleteObject error: %@", error.localizedDescription)
             }
         }
     }
