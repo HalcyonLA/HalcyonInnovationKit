@@ -51,19 +51,18 @@ open class DataModel: NSObject {
                 // Create the coordinator and store
                 let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
                 let url = self.applicationDocumentsDirectory.appendingPathComponent("\(DataModel.dbName).sqlite")
-                var failureReason = "There was an error creating or loading the application's saved data."
+                let options: [String : Any] = [NSMigratePersistentStoresAutomaticallyOption: true,
+                                               NSInferMappingModelAutomaticallyOption: true]
                 do {
-                    try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
+                    try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: options)
                 } catch {
                     
                     func reportAboutBadPersistentStore() {
                         // Report any error we got.
-                        var dict = [String: AnyObject]()
-                        dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data" as AnyObject?
-                        dict[NSLocalizedFailureReasonErrorKey] = failureReason as AnyObject?
-                        
-                        dict[NSUnderlyingErrorKey] = error as NSError
-                        let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
+                        var info: [String : Any] = [NSLocalizedDescriptionKey: "Failed to initialize the application's saved data",
+                                                    NSLocalizedFailureReasonErrorKey: "There was an error creating or loading the application's saved data.",
+                                                    NSUnderlyingErrorKey: error as NSError]
+                        let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: info)
                         // Replace this with code to handle the error appropriately.
                         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                         NSLog("Unresolved error \(wrappedError), \(wrappedError.userInfo)")
@@ -73,7 +72,7 @@ open class DataModel: NSObject {
                     do {
                         try FileManager.default.removeItem(atPath: url.path)
                         do {
-                            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
+                            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: options)
                         } catch {
                             reportAboutBadPersistentStore()
                         }
