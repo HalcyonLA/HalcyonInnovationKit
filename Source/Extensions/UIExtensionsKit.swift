@@ -300,7 +300,7 @@ public extension UITableView {
         }
     }
     
-    public func dequeueReusableCellWithClass<T: UITableViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T where T: Reusable {
+    public func dequeueReusableCellWithClass<T: UITableViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T {
         return self.dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
@@ -313,7 +313,7 @@ public extension UITableView {
         }
     }
     
-    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView>(_ headerFooterViewClass: T.Type = T.self) -> T? where T: Reusable {
+    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView>(_ headerFooterViewClass: T.Type = T.self) -> T? {
         return self.dequeueReusableHeaderFooterView(withIdentifier: T.reuseIdentifier) as? T
     }
 }
@@ -337,17 +337,17 @@ public extension UICollectionView {
         }
     }
     
-    public func dequeueReusableCellWithClass<T: UICollectionViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T where T: Reusable {
+    public func dequeueReusableCellWithClass<T: UICollectionViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T {
         return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
-    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView>(_ viewClass: T.Type, elementKind: String, indexPath: IndexPath) -> T where T: Reusable {
+    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView>(_ viewClass: T.Type, elementKind: String, indexPath: IndexPath) -> T {
         return self.dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
 }
 
 public extension MKMapView {
-    public func dequeueReusableAnnotationViewWithClass<T: MKAnnotationView>(_ annotationViewClass: T.Type, annotation: MKAnnotation) -> T where T: Reusable {
+    public func dequeueReusableAnnotationViewWithClass<T: MKAnnotationView>(_ annotationViewClass: T.Type, annotation: MKAnnotation) -> T {
         
         let identifier = annotationViewClass.reuseIdentifier
         

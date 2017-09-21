@@ -59,7 +59,7 @@ open class DataModel: NSObject {
                     
                     func reportAboutBadPersistentStore() {
                         // Report any error we got.
-                        var info: [String : Any] = [NSLocalizedDescriptionKey: "Failed to initialize the application's saved data",
+                        let info: [String : Any] = [NSLocalizedDescriptionKey: "Failed to initialize the application's saved data",
                                                     NSLocalizedFailureReasonErrorKey: "There was an error creating or loading the application's saved data.",
                                                     NSUnderlyingErrorKey: error as NSError]
                         let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: info)

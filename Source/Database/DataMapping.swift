@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import FastEasyMapping
 
-open class DataMapping<T: NSManagedObject>: FEMMapping where T: MappingProtocol {
+open class DataMapping<T: MappingProtocol>: FEMMapping {
     
     open var type: T.Type
     
