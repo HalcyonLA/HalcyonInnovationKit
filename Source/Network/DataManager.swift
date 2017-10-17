@@ -199,7 +199,7 @@ open class DataManager: NSObject {
             #else
                 debugJSON = securedParametersForLog(params).jsonString
             #endif
-            if debugJSON.length > 0 {
+            if debugJSON.count > 0 {
                 urlLogString = "\(path) : \(debugJSON)"
             }
         }

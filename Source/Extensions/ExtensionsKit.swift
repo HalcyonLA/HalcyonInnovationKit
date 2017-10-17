@@ -230,7 +230,7 @@ extension String {
     }
     
     public func allRange() -> NSRange {
-        return NSMakeRange(0, length)
+        return NSMakeRange(0, count)
     }
     
     public func rangeFromNSRange(_ nsRange : NSRange) -> Range<String.Index>? {

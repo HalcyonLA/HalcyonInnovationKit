@@ -132,7 +132,7 @@ import SDWebImage
 
 public extension UIImageView {
     public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
-        if urlString == nil || urlString?.length == 0 {
+        if urlString == nil || urlString?.count == 0 {
             image = placeholderImage
         } else {
             sd_setShowActivityIndicatorView(true)
