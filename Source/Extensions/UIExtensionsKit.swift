@@ -190,7 +190,7 @@ public extension UIButton {
 }
 
 public extension UIViewController {
-    public class func top() -> UIViewController {
+    @objc public class func top() -> UIViewController {
         var top = UIApplication.shared.keyWindow!.rootViewController!
         while top.presentedViewController != nil {
             top = top.presentedViewController!
