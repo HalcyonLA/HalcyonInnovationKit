@@ -147,7 +147,7 @@ public extension UIImageView {
 public extension UITextField {
     public func setPlaceholderColor(_ color: UIColor) {
         if let text = placeholder {
-            attributedPlaceholder = NSAttributedString(string: text, attributes: [NSForegroundColorAttributeName:color])
+            attributedPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: color])
         }
     }
     
@@ -273,21 +273,25 @@ public extension UIScrollView {
 
 public extension UITableView {
     
-    public override func scrollToEnd(_ animated: Bool = true) {
-        if let dataSource = self.dataSource {
-            var section = dataSource.numberOfSections?(in: self)
-            if section == nil {
-                section = 0
-            } else {
-                section! -= 1
-            }
-            if section! >= 0 {
-                let row = dataSource.tableView(self, numberOfRowsInSection: section!) - 1
-                if row >= 0 {
-                    let indexPath = IndexPath(row: row, section: section!)
-                    self.scrollToRow(at: indexPath, at: .bottom, animated: animated)
-                }
-            }
+    public func tv_scrollToEnd(_ animated: Bool = true) {
+        guard let dataSource = self.dataSource else {
+            return
+        }
+        var section: Int
+        if let s = dataSource.numberOfSections?(in: self) {
+            section = s - 1
+        } else {
+            section = 0
+        }
+        
+        guard section >= 0 else {
+            return
+        }
+        
+        let row = dataSource.tableView(self, numberOfRowsInSection: section) - 1
+        if row >= 0 {
+            let indexPath = IndexPath(row: row, section: section)
+            scrollToRow(at: indexPath, at: .bottom, animated: animated)
         }
     }
     

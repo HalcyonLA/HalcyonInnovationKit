@@ -43,7 +43,7 @@ public func -=<K, V> ( left: inout [K : V], right: [K]) {for k in right { left.r
 
 extension CLLocationCoordinate2D: Equatable {
     public func isZero() -> Bool {
-        return self.latitude == 0.0 && self.longitude == 0.0
+        return latitude == 0.0 && longitude == 0.0
     }
 }
 
@@ -53,7 +53,7 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
 
 extension NSObject {
     public var className: String {
-        return self.classForCoder.className
+        return type(of: self).className
     }
     
     public static var className: String {
@@ -107,7 +107,7 @@ extension NSString {
     }
     
     public func allRange() -> NSRange {
-        return NSMakeRange(0, self.length)
+        return NSMakeRange(0, length)
     }
     
     public func sizeForMaxSize(_ textSize: CGSize, font: UIFont) -> CGSize {
@@ -133,11 +133,12 @@ extension String {
         let start = characters.index(startIndex, offsetBy: integerRange.lowerBound)
         let end = characters.index(startIndex, offsetBy: integerRange.upperBound)
         let range = start..<end
-        return self[range]
+        return String(self[range])
     }
     
+    @available(*, deprecated, message: "Use default count")
     public var length: Int {
-        return self.characters.count
+        return characters.count
     }
     
     public var capitalizeFirst: String {
@@ -154,12 +155,12 @@ extension String {
     
     /// Trims white space and new line characters
     public mutating func trim() {
-        self = self.trimmed()
+        self = trimmed()
     }
     
     /// Trims white space and new line characters, returns a new string
     public func trimmed() -> String {
-        return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
     
     public var urlEncodedValue: String {
@@ -217,7 +218,7 @@ extension String {
     public func cleanWhitespaces() -> String {
         do {
             let regex = try NSRegularExpression(pattern: "\\s\\s+/", options: .caseInsensitive)
-            let string = regex.stringByReplacingMatches(in: self, options: NSRegularExpression.MatchingOptions(), range: self.allRange(), withTemplate: " ")
+            let string = regex.stringByReplacingMatches(in: self, options: NSRegularExpression.MatchingOptions(), range: allRange(), withTemplate: " ")
             return string.trimmed()
         } catch {
             return self
@@ -225,11 +226,11 @@ extension String {
     }
     
     public func onlyDigits() -> String {
-        return self.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression, range: self.rangeFromNSRange(self.allRange()))
+        return replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression, range: rangeFromNSRange(allRange()))
     }
     
     public func allRange() -> NSRange {
-        return NSMakeRange(0, self.length)
+        return NSMakeRange(0, length)
     }
     
     public func rangeFromNSRange(_ nsRange : NSRange) -> Range<String.Index>? {
@@ -246,58 +247,51 @@ extension String {
     }
     
     public func NSRangeFromRange(_ range : Range<String.Index>) -> NSRange {
-        let utf16view = self.utf16
-        let from = String.UTF16View.Index(range.lowerBound, within: utf16view)
-        let to = String.UTF16View.Index(range.upperBound, within: utf16view)
-        let range = NSMakeRange(utf16view.distance(from: utf16view.startIndex, to: from), utf16view.distance(from: from, to: to))
-        return range
+        let utf16view = utf16
+        if let from = range.lowerBound.samePosition(in: utf16view), let to = range.upperBound.samePosition(in: utf16view) {
+            return NSMakeRange(utf16view.distance(from: utf16view.startIndex, to: from), utf16view.distance(from: from, to: to))
+        } else {
+            return NSRange(NSNotFound, 0)
+        }
     }
     
     public func sizeForMaxSize(_ textSize: CGSize, font: UIFont) -> CGSize {
         var result = CGSize(width: 0, height: font.lineHeight)
-        if (self.length > 0) {
-            let attributes = [NSFontAttributeName:font]
-            let frame = NSString(string: self).boundingRect(with: textSize, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+        if count > 0 {
+            let frame = NSString(string: self).boundingRect(with: textSize, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)
             result = frame.size
         }
         return result
     }
     
     public func widthForHeight(_ height: CGFloat, font: UIFont) -> CGFloat {
-        return self.sizeForMaxSize(CGSize(width: CGFloat.greatestFiniteMagnitude, height: height), font: font).width
+        return sizeForMaxSize(CGSize(width: CGFloat.greatestFiniteMagnitude, height: height), font: font).width
     }
     
     public func heightForWidth(_ width: CGFloat, font: UIFont) -> CGFloat {
-        return self.sizeForMaxSize(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), font: font).height
+        return sizeForMaxSize(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), font: font).height
     }
 }
 
 public extension NSArray {
     public func toString() -> String {
-        var string = ""
-        for (_, str) in self.enumerated() {
-            string += "\(str),"
-        }
-        if (string.length > 0) {
-            string.removeSubrange(string.rangeFromNSRange(NSMakeRange(string.length - 1, 1))!)
-        }
-        return string
+        return componentsJoined(by: ",")
     }
 }
 
 public extension NSMutableArray {
     public func moveObject(_ fromIndex: Int, toIndex: Int) {
         let object = self[fromIndex]
-        self.removeObject(at: fromIndex)
-        self.insert(object, at: toIndex)
+        removeObject(at: fromIndex)
+        insert(object, at: toIndex)
     }
 }
 
 public extension URL {
     public func URLByAppendingQueryString(_ queryString: String) -> URL {
         if !queryString.isEmpty {
-            let delimiter = (self.query == nil ? "?" : "&")
-            let URLString = "\(self.absoluteString)\(delimiter)\(queryString)"
+            let delimiter = (query == nil ? "?" : "&")
+            let URLString = "\(absoluteString)\(delimiter)\(queryString)"
             if let URL = URL(string: URLString) {
                 return URL
             }
@@ -309,7 +303,7 @@ public extension URL {
 public extension Array {
     public var jsonString: String {
         do {
-            let stringData = try JSONSerialization.data(withJSONObject: self as AnyObject, options: JSONSerialization.WritingOptions(rawValue: 0))
+            let stringData = try JSONSerialization.data(withJSONObject: self, options: JSONSerialization.WritingOptions(rawValue: 0))
             if let string = String(data: stringData, encoding: String.Encoding.utf8) {
                 return string
             }
@@ -345,7 +339,7 @@ public extension Dictionary {
 
 public extension NSAttributedString {
     public func sizeWithMaxSize(_ size: CGSize) -> CGSize {
-        return self.boundingRect(with: size, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).size
+        return boundingRect(with: size, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).size
     }
     
     public class func image(_ image: UIImage) -> NSAttributedString {
@@ -356,25 +350,24 @@ public extension NSAttributedString {
 }
 
 extension NSRange {
-    
-    init(location:Int, length:Int) {
+    init(location: Int, length: Int) {
         self.location = location
         self.length = length
     }
     
-    init(_ location:Int, _ length:Int) {
+    init(_ location: Int, _ length: Int) {
         self.location = location
         self.length = length
     }
     
     init(range:Range <Int>) {
-        self.location = range.lowerBound
-        self.length = range.upperBound - range.lowerBound
+        location = range.lowerBound
+        length = range.upperBound - range.lowerBound
     }
     
     init(_ range:Range <Int>) {
-        self.location = range.lowerBound
-        self.length = range.upperBound - range.lowerBound
+        location = range.lowerBound
+        length = range.upperBound - range.lowerBound
     }
     
     var startIndex:Int { get { return location } }
@@ -402,7 +395,7 @@ public extension NSNumber {
         priceFormatter.maximumFractionDigits = 2
         priceFormatter.locale = Locale(identifier: "en_US")
         
-        let isInteger = fmod(self.floatValue, 1.0) == 0
+        let isInteger = fmod(floatValue, 1.0) == 0
         if (isInteger) {
             priceFormatter.maximumFractionDigits = 0
         }
@@ -431,7 +424,7 @@ public extension Date {
     }
     
     public func isBetweenDates(_ startDate: Date, endDate: Date) -> Bool {
-        return self.compare(startDate) != .orderedAscending && self.compare(endDate) != .orderedDescending
+        return compare(startDate) != .orderedAscending && compare(endDate) != .orderedDescending
     }
 
     public func isTheSameDay(_ date: Date) -> Bool {
@@ -446,11 +439,11 @@ public extension Date {
     }
     
     public func isToday() -> Bool {
-        return self.isTheSameDay(Date())
+        return isTheSameDay(Date())
     }
     
     public func isYesterday() -> Bool {
-        return self.isTheSameDay(Date().addingTimeInterval(-24 * 3600))
+        return isTheSameDay(Date().addingTimeInterval(-24 * 3600))
     }
 }
 
@@ -468,7 +461,7 @@ public extension UIImage {
         
         // image drawing code here
         context?.setBlendMode(CGBlendMode.normal)
-        context?.draw(self.cgImage!, in: rect)
+        context?.draw(cgImage!, in: rect)
         
         // draw tint color, preserving alpha values of original image
         context?.setBlendMode(CGBlendMode.sourceIn)
@@ -487,7 +480,7 @@ public extension UIImage {
     
     public func scaledToSize(_ size: CGSize, scale: Float = 0) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, CGFloat(scale))
-        self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
@@ -496,23 +489,23 @@ public extension UIImage {
     }
     
     public func scaledToFitSize(_ size: CGSize, scale: Float = 0) -> UIImage {
-        let aspect = self.size.width / self.size.height;
+        let aspect = size.width / size.height;
         var imageSize = CGSize.zero
         if (size.width / aspect <= size.height) {
             imageSize = CGSize(width: size.width, height: size.width / aspect)
         } else {
             imageSize = CGSize(width: size.height * aspect, height: size.height)
         }
-        return self.scaledToSize(imageSize, scale: scale)
+        return scaledToSize(imageSize, scale: scale)
     }
     
     public func cropToSquare() -> UIImage {
         
         var cropSquare = CGRect.zero
         
-        let edge = fmin(self.size.width, self.size.height)
-        var posX = (self.size.width - edge) / 2
-        var posY = (self.size.height - edge) / 2
+        let edge = fmin(size.width, size.height)
+        var posX = (size.width - edge) / 2
+        var posY = (size.height - edge) / 2
         
         if (fmod(posX, CGFloat(1.0)) == 0) {
             posX = ceil(posX)
@@ -521,14 +514,14 @@ public extension UIImage {
             posY = ceil(posY)
         }
         
-        if (self.imageOrientation == UIImageOrientation.left || self.imageOrientation == .right) {
+        if (imageOrientation == UIImageOrientation.left || imageOrientation == .right) {
             cropSquare = CGRect(x: posY, y: posX, width: edge, height: edge)
         } else {
             cropSquare = CGRect(x: posX, y: posY, width: edge, height: edge)
         }
         
-        let imageRef = self.cgImage!.cropping(to: cropSquare)
-        let image = UIImage(cgImage: imageRef!, scale: self.scale, orientation: self.imageOrientation)
+        let imageRef = cgImage!.cropping(to: cropSquare)
+        let image = UIImage(cgImage: imageRef!, scale: scale, orientation: imageOrientation)
         
         return image
     }
@@ -556,15 +549,15 @@ public extension UIImage {
     }
     
     public func applyAlpha(_ alpha: Float) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.size, false, 0)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
         
         let context = UIGraphicsGetCurrentContext()
-        let rect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
+        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         
         context?.scaleBy(x: 1, y: -1);
         context?.translateBy(x: 0, y: -rect.size.height);
         context?.setAlpha(CGFloat(alpha));
-        context?.draw(self.cgImage!, in: rect);
+        context?.draw(cgImage!, in: rect);
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
@@ -614,7 +607,7 @@ public extension UIImage {
             print("*** error: invalid size: \(size.width) x \(size.height). Both dimensions must be >= 1: \(self)")
             return nil
         }
-        if self.cgImage == nil {
+        if cgImage == nil {
             print("*** error: image must be backed by a CGImage: \(self)")
             return nil
         }
@@ -646,7 +639,7 @@ public extension UIImage {
             
             effectInContext?.scaleBy(x: 1.0, y: -1.0)
             effectInContext?.translateBy(x: 0, y: -size.height)
-            effectInContext?.draw(self.cgImage!, in: imageRect)
+            effectInContext?.draw(cgImage!, in: imageRect)
             
             var effectInBuffer = createEffectBuffer(effectInContext)
             
@@ -733,7 +726,7 @@ public extension UIImage {
         outputContext?.translateBy(x: 0, y: -size.height)
         
         // Draw base image.
-        outputContext?.draw(self.cgImage!, in: imageRect)
+        outputContext?.draw(cgImage!, in: imageRect)
         
         // Draw effect image.
         if hasBlur {

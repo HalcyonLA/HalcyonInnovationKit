@@ -25,19 +25,19 @@ open class HIViewController: UIViewController {
         super.viewDidLoad()
         closeGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
         closeGesture!.isEnabled = false
-        self.view.addGestureRecognizer(closeGesture!)
+        view.addGestureRecognizer(closeGesture!)
     }
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(_:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear(_:)), name: .UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let names = [NSNotification.Name.UIKeyboardWillShow, NSNotification.Name.UIKeyboardWillHide, NSNotification.Name.UIKeyboardWillChangeFrame]
+        let names: [NSNotification.Name] = [.UIKeyboardWillShow, .UIKeyboardWillHide, .UIKeyboardWillChangeFrame]
         for name in names {
             NotificationCenter.default.removeObserver(self, name: name, object: nil)
         }
@@ -55,20 +55,19 @@ open class HIViewController: UIViewController {
         return HIViewControllerStatusBarStyle
     }
     
-    open func keyboardWillAppear(_ notification: Notification) {
+    @objc open func keyboardWillAppear(_ notification: Notification) {
         keyboardAppeared = true
         if shouldUseCloseGesture() {
             closeGesture.isEnabled = true
         }
     }
     
-    open func keyboardWillDisappear(_ notification: Notification) {
+    @objc open func keyboardWillDisappear(_ notification: Notification) {
         closeGesture.isEnabled = false
         keyboardAppeared = false
     }
     
-    open func keyboardWillChangeFrame(_ notification: Notification) {
-        
+    @objc open func keyboardWillChangeFrame(_ notification: Notification) {
         let userInfo = notification.userInfo!
         
         var kbEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
