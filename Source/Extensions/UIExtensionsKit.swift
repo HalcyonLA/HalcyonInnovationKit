@@ -47,11 +47,11 @@ import SDWebImage
         }
     }
     
-    public func applyFullAutoresizingMask() {
+    @objc public func applyFullAutoresizingMask() {
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin]
     }
     
-    public func screenshot() -> UIImage {
+    @objc public func screenshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
         self.drawHierarchy(in: bounds, afterScreenUpdates: false)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -60,7 +60,7 @@ import SDWebImage
     }
     
     @discardableResult
-    public func showLoadingHUD(_ show: Bool) -> MBProgressHUD? {
+    @objc public func showLoadingHUD(_ show: Bool) -> MBProgressHUD? {
         if (show) {
             let hud = MBProgressHUD.showAdded(to: self, animated: true)
             hud.mode = .indeterminate
@@ -77,7 +77,7 @@ import SDWebImage
         }
     }
     
-    public func shake() {
+    @objc public func shake() {
         let kAnimationShake = "Shake"
         let shakeAnimation = self.shakeAnimation()
         
@@ -131,7 +131,7 @@ import SDWebImage
 }
 
 public extension UIImageView {
-    public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
+    @objc public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
         if urlString == nil || urlString?.count == 0 {
             image = placeholderImage
         } else {
@@ -145,37 +145,37 @@ public extension UIImageView {
 }
 
 public extension UITextField {
-    public func setPlaceholderColor(_ color: UIColor) {
+   @objc  public func setPlaceholderColor(_ color: UIColor) {
         if let text = placeholder {
             attributedPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: color])
         }
     }
     
-    public func setLeft(padding: CGFloat) {
+    @objc public func setLeft(padding: CGFloat) {
         leftView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
         leftViewMode = .always
     }
     
-    public func setRight(padding: CGFloat) {
+    @objc public func setRight(padding: CGFloat) {
         rightView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
         rightViewMode = .always
     }
     
-    public func setPaddings(_ padding: CGFloat) {
+    @objc public func setPaddings(_ padding: CGFloat) {
         setLeft(padding: padding)
         setRight(padding: padding)
     }
 }
 
 public extension UITextView {
-    public func clearInsets() {
+   @objc  public func clearInsets() {
         textContainer.lineFragmentPadding = 0
         textContainerInset = .zero
     }
 }
 
 public extension UIButton {
-    public func backgroundToImage() {
+    @objc public func backgroundToImage() {
         if let color = backgroundColor {
             setBackgroundImageWithColor(color)
             backgroundColor = nil
@@ -183,7 +183,7 @@ public extension UIButton {
         }
     }
     
-    public func setBackgroundImageWithColor(_ backgroundColor: UIColor) {
+    @objc public func setBackgroundImageWithColor(_ backgroundColor: UIColor) {
         let background = UIImage.imageWithColor(backgroundColor)
         self.setBackgroundImage(background, for: UIControlState())
     }
@@ -198,7 +198,7 @@ public extension UIViewController {
         return top
     }
     
-    public func prepareForTransparency() {
+    @objc public func prepareForTransparency() {
         providesPresentationContextTransitionStyle = true
         definesPresentationContext = true
         modalPresentationStyle = .overCurrentContext
@@ -206,7 +206,7 @@ public extension UIViewController {
 }
 
 public extension UIBarButtonItem {
-    public class func spacerWithWidth(_ width: Float) -> UIBarButtonItem {
+    @objc public class func spacerWithWidth(_ width: Float) -> UIBarButtonItem {
         let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         spacer.width = CGFloat(width)
         return spacer
@@ -229,7 +229,7 @@ extension UICollectionReusableView: Reusable { }
 extension MKAnnotationView: Reusable { }
 
 public extension UIScrollView {
-    public func scrollToEnd(_ animated: Bool = true) {
+    @objc public func scrollToEnd(animated: Bool = true) {
         var offset = CGPoint.zero
         let inset = contentInset
         if (contentSize.height > contentSize.width) {
@@ -240,7 +240,7 @@ public extension UIScrollView {
         self.setContentOffset(offset, animated: animated)
     }
     
-    public var topRefreshControl: UIRefreshControl? {
+    @objc public var topRefreshControl: UIRefreshControl? {
         set {
             if #available(iOS 10.0, *) {
                 self.refreshControl = newValue
@@ -273,7 +273,7 @@ public extension UIScrollView {
 
 public extension UITableView {
     
-    public func tv_scrollToEnd(_ animated: Bool = true) {
+    @objc public func tv_scrollToEnd(animated: Bool = true) {
         guard let dataSource = self.dataSource else {
             return
         }
@@ -368,7 +368,7 @@ public extension MKMapView {
 // MARK: Storyboard helpers
 
 public extension UIStoryboard {
-    class func main() -> UIStoryboard! {
+    @objc class func main() -> UIStoryboard! {
         guard let mainStoryboardName = Bundle.main.infoDictionary?["UIMainStoryboardFile"] as? String else {
             assertionFailure("No UIMainStoryboardFile found in main bundle")
             return nil

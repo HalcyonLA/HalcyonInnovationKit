@@ -9,21 +9,21 @@
 import Foundation
 
 @IBDesignable
-open class HITextField: UITextField {
+@objc open class HITextField: UITextField {
     
-    @IBInspectable open var image: UIImage? {
+    @objc @IBInspectable open var image: UIImage? {
         didSet {
             invalidateImageView()
         }
     }
     
-    @IBInspectable open var leftViewWidth: CGFloat = 0 {
+    @objc @IBInspectable open var leftViewWidth: CGFloat = 0 {
         didSet {
             invalidateImageView()
         }
     }
     
-    @IBInspectable open var placeholderTextColor: UIColor? {
+    @objc @IBInspectable open var placeholderTextColor: UIColor? {
         didSet {
             self.setPlaceholderColor(placeholderTextColor!)
         }

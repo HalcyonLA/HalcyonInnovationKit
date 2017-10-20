@@ -10,7 +10,7 @@ import Foundation
 
 public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
 
-open class HIViewController: UIViewController {
+@objc open class HIViewController: UIViewController {
     
     private var oldKbHeight: CGFloat = 0
     private var closeGesture: UITapGestureRecognizer!
@@ -47,7 +47,7 @@ open class HIViewController: UIViewController {
         view.endEditing(true)
     }
     
-    open func shouldUseCloseGesture() -> Bool {
+    @objc open func shouldUseCloseGesture() -> Bool {
         return true
     }
     
@@ -95,7 +95,7 @@ open class HIViewController: UIViewController {
         UIView.commitAnimations()
     }
     
-    open func viewWillAdjustForKeyboardFrameChange(_ keyboardOffset: CGFloat) {
+    @objc open func viewWillAdjustForKeyboardFrameChange(_ keyboardOffset: CGFloat) {
         
     }
 }

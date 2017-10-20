@@ -52,11 +52,11 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
 }
 
 extension NSObject {
-    public var className: String {
+    @objc public var className: String {
         return type(of: self).className
     }
     
-    public static var className: String {
+    @objc public static var className: String {
         return String(describing: self)
     }
 }
@@ -68,7 +68,7 @@ extension Array {
 }
 
 extension UIColor {
-    public convenience init(hex: UInt32, alpha: Float = 1) {
+    @objc public convenience init(hex: UInt32, alpha: Float = 1) {
         let divisor = CGFloat(255)
         let red     = CGFloat((hex & 0xFF0000) >> 16) / divisor
         let green   = CGFloat((hex & 0x00FF00) >>  8) / divisor
@@ -76,49 +76,49 @@ extension UIColor {
         self.init(red: red, green: green, blue: blue, alpha: CGFloat(alpha))
     }
     
-    public class func hex(_ hex: UInt32) -> UIColor {
+    @objc public class func hex(_ hex: UInt32) -> UIColor {
         return UIColor(hex: hex)
     }
 }
 
 extension NSString {
-    public func trimmed() -> NSString {
+    @objc public func trimmed() -> NSString {
         return String(self).trimmed()
     }
     
-    public func stringBetweenStrings(_ start: NSString, end: NSString) -> NSString? {
+    @objc public func stringBetweenStrings(_ start: NSString, end: NSString) -> NSString? {
         return String(self).stringBetweenStrings(start, end: end)
     }
     
-    public func fileName() -> NSString? {
+    @objc public func fileName() -> NSString? {
         return URL(fileURLWithPath: self as String).pathExtension as NSString?
     }
     
-    public func clearHtmlElements() -> NSString {
+    @objc public func clearHtmlElements() -> NSString {
         return String(self).clearHtmlElements()
     }
     
-    public func cleanWhitespaces() -> NSString {
+    @objc public func cleanWhitespaces() -> NSString {
         return String(self).cleanWhitespaces()
     }
     
-    public func onlyDigits() -> NSString {
+    @objc public func onlyDigits() -> NSString {
         return String(self).onlyDigits()
     }
     
-    public func allRange() -> NSRange {
+    @objc public func allRange() -> NSRange {
         return NSMakeRange(0, length)
     }
     
-    public func sizeForMaxSize(_ textSize: CGSize, font: UIFont) -> CGSize {
+    @objc public func sizeForMaxSize(_ textSize: CGSize, font: UIFont) -> CGSize {
         return String(self).sizeForMaxSize(textSize, font: font)
     }
     
-    public func widthForHeight(_ height: CGFloat, font: UIFont) -> CGFloat {
+    @objc public func widthForHeight(_ height: CGFloat, font: UIFont) -> CGFloat {
         return String(self).widthForHeight(height, font: font)
     }
     
-    public func heightForWidth(_ width: CGFloat, font: UIFont) -> CGFloat {
+    @objc public func heightForWidth(_ width: CGFloat, font: UIFont) -> CGFloat {
         return String(self).heightForWidth(width, font: font)
     }
 }
@@ -274,13 +274,13 @@ extension String {
 }
 
 public extension NSArray {
-    public func toString() -> String {
+    @objc public func toString() -> String {
         return componentsJoined(by: ",")
     }
 }
 
 public extension NSMutableArray {
-    public func moveObject(_ fromIndex: Int, toIndex: Int) {
+    @objc public func moveObject(_ fromIndex: Int, toIndex: Int) {
         let object = self[fromIndex]
         removeObject(at: fromIndex)
         insert(object, at: toIndex)
@@ -338,11 +338,11 @@ public extension Dictionary {
 }
 
 public extension NSAttributedString {
-    public func sizeWithMaxSize(_ size: CGSize) -> CGSize {
+    @objc public func sizeWithMaxSize(_ size: CGSize) -> CGSize {
         return boundingRect(with: size, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).size
     }
     
-    public class func image(_ image: UIImage) -> NSAttributedString {
+    @objc public class func image(_ image: UIImage) -> NSAttributedString {
         let attachment = NSTextAttachment()
         attachment.image = image
         return NSAttributedString(attachment: attachment)
@@ -387,7 +387,7 @@ public extension Bool {
 }
 
 public extension NSNumber {
-    public func priceValue() -> String {
+    @objc public func priceValue() -> String {
         let priceFormatter = NumberFormatter()
         priceFormatter.numberStyle = .currency
         priceFormatter.currencyCode = "USD"
@@ -449,7 +449,7 @@ public extension Date {
 
 public extension UIImage {
     
-    public func tintColor(_ tintColor: UIColor) -> UIImage {
+    @objc public func tintColor(_ tintColor: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         let context = UIGraphicsGetCurrentContext()
         let insets = capInsets
@@ -478,7 +478,7 @@ public extension UIImage {
         return image!
     }
     
-    public func scaledToSize(_ size: CGSize, scale: Float = 0) -> UIImage {
+    @objc public func scaledToSize(_ size: CGSize, scale: Float = 0) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, CGFloat(scale))
         draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         
@@ -488,10 +488,10 @@ public extension UIImage {
         return image!
     }
     
-    public func scaledToFitSize(_ size: CGSize, scale: Float = 0) -> UIImage {
-        let aspect = size.width / size.height;
+    @objc public func scaledToFitSize(_ size: CGSize, scale: Float = 0) -> UIImage {
+        let aspect = size.width / size.height
         var imageSize = CGSize.zero
-        if (size.width / aspect <= size.height) {
+        if size.width / aspect <= size.height {
             imageSize = CGSize(width: size.width, height: size.width / aspect)
         } else {
             imageSize = CGSize(width: size.height * aspect, height: size.height)
@@ -499,7 +499,7 @@ public extension UIImage {
         return scaledToSize(imageSize, scale: scale)
     }
     
-    public func cropToSquare() -> UIImage {
+    @objc public func cropToSquare() -> UIImage {
         
         var cropSquare = CGRect.zero
         
@@ -507,10 +507,10 @@ public extension UIImage {
         var posX = (size.width - edge) / 2
         var posY = (size.height - edge) / 2
         
-        if (fmod(posX, CGFloat(1.0)) == 0) {
+        if fmod(posX, CGFloat(1.0)) == 0 {
             posX = ceil(posX)
         }
-        if (fmod(posY, CGFloat(1.0)) == 0) {
+        if fmod(posY, CGFloat(1.0)) == 0 {
             posY = ceil(posY)
         }
         
@@ -526,12 +526,12 @@ public extension UIImage {
         return image
     }
     
-    public class func imageWithColor(_ color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
+    @objc public class func imageWithColor(_ color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
         var imageSize = size
-        if (imageSize.width == 0) {
+        if imageSize.width == 0 {
             imageSize.width = 1
         }
-        if (imageSize.height == 0) {
+        if imageSize.height == 0 {
             imageSize.height = 1
         }
         
@@ -540,24 +540,7 @@ public extension UIImage {
         let context = UIGraphicsGetCurrentContext()
         
         context?.setFillColor(color.cgColor)
-        context?.fill(rect);
-        
-        let image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        return image!;
-    }
-    
-    public func applyAlpha(_ alpha: Float) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        
-        let context = UIGraphicsGetCurrentContext()
-        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        
-        context?.scaleBy(x: 1, y: -1);
-        context?.translateBy(x: 0, y: -rect.size.height);
-        context?.setAlpha(CGFloat(alpha));
-        context?.draw(cgImage!, in: rect);
+        context?.fill(rect)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
@@ -565,19 +548,36 @@ public extension UIImage {
         return image!
     }
     
-    public func applyLightEffect() -> UIImage? {
+    @objc public func applyAlpha(_ alpha: Float) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        
+        let context = UIGraphicsGetCurrentContext()
+        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        
+        context?.scaleBy(x: 1, y: -1)
+        context?.translateBy(x: 0, y: -rect.size.height)
+        context?.setAlpha(CGFloat(alpha))
+        context?.draw(cgImage!, in: rect)
+        
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return image!
+    }
+    
+    @objc public func applyLightEffect() -> UIImage? {
         return applyBlurWithRadius(30, tintColor: UIColor(white: 1.0, alpha: 0.3), saturationDeltaFactor: 1.8)
     }
     
-    public func applyExtraLightEffect() -> UIImage? {
+    @objc public func applyExtraLightEffect() -> UIImage? {
         return applyBlurWithRadius(20, tintColor: UIColor(white: 0.97, alpha: 0.82), saturationDeltaFactor: 1.8)
     }
     
-    public func applyDarkEffect() -> UIImage? {
+    @objc public func applyDarkEffect() -> UIImage? {
         return applyBlurWithRadius(20, tintColor: UIColor(white: 0.11, alpha: 0.73), saturationDeltaFactor: 1.8)
     }
     
-    public func applyTintEffectWithColor(_ tintColor: UIColor) -> UIImage? {
+    @objc public func applyTintEffectWithColor(_ tintColor: UIColor) -> UIImage? {
         let effectColorAlpha: CGFloat = 0.6
         var effectColor = tintColor
         
@@ -601,7 +601,7 @@ public extension UIImage {
         return applyBlurWithRadius(10, tintColor: effectColor, saturationDeltaFactor: -1.0, maskImage: nil)
     }
     
-    public func applyBlurWithRadius(_ blurRadius: CGFloat, tintColor: UIColor?, saturationDeltaFactor: CGFloat, maskImage: UIImage? = nil) -> UIImage? {
+    @objc public func applyBlurWithRadius(_ blurRadius: CGFloat, tintColor: UIColor?, saturationDeltaFactor: CGFloat, maskImage: UIImage? = nil) -> UIImage? {
         // Check pre-conditions.
         if (size.width < 1 || size.height < 1) {
             print("*** error: invalid size: \(size.width) x \(size.height). Both dimensions must be >= 1: \(self)")
@@ -732,7 +732,7 @@ public extension UIImage {
         if hasBlur {
             outputContext?.saveGState()
             if let image = maskImage {
-                outputContext?.clip(to: imageRect, mask: image.cgImage!);
+                outputContext?.clip(to: imageRect, mask: image.cgImage!)
             }
             outputContext?.draw(effectImage.cgImage!, in: imageRect)
             outputContext?.restoreGState()

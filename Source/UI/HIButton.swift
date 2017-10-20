@@ -9,8 +9,8 @@
 import Foundation
 
 @IBDesignable
-open class HIButton: UIButton {
-    @IBInspectable open var backgroundImageColor: UIColor? {
+@objc open class HIButton: UIButton {
+    @objc @IBInspectable open var backgroundImageColor: UIColor? {
         didSet {
             self.setBackgroundImageWithColor(backgroundImageColor!)
         }

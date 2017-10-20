@@ -8,14 +8,14 @@
 
 import Foundation
 
-public protocol AlertErrorDelegate: NSObjectProtocol {
-    func shouldShowError(_ error: NSError) -> Bool
-    func textForError(_ error: NSError) -> String
+@objc public protocol AlertErrorDelegate: NSObjectProtocol {
+    @objc func shouldShowError(_ error: NSError) -> Bool
+    @objc func textForError(_ error: NSError) -> String
 }
 
 public extension UIAlertController {
     
-    public class func show(title: String, messageObject: NSObject?) {
+    @objc public class func show(title: String, messageObject: NSObject?) {
         var msg: String?
         if let message = messageObject as? String {
             msg = message
@@ -27,19 +27,19 @@ public extension UIAlertController {
         alert.show()
     }
     
-    public class func show(title: String, message: String) {
+    @objc public class func show(title: String, message: String) {
        show(title: title, messageObject: message as NSObject?)
     }
     
-    public class func showError(_ message: String) {
+    @objc public class func showError(_ message: String) {
         UIAlertController.show(title: "Error", message: message)
     }
     
-    public func show() {
+    @objc public func show() {
         show(true)
     }
     
-    public func show(_ animated: Bool) {
+    @objc public func show(_ animated: Bool) {
         alertWindow = UIWindow(frame: UIScreen.main.bounds)
         alertWindow!.rootViewController = AlertShowController()
         alertWindow!.windowLevel = UIWindowLevelAlert + 1
@@ -58,9 +58,9 @@ extension UIAlertController {
 
 public extension NSError {
     
-    public static var errorDelegate: AlertErrorDelegate?
+    @objc public static var errorDelegate: AlertErrorDelegate?
     
-    public func showAlert() {
+    @objc public func showAlert() {
         
         if let delegate = NSError.errorDelegate {
             if delegate.shouldShowError(self) {

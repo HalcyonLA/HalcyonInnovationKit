@@ -32,23 +32,23 @@ public enum DeviceMaxHeight: CGFloat {
 
 public extension UIDevice {
     
-    public class func systemVersion() -> Float  {
+    @objc public class func systemVersion() -> Float  {
         return NSString(string: UIDevice.current.systemVersion).floatValue
     }
     
-    public class func deviceHeight() -> CGFloat {
+    @objc public class func deviceHeight() -> CGFloat {
         let w = UIScreen.main.bounds.width
         let h = UIScreen.main.bounds.height
         return max(w, h)
     }
     
-    public class func deviceWidth() -> CGFloat {
+    @objc public class func deviceWidth() -> CGFloat {
         let w = UIScreen.main.bounds.width
         let h = UIScreen.main.bounds.height
         return min(w, h)
     }
     
-    public class func deviceType() -> DeviceType {
+    @objc public class func deviceType() -> DeviceType {
         if isPhone4()     { return DeviceType.iPhone4     }
         if isPhone5()     { return DeviceType.iPhone5     }
         if isPhone6()     { return DeviceType.iPhone6     }
@@ -59,35 +59,35 @@ public extension UIDevice {
         return DeviceType.unknown
     }
     
-    public class func isPhone() -> Bool {
+    @objc public class func isPhone() -> Bool {
         return UIDevice.current.userInterfaceIdiom == .phone
     }
     
-    public class func isPad() -> Bool {
+    @objc public class func isPad() -> Bool {
         return UIDevice.current.userInterfaceIdiom == .pad
     }
     
-    public class func isPhone4() -> Bool {
+    @objc public class func isPhone4() -> Bool {
         return isPhone() && deviceHeight() == DeviceMaxHeight.iPhone4.rawValue
     }
     
-    public class func isPhone5() -> Bool {
+    @objc public class func isPhone5() -> Bool {
         return isPhone() && deviceHeight() == DeviceMaxHeight.iPhone5.rawValue
     }
     
-    public class func isPhone6() -> Bool {
+    @objc public class func isPhone6() -> Bool {
         return isPhone() && deviceHeight() == DeviceMaxHeight.iPhone6.rawValue
     }
     
-    public class func isPhone6Plus() -> Bool {
+    @objc public class func isPhone6Plus() -> Bool {
         return isPhone() && deviceHeight() == DeviceMaxHeight.iPhone6Plus.rawValue
     }
     
-    public class func isPhoneX() -> Bool {
+    @objc public class func isPhoneX() -> Bool {
         return isPhone() && deviceHeight() == DeviceMaxHeight.iPhoneX.rawValue
     }
     
-    public class func isPadPro() -> Bool {
+    @objc public class func isPadPro() -> Bool {
         return isPad() && deviceHeight() == DeviceMaxHeight.iPadPro.rawValue
     }
     
