@@ -56,12 +56,22 @@ extension UIAlertController {
     }
 }
 
+public extension Error {
+    @discardableResult
+    public func showAlert() -> Bool {
+        if let err = self as? NSError {
+            err.showAlert()
+            return true
+        }
+        return false
+    }
+}
+
 public extension NSError {
     
     @objc public static var errorDelegate: AlertErrorDelegate?
     
     @objc public func showAlert() {
-        
         if let delegate = NSError.errorDelegate {
             if delegate.shouldShowError(self) {
                 UIAlertController.showError(delegate.textForError(self))

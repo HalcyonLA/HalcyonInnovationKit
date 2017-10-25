@@ -269,6 +269,16 @@ public extension UIScrollView {
             }
         }
     }
+    
+    public func adjustForKeyboardChange(_ keyboardOffset: CGFloat) {
+        var insets = contentInset
+        insets.bottom += keyboardOffset
+        contentInset = insets
+        
+        insets = scrollIndicatorInsets
+        insets.bottom += keyboardOffset
+        scrollIndicatorInsets = insets
+    }
 }
 
 public extension UITableView {
