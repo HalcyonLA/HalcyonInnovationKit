@@ -142,6 +142,11 @@ public extension UIImageView {
             }
         }
     }
+    
+    @objc public func prepare(activityIndicatorStyle: UIActivityIndicatorViewStyle) {
+        sd_setIndicatorStyle(activityIndicatorStyle)
+        sd_setShowActivityIndicatorView(true)
+    }
 }
 
 public extension UITextField {
