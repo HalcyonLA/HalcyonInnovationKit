@@ -61,7 +61,7 @@ open class DataManagerRequest: NSObject {
         return self
     }
     
-    open func cancel() {
+    @objc open func cancel() {
         task?.cancel()
     }
 }
@@ -140,7 +140,7 @@ open class DataManager: NSObject {
     // MARK: Loading Indicator
     
     @discardableResult
-    open static func showLoading(_ show: Bool, inView: UIView) -> MBProgressHUD? {
+    @objc open static func showLoading(_ show: Bool, inView: UIView) -> MBProgressHUD? {
         return inView.showLoadingHUD(show)
     }
     

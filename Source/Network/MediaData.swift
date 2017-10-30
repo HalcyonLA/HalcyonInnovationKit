@@ -8,20 +8,20 @@
 
 import Foundation
 
-open class MediaData: NSObject {
+@objc open class MediaData: NSObject {
     
-    open var data: Data?
-    open var name: String?
-    open var contentType: String?
+    @objc open var data: Data?
+    @objc open var name: String?
+    @objc open var contentType: String?
     
-    public init(data: Data, name: String, contentType: String) {
+    @objc public init(data: Data, name: String, contentType: String) {
         super.init()
         self.data = data
         self.name = name
         self.contentType = contentType
     }
     
-    public init(jpegImage: UIImage, quality: Float = 0.9, name: String = "photo.jpg") {
+    @objc public init(jpegImage: UIImage, quality: Float = 0.9, name: String = "photo.jpg") {
         super.init()
         self.data = UIImageJPEGRepresentation(jpegImage, CGFloat(quality))
         self.name = name
