@@ -57,13 +57,8 @@ extension UIAlertController {
 }
 
 public extension Error {
-    @discardableResult
-    public func showAlert() -> Bool {
-        if let err = self as? NSError {
-            err.showAlert()
-            return true
-        }
-        return false
+    public func showAlert() {
+        (self as NSError).showAlert()
     }
 }
 

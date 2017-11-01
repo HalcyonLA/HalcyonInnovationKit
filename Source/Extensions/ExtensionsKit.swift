@@ -125,13 +125,13 @@ extension NSString {
 
 extension String {
     public subscript(integerIndex: Int) -> Character {
-        let index = characters.index(startIndex, offsetBy: integerIndex)
+        let index = self.index(startIndex, offsetBy: integerIndex)
         return self[index]
     }
     
     public subscript(integerRange: Range<Int>) -> String {
-        let start = characters.index(startIndex, offsetBy: integerRange.lowerBound)
-        let end = characters.index(startIndex, offsetBy: integerRange.upperBound)
+        let start = index(startIndex, offsetBy: integerRange.lowerBound)
+        let end = index(startIndex, offsetBy: integerRange.upperBound)
         let range = start..<end
         return String(self[range])
     }
