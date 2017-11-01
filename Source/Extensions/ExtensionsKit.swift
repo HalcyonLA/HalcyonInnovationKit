@@ -138,7 +138,7 @@ extension String {
     
     @available(*, deprecated, message: "Use default count")
     public var length: Int {
-        return characters.count
+        return count
     }
     
     public var capitalizeFirst: String {
