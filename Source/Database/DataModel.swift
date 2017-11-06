@@ -14,7 +14,12 @@ import XCGLogger
 open class DataModel: NSObject {
     
     open static let shared = DataModel()
-    open static var dbName = AppName()
+    open static var dbName = AppName() {
+        didSet {
+            fileName = dbName
+        }
+    }
+    open static var fileName = AppName()
     
     fileprivate var _managedObjectModel: NSManagedObjectModel?
     fileprivate var _persistentStoreCoordinator: NSPersistentStoreCoordinator?
@@ -50,7 +55,7 @@ open class DataModel: NSObject {
                 // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
                 // Create the coordinator and store
                 let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-                let url = self.applicationDocumentsDirectory.appendingPathComponent("\(DataModel.dbName).sqlite")
+                let url = self.applicationDocumentsDirectory.appendingPathComponent("\(DataModel.fileName).sqlite")
                 let options: [String : Any] = [NSMigratePersistentStoresAutomaticallyOption: true,
                                                NSInferMappingModelAutomaticallyOption: true]
                 do {
