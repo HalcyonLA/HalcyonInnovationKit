@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 	ui.framework = "QuartzCore"
 	ui.source_files = "Source/{UI,Extensions}/*.{swift}"
 	ui.dependency 'SDWebImage', '~> 4.2.1'
-	ui.dependency 'MBProgressHUD', '~> 1.0.0'
+	ui.dependency 'MBProgressHUD', '~> 1.1.0'
   end
   
   s.subspec 'Network' do |network|
@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
 	network.dependency 'AFNetworking', '~> 3.1.0'
 	network.dependency 'AFNetworking+RetryPolicy', '~> 1.0.4'
 	network.dependency 'XCGLogger', '~> 6.0.1'
-	network.dependency 'MBProgressHUD', '~> 1.0.0'
+	network.dependency 'MBProgressHUD', '~> 1.1.0'
 	network.dependency 'HalcyonInnovationKit/UI'
   end
   
