@@ -53,6 +53,7 @@ public extension UIDevice {
         if isPhone5()     { return DeviceType.iPhone5     }
         if isPhone6()     { return DeviceType.iPhone6     }
         if isPhone6Plus() { return DeviceType.iPhone6Plus }
+        if isPhoneX()     { return DeviceType.iPhoneX }
         if isPadPro()     { return DeviceType.iPadPro     }
         if isPad()        { return DeviceType.iPad        }
         if isPhone()      { return DeviceType.iPhone      }
