@@ -56,17 +56,17 @@ open class DataModel: NSObject {
                 // Create the coordinator and store
                 let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
                 let url = self.applicationDocumentsDirectory.appendingPathComponent("\(DataModel.fileName).sqlite")
-                let options: [String : Any] = [NSMigratePersistentStoresAutomaticallyOption: true,
-                                               NSInferMappingModelAutomaticallyOption: true]
+                let options: [String: Any] = [NSMigratePersistentStoresAutomaticallyOption: true,
+                                              NSInferMappingModelAutomaticallyOption: true]
                 do {
                     try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: options)
                 } catch {
                     
                     func reportAboutBadPersistentStore() {
                         // Report any error we got.
-                        let info: [String : Any] = [NSLocalizedDescriptionKey: "Failed to initialize the application's saved data",
-                                                    NSLocalizedFailureReasonErrorKey: "There was an error creating or loading the application's saved data.",
-                                                    NSUnderlyingErrorKey: error as NSError]
+                        let info: [String: Any] = [NSLocalizedDescriptionKey: "Failed to initialize the application's saved data",
+                                                   NSLocalizedFailureReasonErrorKey: "There was an error creating or loading the application's saved data.",
+                                                   NSUnderlyingErrorKey: error as NSError]
                         let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: info)
                         // Replace this with code to handle the error appropriately.
                         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
@@ -252,11 +252,11 @@ open class DataModel: NSObject {
     @discardableResult
     open class func deserializeObject<T: NSManagedObject>(_ object: Any?, mapping: DataMapping<T>) -> T? {
         
-        var convertedObject: [String : Any]?
+        var convertedObject: [String: Any]?
         
         if let o = object as? NSDictionary {
-            convertedObject = o as? [String : Any]
-        } else if let o = object as? [String : Any] {
+            convertedObject = o as? [String: Any]
+        } else if let o = object as? [String: Any] {
             convertedObject = o
         }
         

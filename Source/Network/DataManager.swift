@@ -34,7 +34,7 @@ public typealias DataManagerCompletion = (_ response: DataManagerResponse) -> Vo
 open class DataManagerRequest: NSObject {
     
     open var path: String
-    open var parameters: [String : Any] = [:]
+    open var parameters: [String: Any] = [:]
     open var files: [String : MediaData]? = nil
     open weak var sender: AnyObject? = nil
     open weak var loadingView: UIView? = nil
@@ -70,7 +70,7 @@ open class DataManager: NSObject {
     
     open static var BaseURL = ""
     open static var APIVersion = "1"
-    open static var globalParameters: [String : Any]?
+    open static var globalParameters: [String: Any]?
     
     open static var logEnabled = true
     open static var secured = true
@@ -246,31 +246,31 @@ open class DataManager: NSObject {
         
         let successBlock = { (task: URLSessionDataTask, responseObject: Any?) -> Void in
             completionBlock()
-            if let response = responseObject as? [String : Any] {
-                    let json = response["data"]
-                    var error: NSError? = nil
-                    var statusFailed = true
-                    if let status = response["status"] as? String {
-                        statusFailed = status != "ok"
+            if let response = responseObject as? [String: Any] {
+                let json = response["data"]
+                var error: NSError? = nil
+                var statusFailed = true
+                if let status = response["status"] as? String {
+                    statusFailed = status != "ok"
+                }
+                
+                if statusFailed {
+                    var errorDescription = ""
+                    if let message = response["message"] as? String {
+                        errorDescription = message
+                    } else {
+                        errorDescription = "Unkwnown error"
                     }
-                    
-                    if statusFailed {
-                        var errorDescription = ""
-                        if let message = response["message"] as? String {
-                            errorDescription = message
-                        } else {
-                            errorDescription = "Unkwnown error"
-                        }
-                        let userInfo = [NSLocalizedDescriptionKey:errorDescription]
-                        error = NSError(domain: self.apiURL, code: -10000, userInfo: userInfo)
+                    let userInfo = [NSLocalizedDescriptionKey:errorDescription]
+                    error = NSError(domain: self.apiURL, code: -10000, userInfo: userInfo)
+                }
+                if request.log || (!request.log && error != nil) {
+                    if (error != nil) {
+                        self.logString("error: \(error!.localizedDescription)", function: urlLogString)
+                    } else {
+                        self.logString("response: \(String(describing: json))", function: urlLogString)
                     }
-                    if request.log || (!request.log && error != nil) {
-                        if (error != nil) {
-                            self.logString("error: \(error!.localizedDescription)", function: urlLogString)
-                        } else {
-                            self.logString("response: \(String(describing: json))", function: urlLogString)
-                        }
-                    }
+                }
                 request.completion?(DataManagerResponse(response: json as Any?, error: error))
             } else {
                 let userInfo = [NSLocalizedDescriptionKey:"Responce has inccorect data type"]
@@ -309,14 +309,14 @@ open class DataManager: NSObject {
             if let data = formData {
                 bodyBlock(data)
             }
-            }, progress: nil, success: { (task, responseObject) in
-                successBlock(task!, responseObject)
-            }, failure: { (taks, error) in
-                failureBlock(taks, error!)
-            }, retryCount: 2,
-               retryInterval: 2,
-               progressive: true,
-               fatalStatusCodes: [NSNumber(value: 404), NSNumber(value: 500)])
+        }, progress: nil, success: { (task, responseObject) in
+            successBlock(task!, responseObject)
+        }, failure: { (taks, error) in
+            failureBlock(taks, error!)
+        }, retryCount: 2,
+           retryInterval: 2,
+           progressive: true,
+           fatalStatusCodes: [NSNumber(value: 404), NSNumber(value: 500)])
         if task != nil {
             requests.append(request)
         }
@@ -345,7 +345,7 @@ open class DataManager: NSObject {
     
     // MARK: Helpers
     
-    fileprivate func securedParametersForLog(_ parameters: [String : Any]) -> [String : Any] {
+    fileprivate func securedParametersForLog(_ parameters: [String: Any]) -> [String: Any] {
         if !DataManager.secured {
             return parameters
         }

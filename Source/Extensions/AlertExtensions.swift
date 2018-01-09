@@ -75,6 +75,29 @@ public extension NSError {
             UIAlertController.showError(self.localizedDescription)
         }
     }
+    
+    @objc public func showAlert(retryHandle: @escaping () -> ()) {
+        let text: String?
+        if let delegate = NSError.errorDelegate {
+            if delegate.shouldShowError(self) {
+                text = delegate.textForError(self)
+            } else {
+                text = nil
+            }
+        } else {
+            text = localizedDescription
+        }
+        guard let errorText = text else {
+            return
+        }
+        
+        let alert = UIAlertController(title: "Error", message: errorText, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: { (_) in
+            retryHandle()
+        }))
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        alert.show()
+    }
 }
 
 var AssociatedWindow: UInt8 = 0

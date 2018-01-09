@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
   s.requires_arc = true
-  s.version = "1.3.9"
+  s.version = "1.3.10"
   s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
   s.license = { :type => "MIT", :file => "LICENSE" }
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
 	ui.framework = "Accelerate"
 	ui.framework = "QuartzCore"
 	ui.source_files = "Source/{UI,Extensions}/*.{swift}"
-	ui.dependency 'SDWebImage', '~> 4.2.1'
+	ui.dependency 'SDWebImage', '~> 4.2.3'
 	ui.dependency 'MBProgressHUD', '~> 1.1.0'
   end
   
@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
 	network.source_files = "Source/Network/*.{swift}"
 	network.dependency 'AFNetworking', '~> 3.1.0'
 	network.dependency 'AFNetworking+RetryPolicy', '~> 1.0.4'
-	network.dependency 'XCGLogger', '~> 6.0.1'
+	network.dependency 'XCGLogger', '~> 6.0.2'
 	network.dependency 'MBProgressHUD', '~> 1.1.0'
 	network.dependency 'HalcyonInnovationKit/UI'
   end
@@ -45,7 +45,7 @@ Pod::Spec.new do |s|
   	database.framework = "CoreData"
 	database.source_files = "Source/Database/*.{swift}"
 	database.dependency 'FastEasyMapping', '~> 1.2.2'
-	database.dependency 'XCGLogger', '~> 6.0.1'
+	database.dependency 'XCGLogger', '~> 6.0.2'
 	database.dependency 'HalcyonInnovationKit/UI'
   end
 

@@ -22,7 +22,7 @@ open class DataMapping<T: MappingProtocol>: FEMMapping {
         }
     }
     
-    open func addNumberAttributes(_ attributes: [String : String]) {
+    open func addNumberAttributes(_ attributes: [String: String]) {
         for (property, path) in attributes {
             let attribute = FEMAttribute(property: property, keyPath: path, map: { (value) -> AnyObject? in
                 if let number = value as? NSNumber {
