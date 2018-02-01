@@ -113,7 +113,9 @@ open class DataManager: NSObject {
         serializer.acceptableStatusCodes = codes as IndexSet
         serializer.acceptableContentTypes = ["text/html", "text/plain", "application/json"]
         
-        sessionManager.securityPolicy = AFSecurityPolicy(pinningMode: .certificate)
+        if DataManager.BaseURL.contains("https://") {
+            sessionManager.securityPolicy = AFSecurityPolicy(pinningMode: .certificate)
+        }
         sessionManager.responseSerializer = serializer
     }
     

@@ -61,19 +61,27 @@ import SDWebImage
     
     @discardableResult
     @objc public func showLoadingHUD(_ show: Bool) -> MBProgressHUD? {
-        if (show) {
-            let hud = MBProgressHUD.showAdded(to: self, animated: true)
-            hud.mode = .indeterminate
-            hud.label.text = "Loading"
-            hud.removeFromSuperViewOnHide = true
-            return hud
+        if show {
+            return showLoadingHUD()
         } else {
-            for view in subviews {
-                if let hud = view as? MBProgressHUD {
-                    hud.hide(animated: true)
-                }
-            }
+            hideLoadingHUD()
             return nil
+        }
+    }
+    
+    @discardableResult public func showLoadingHUD() -> MBProgressHUD {
+        let hud = MBProgressHUD.showAdded(to: self, animated: true)
+        hud.mode = .indeterminate
+        hud.label.text = "Loading"
+        hud.removeFromSuperViewOnHide = true
+        return hud
+    }
+    
+    public func hideLoadingHUD() {
+        for view in subviews {
+            if let hud = view as? MBProgressHUD {
+                hud.hide(animated: true)
+            }
         }
     }
     
