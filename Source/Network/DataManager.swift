@@ -93,12 +93,14 @@ open class DataManager: NSObject {
     open static var GlobalLoadingView: UIView { return UIApplication.shared.keyWindow! }
     
     fileprivate var networkActivityCount = 0
-    fileprivate let sessionManager = AFHTTPSessionManager()
+    private lazy var sessionManager: AFHTTPSessionManager = {
+        return AFHTTPSessionManager(baseURL: URL(string: DataManager.BaseURL)!)
+    }()
     fileprivate var requests = [DataManagerRequest]()
     
     fileprivate var apiURL: String {
         get {
-            return "\(DataManager.BaseURL)/api/\(DataManager.APIVersion)/"
+            return "api/\(DataManager.APIVersion)/"
         }
     }
     
@@ -112,7 +114,6 @@ open class DataManager: NSObject {
         let serializer = AFJSONResponseSerializer()
         serializer.acceptableStatusCodes = codes as IndexSet
         serializer.acceptableContentTypes = ["text/html", "text/plain", "application/json"]
-        
         if DataManager.BaseURL.contains("https://") {
             sessionManager.securityPolicy = AFSecurityPolicy(pinningMode: .certificate)
         }
