@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
   s.requires_arc = true
-  s.version = "1.3.14"
+  s.version = "1.3.15"
   s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
   s.license = { :type => "MIT", :file => "LICENSE" }
@@ -52,7 +52,8 @@ Pod::Spec.new do |s|
 
   s.subspec 'Crypto' do |crypto|
     crypto.source_files = "Source/Crypto/*.{swift}"
-    crypto.dependency 'CryptoSwift', '~> 0.8.0'
+    crypto.dependency 'HalcyonInnovationKit/Network'
+    crypto.dependency 'CryptoSwift', '~> 0.8.1'
   end
 
 end
