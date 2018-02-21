@@ -13,7 +13,12 @@ public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
 @objc open class HIViewController: UIViewController {
     
     private var oldKbHeight: CGFloat = 0
-    private var closeGesture: UITapGestureRecognizer!
+    
+    open lazy var closeGesture: UITapGestureRecognizer = {
+        let closeGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
+        closeGesture.isEnabled = false
+        return closeGesture
+    }()
     
     open private(set) var keyboardAppeared: Bool = false
     
@@ -23,9 +28,7 @@ public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        closeGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
-        closeGesture!.isEnabled = false
-        view.addGestureRecognizer(closeGesture!)
+        view.addGestureRecognizer(closeGesture)
     }
     
     open override func viewWillAppear(_ animated: Bool) {
