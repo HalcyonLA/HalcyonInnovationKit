@@ -73,13 +73,13 @@ public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
     @objc open func keyboardWillChangeFrame(_ notification: Notification) {
         let userInfo = notification.userInfo!
         
-        var kbEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
-        kbEndFrame = view.convert(kbEndFrame!, from: nil)
+        var kbEndFrame: CGRect = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
+        kbEndFrame = view.convert(kbEndFrame, from: nil)
         
-        var kbStartFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
-        kbStartFrame = view.convert(kbStartFrame!, from: nil)
+        var kbStartFrame: CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
+        kbStartFrame = view.convert(kbStartFrame, from: nil)
         
-        var kbHeight = view.frame.height - (kbEndFrame?.minY)!
+        var kbHeight = view.frame.height - kbEndFrame.minY
         if kbHeight < 0 {
             kbHeight = 0
         }
@@ -93,9 +93,14 @@ public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
         UIView.setAnimationCurve(curve)
         UIView.setAnimationBeginsFromCurrentState(true)
         
+        keyboardFrameWillChange(with: kbStartFrame, endFrame: kbEndFrame)
         viewWillAdjustForKeyboardFrameChange(kbOffset)
         
         UIView.commitAnimations()
+    }
+    
+    @objc open func keyboardFrameWillChange(with startFrame: CGRect, endFrame: CGRect) {
+        
     }
     
     @objc open func viewWillAdjustForKeyboardFrameChange(_ keyboardOffset: CGFloat) {
