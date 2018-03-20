@@ -336,6 +336,13 @@ extension MappingProtocol where Self: NSManagedObject {
     }
 }
 
+public extension NSEntityDescription {
+    public static func create<T: NSManagedObject>(entity: T.Type) -> T {
+        let object = NSEntityDescription.insertNewObject(forEntityName: "\(entity)", into: DataModel.shared.managedObjectContext) as! T
+        return object
+    }
+}
+
 public extension NSManagedObject {
     public func delete() {
         DataModel.deleteObject(self)
