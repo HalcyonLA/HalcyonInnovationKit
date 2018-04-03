@@ -351,29 +351,33 @@ public extension NSAttributedString {
 
 extension NSRange {
     init(location: Int, length: Int) {
+        self.init()
         self.location = location
         self.length = length
     }
     
     init(_ location: Int, _ length: Int) {
+        self.init()
         self.location = location
         self.length = length
     }
     
     init(range:Range <Int>) {
+        self.init()
         location = range.lowerBound
         length = range.upperBound - range.lowerBound
     }
     
     init(_ range:Range <Int>) {
+        self.init()
         location = range.lowerBound
         length = range.upperBound - range.lowerBound
     }
     
-    var startIndex:Int { get { return location } }
-    var endIndex:Int { get { return location + length } }
-    var asRange:CountableRange<Int> { get { return location..<location + length } }
-    var isEmpty:Bool { get { return length == 0 } }
+    var startIndex: Int { get { return location } }
+    var endIndex: Int { get { return location + length } }
+    var asRange: CountableRange<Int> { get { return location..<location + length } }
+    var isEmpty: Bool { get { return length == 0 } }
     
     func contains(_ index:Int) -> Bool {
         return index >= location && index < endIndex

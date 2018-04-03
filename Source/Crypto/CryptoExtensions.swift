@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import CryptoSwift
-import HalcyonInnovationKit
 
 extension UIImage {
     public func toMediaData(quality: CGFloat = 0.9) -> MediaData {
