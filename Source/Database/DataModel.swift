@@ -140,7 +140,7 @@ open class DataModel: NSObject {
     
     // MARK: - Fetch
     
-    open class func getEntity<T: NSManagedObject>(_ entity: T.Type, objectId: NSNumber) -> T? where T: MappingProtocol {
+    fileprivate class func getEntity<T: NSManagedObject>(_ entity: T.Type, objectId: NSObject) -> T? where T: MappingProtocol {
         let predicate = NSPredicate(format: "(%K == %@)", T.primaryKey(), objectId)
         let items = DataModel.fetchEntity(entity, predicate: predicate)
         return items.first
@@ -330,8 +330,12 @@ extension MappingProtocol where Self: NSManagedObject {
         return _fetch(NSNumber(value: objectId))
     }
     
+    public static func fetch(_ uuid: String) -> Self? {
+        return _fetch(uuid as NSString)
+    }
+    
     //helper for get correct object type
-    fileprivate static func _fetch<T: NSManagedObject>(_ id: NSNumber) -> T? {
+    fileprivate static func _fetch<T: NSManagedObject>(_ id: NSObject) -> T? {
         return DataModel.getEntity(self, objectId: id) as? T
     }
 }
