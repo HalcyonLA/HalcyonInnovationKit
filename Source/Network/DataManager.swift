@@ -12,6 +12,10 @@ import AFNetworking_RetryPolicy
 import MBProgressHUD
 import XCGLogger
 
+public protocol DataManagerErrorDelegate: NSObjectProtocol {
+    func handleError(_ error: NSError)
+}
+
 open class DataManagerResponse: NSObject {
     open var response: Any? = nil
     open var error: NSError? = nil
@@ -79,6 +83,7 @@ open class DataManager: NSObject {
     
     open static let shared = DataManager()
     
+    open weak var errorDelegate: DataManagerErrorDelegate?
     open var securityPolicy: AFSecurityPolicy {
         set {
             sessionManager.securityPolicy = newValue
@@ -261,8 +266,10 @@ open class DataManager: NSObject {
                     } else {
                         errorDescription = "Unkwnown error"
                     }
-                    let userInfo = [NSLocalizedDescriptionKey:errorDescription]
-                    error = NSError(domain: self.apiURL, code: -10000, userInfo: userInfo)
+                    let userInfo = [NSLocalizedDescriptionKey: errorDescription]
+                    let code = response["code"] as? Int ?? -10000
+                    error = NSError(domain: self.apiURL, code: code, userInfo: userInfo)
+                    self.errorDelegate?.handleError(error!)
                 }
                 if request.log || (!request.log && error != nil) {
                     if (error != nil) {
