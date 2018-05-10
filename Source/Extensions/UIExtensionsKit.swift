@@ -211,6 +211,14 @@ public extension UIViewController {
         return top
     }
     
+    @objc public class func optionalTop() -> UIViewController? {
+        var top = UIApplication.shared.keyWindow?.rootViewController
+        while top?.presentedViewController != nil {
+            top = top?.presentedViewController
+        }
+        return top
+    }
+    
     @objc public func prepareForTransparency() {
         providesPresentationContextTransitionStyle = true
         definesPresentationContext = true
