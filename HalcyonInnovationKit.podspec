@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
   s.requires_arc = true
-  s.version = "1.3.23"
+  s.version = "1.3.24"
   s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
   s.license = { :type => "MIT", :file => "LICENSE" }
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 	  ui.framework = "Accelerate"
 	  ui.framework = "QuartzCore"
 	  ui.source_files = "Source/{UI,Extensions}/*.{swift}"
-	  ui.dependency 'SDWebImage', '~> 4.3.0'
+	  ui.dependency 'SDWebImage', '~> 4.4.0'
 	  ui.dependency 'MBProgressHUD', '~> 1.1.0'
   end
   
@@ -53,7 +53,7 @@ Pod::Spec.new do |s|
   s.subspec 'Crypto' do |crypto|
     crypto.source_files = "Source/Crypto/*.{swift}"
     crypto.dependency 'HalcyonInnovationKit/Network'
-    crypto.dependency 'CryptoSwift', '~> 0.9.0'
+    crypto.dependency 'CryptoSwift', '~> 0.10.0'
   end
 
 end
