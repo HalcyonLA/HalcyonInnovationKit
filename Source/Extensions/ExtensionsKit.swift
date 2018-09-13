@@ -518,7 +518,7 @@ public extension UIImage {
             posY = ceil(posY)
         }
         
-        if (imageOrientation == UIImageOrientation.left || imageOrientation == .right) {
+        if (imageOrientation == .left || imageOrientation == .right) {
             cropSquare = CGRect(x: posY, y: posX, width: edge, height: edge)
         } else {
             cropSquare = CGRect(x: posX, y: posY, width: edge, height: edge)

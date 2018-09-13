@@ -12,7 +12,7 @@ import CryptoSwift
 
 extension UIImage {
     public func toMediaData(quality: CGFloat = 0.9) -> MediaData {
-        let data = UIImageJPEGRepresentation(self, quality)!
+        let data = jpegData(compressionQuality: quality)!
         let hash = data.md5()
         let name = hash.hexString() + ".jpg"
         let mediaData = MediaData(data: data, name: name, contentType: "image/jpg")

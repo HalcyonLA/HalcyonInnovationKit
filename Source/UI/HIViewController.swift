@@ -33,14 +33,25 @@ public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(_:)), name: .UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear(_:)), name: .UIKeyboardWillHide, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: .UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillAppear(_:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillDisappear(_:)),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillChangeFrame(_:)),
+                                               name: UIResponder.keyboardWillChangeFrameNotification,
+                                               object: nil)
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let names: [NSNotification.Name] = [.UIKeyboardWillShow, .UIKeyboardWillHide, .UIKeyboardWillChangeFrame]
+        let names: [NSNotification.Name] = [UIResponder.keyboardWillShowNotification,
+                                            UIResponder.keyboardWillHideNotification,
+                                            UIResponder.keyboardWillChangeFrameNotification]
         for name in names {
             NotificationCenter.default.removeObserver(self, name: name, object: nil)
         }
@@ -73,10 +84,10 @@ public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
     @objc open func keyboardWillChangeFrame(_ notification: Notification) {
         let userInfo = notification.userInfo!
         
-        var kbEndFrame: CGRect = (userInfo[UIKeyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
+        var kbEndFrame: CGRect = (userInfo[UIResponder.keyboardFrameEndUserInfoKey]! as AnyObject).cgRectValue
         kbEndFrame = view.convert(kbEndFrame, from: nil)
         
-        var kbStartFrame: CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
+        var kbStartFrame: CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
         kbStartFrame = view.convert(kbStartFrame, from: nil)
         
         var kbHeight = view.frame.height - kbEndFrame.minY
@@ -88,8 +99,8 @@ public var HIViewControllerStatusBarStyle: UIStatusBarStyle = .default
         oldKbHeight = kbHeight
         
         UIView.beginAnimations(nil, context: nil)
-        UIView.setAnimationDuration((userInfo[UIKeyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue)
-        let curve = UIViewAnimationCurve(rawValue: (userInfo[UIKeyboardAnimationCurveUserInfoKey]! as AnyObject).intValue)!
+        UIView.setAnimationDuration((userInfo[UIResponder.keyboardAnimationDurationUserInfoKey]! as AnyObject).doubleValue)
+        let curve = UIView.AnimationCurve(rawValue: (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey]! as AnyObject).intValue)!
         UIView.setAnimationCurve(curve)
         UIView.setAnimationBeginsFromCurrentState(true)
         

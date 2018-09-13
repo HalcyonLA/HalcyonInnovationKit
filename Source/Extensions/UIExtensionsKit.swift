@@ -130,8 +130,8 @@ import SDWebImage
         let animation = CAKeyframeAnimation(keyPath: "transform")
         animation.values = values
         animation.keyTimes = times
-        animation.fillMode = kCAFillModeForwards
-        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        animation.fillMode = .forwards
+        animation.timingFunction = CAMediaTimingFunction(name: .easeOut)
         animation.isRemovedOnCompletion = false
         animation.duration = Double(duration)
         return animation
@@ -139,7 +139,7 @@ import SDWebImage
 }
 
 public extension UIImageView {
-    @objc public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorViewStyle) {
+    @objc public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorView.Style) {
         if urlString == nil || urlString?.count == 0 {
             image = placeholderImage
         } else {
@@ -151,7 +151,7 @@ public extension UIImageView {
         }
     }
     
-    @objc public func prepare(activityIndicatorStyle: UIActivityIndicatorViewStyle) {
+    @objc public func prepare(activityIndicatorStyle: UIActivityIndicatorView.Style) {
         sd_setIndicatorStyle(activityIndicatorStyle)
         sd_setShowActivityIndicatorView(true)
     }
@@ -198,7 +198,7 @@ public extension UIButton {
     
     @objc public func setBackgroundImageWithColor(_ backgroundColor: UIColor) {
         let background = UIImage.imageWithColor(backgroundColor)
-        self.setBackgroundImage(background, for: UIControlState())
+        setBackgroundImage(background, for: .normal)
     }
 }
 

@@ -221,7 +221,7 @@ open class DataManager: NSObject {
         let bodyBlock = { (formData: AFMultipartFormData) -> Void in
             if let files = request.files {
                 for (key, value) in files {
-                    formData.appendPart(withFileData: value.data! as Data, name: key, fileName: value.name!, mimeType: value.contentType!)
+                    formData.appendPart(withFileData: value.data, name: key, fileName: value.name, mimeType: value.contentType)
                 }
             }
         }
