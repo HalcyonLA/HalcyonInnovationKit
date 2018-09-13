@@ -14,6 +14,7 @@ public enum DeviceMaxHeight: CGFloat {
     case iPhone6     = 667.0
     case iPhone6Plus = 736.0
     case iPhoneX     = 812.0
+    case iPhoneXMax  = 896.0
     case iPad        = 1024.0
     case iPadPro     = 1366.0
 }
@@ -25,6 +26,7 @@ public enum DeviceMaxHeight: CGFloat {
     case iPhone6
     case iPhone6Plus
     case iPhoneX
+    case iPhoneXMax
     case iPad
     case iPadPro
     case unknown
@@ -53,7 +55,8 @@ public extension UIDevice {
         if isPhone5()     { return DeviceType.iPhone5     }
         if isPhone6()     { return DeviceType.iPhone6     }
         if isPhone6Plus() { return DeviceType.iPhone6Plus }
-        if isPhoneX()     { return DeviceType.iPhoneX }
+        if isPhoneX()     { return DeviceType.iPhoneX     }
+        if isPhoneXMax()  { return DeviceType.iPhoneXMax  }
         if isPadPro()     { return DeviceType.iPadPro     }
         if isPad()        { return DeviceType.iPad        }
         if isPhone()      { return DeviceType.iPhone      }
@@ -86,6 +89,10 @@ public extension UIDevice {
     
     @objc public class func isPhoneX() -> Bool {
         return isPhone() && deviceHeight() == DeviceMaxHeight.iPhoneX.rawValue
+    }
+    
+    @objc public class func isPhoneXMax() -> Bool {
+        return isPhone() && deviceHeight() == DeviceMaxHeight.iPhoneXMax.rawValue
     }
     
     @objc public class func isPadPro() -> Bool {
