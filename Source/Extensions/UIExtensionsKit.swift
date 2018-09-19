@@ -328,28 +328,28 @@ public extension UITableView {
     
     public func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
         let reuseIdentifier = cellClass.reuseIdentifier
-        self.register(cellClass, forCellReuseIdentifier: reuseIdentifier)
+        register(cellClass, forCellReuseIdentifier: reuseIdentifier)
         if withNib {
             let nib = UINib(nibName: reuseIdentifier, bundle: nil)
-            self.register(nib, forCellReuseIdentifier: reuseIdentifier)
+            register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
     }
     
     public func dequeueReusableCellWithClass<T: UITableViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T {
-        return self.dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as! T
+        return dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
     public func registerReusableHeaderFooterViewClass(_ headerFooterViewClass: Reusable.Type, withNib: Bool = false) {
         let reuseIdentifier = headerFooterViewClass.reuseIdentifier
-        self.register(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
+        register(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
         if withNib {
             let nib = UINib(nibName: reuseIdentifier, bundle: nil)
-            self.register(nib, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
+            register(nib, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
         }
     }
     
-    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView>(_ headerFooterViewClass: T.Type = T.self) -> T? {
-        return self.dequeueReusableHeaderFooterView(withIdentifier: T.reuseIdentifier) as? T
+    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView>(_ headerFooterViewClass: T.Type = T.self) -> T {
+        return dequeueReusableHeaderFooterView(withIdentifier: T.reuseIdentifier) as! T
     }
 }
 

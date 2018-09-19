@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
   s.requires_arc = true
-  s.version = "1.3.27"
+  s.version = "1.3.28"
   s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
   s.license = { :type => "MIT", :file => "LICENSE" }
@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
 	  network.source_files = "Source/Network/*.{swift}"
 	  network.dependency 'AFNetworking', '~> 3.2.0'
 	  network.dependency 'AFNetworking+RetryPolicy', '~> 1.0.4'
-	  network.dependency 'XCGLogger', '~> 6.0.2'
+	  network.dependency 'XCGLogger', '~> 6.1.0'
 	  network.dependency 'MBProgressHUD', '~> 1.1.0'
 	  network.dependency 'HalcyonInnovationKit/UI'
   end
@@ -46,7 +46,7 @@ Pod::Spec.new do |s|
   	database.framework = "CoreData"
 	  database.source_files = "Source/Database/*.{swift}"
 	  database.dependency 'FastEasyMapping', '~> 1.2.2'
-	  database.dependency 'XCGLogger', '~> 6.0.2'
+	  database.dependency 'XCGLogger', '~> 6.1.0'
 	  database.dependency 'HalcyonInnovationKit/UI'
   end
 
