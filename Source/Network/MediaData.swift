@@ -10,9 +10,9 @@ import Foundation
 
 @objc open class MediaData: NSObject {
     
-    @objc open let data: Data
-    @objc open let name: String
-    @objc open let contentType: String
+    @objc public let data: Data
+    @objc public let name: String
+    @objc public let contentType: String
     
     @objc public init(data: Data, name: String, contentType: String) {
         self.data = data

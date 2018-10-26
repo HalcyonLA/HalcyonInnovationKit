@@ -13,13 +13,13 @@ import XCGLogger
 
 open class DataModel: NSObject {
     
-    open static let shared = DataModel()
-    open static var dbName = AppName() {
+    public static let shared = DataModel()
+    public static var dbName = AppName() {
         didSet {
             fileName = dbName
         }
     }
-    open static var fileName = AppName()
+    public static var fileName = AppName()
     
     fileprivate var _managedObjectModel: NSManagedObjectModel?
     fileprivate var _persistentStoreCoordinator: NSPersistentStoreCoordinator?
