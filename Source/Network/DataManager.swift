@@ -72,16 +72,21 @@ open class DataManagerRequest: NSObject {
 
 open class DataManager: NSObject {
     
-    public static var BaseURL = ""
-    public static var APIVersion = "1"
-    public static var globalParameters: [String: Any]?
+    open static var BaseURL = ""
+    open static var APIVersion = "1"
+    open static var globalParameters: [String: Any]?
     
-    public static var logEnabled = true
-    public static var secured = true
+    open static var logEnabled = true
+    open static var secured = true
     
     fileprivate let securedKeys = ["password", "token"]
     
-    public static let shared = DataManager()
+    open static let shared = DataManager()
+    open var requestHeaders: [String: String]? {
+        didSet {
+            setHeaders(requestHeaders)
+        }
+    }
     
     open weak var errorDelegate: DataManagerErrorDelegate?
     open var securityPolicy: AFSecurityPolicy {
@@ -95,7 +100,7 @@ open class DataManager: NSObject {
     
     fileprivate let log = XCGLogger.default
     
-    public static var GlobalLoadingView: UIView { return UIApplication.shared.keyWindow! }
+    open static var GlobalLoadingView: UIView { return UIApplication.shared.keyWindow! }
     
     fileprivate var networkActivityCount = 0
     private lazy var sessionManager: AFHTTPSessionManager = {
@@ -120,6 +125,20 @@ open class DataManager: NSObject {
         serializer.acceptableStatusCodes = codes as IndexSet
         serializer.acceptableContentTypes = ["text/html", "text/plain", "application/json"]
         sessionManager.responseSerializer = serializer
+        
+        setHeaders(requestHeaders)
+    }
+    
+    private func setHeaders(_ headers: [String: String]?) {
+        let requestSerializer = sessionManager.requestSerializer
+        for (key, _) in requestSerializer.httpRequestHeaders {
+            requestSerializer.setValue(nil, forHTTPHeaderField: key)
+        }
+        if let data = headers {
+            for (key, value) in data {
+                requestSerializer.setValue(value, forHTTPHeaderField: key)
+            }
+        }
     }
     
     // MARK: Network Acvitiy Indicator
@@ -145,13 +164,13 @@ open class DataManager: NSObject {
     // MARK: Loading Indicator
     
     @discardableResult
-    @objc public static func showLoading(_ show: Bool, inView: UIView) -> MBProgressHUD? {
+    @objc open static func showLoading(_ show: Bool, inView: UIView) -> MBProgressHUD? {
         return inView.showLoadingHUD(show)
     }
     
     // MARK: Error check
     
-    public static func isErrorFromAPI(_ error: NSError?) -> Bool {
+    open static func isErrorFromAPI(_ error: NSError?) -> Bool {
         if (error == nil) {
             return false
         }
@@ -311,7 +330,6 @@ open class DataManager: NSObject {
             }
             cleanFinishedRequests(task)
         }
-        
         let task = sessionManager.post(urlString, parameters: ["json":json], constructingBodyWith: { (formData) in
             if let data = formData {
                 bodyBlock(data)
