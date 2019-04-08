@@ -152,7 +152,9 @@ public extension UIImageView {
     @objc func prepare(activityIndicatorStyle: UIActivityIndicatorView.Style) {
         let indicator = SDWebImageActivityIndicator()
         indicator.indicatorView.style = activityIndicatorStyle
+        indicator.indicatorView.hidesWhenStopped = true
         sd_imageIndicator = indicator
+        indicator.indicatorView.isHidden = true
     }
 }
 
