@@ -11,35 +11,35 @@ import QuartzCore
 import Accelerate
 import MapKit
 
-func UIColorFromHex(_ hex: UInt32) -> UIColor {
+public func UIColorFromHex(_ hex: UInt32) -> UIColor {
     return UIColor(hex: hex)
 }
 
-func UIColorFromHexWithAlpha(_ hex: UInt32, alpha: Float) -> UIColor {
+public func UIColorFromHexWithAlpha(_ hex: UInt32, alpha: Float) -> UIColor {
     return UIColor(hex: hex, alpha: alpha)
 }
 
-func AppName() -> String {
+public func AppName() -> String {
     return Bundle.main.object(forInfoDictionaryKey: kCFBundleNameKey as String) as! String
 }
 
-func synced(_ lock: Any, closure: () -> ()) {
+public func synced(_ lock: Any, closure: () -> ()) {
     objc_sync_enter(lock)
     closure()
     objc_sync_exit(lock)
 }
 
-func +=<K, V> ( left: inout [K : V], right: [K : V]) { for (k, v) in right { left[k] = v } }
+public func +=<K, V> ( left: inout [K : V], right: [K : V]) { for (k, v) in right { left[k] = v } }
 
-func +<K, V> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k, v) in  right { new[k] = v }; return new }
+public func +<K, V> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k, v) in  right { new[k] = v }; return new }
 
-func -<K, V: Comparable> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k,v) in right { if let n = new[k] , n == v { new.removeValue(forKey: k)}}; return new }
+public func -<K, V: Comparable> (left: [K : V], right: [K : V]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for (k,v) in right { if let n = new[k] , n == v { new.removeValue(forKey: k)}}; return new }
 
-func -<K, V> (left: [K : V], right: [K]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for k in right {  new.removeValue(forKey: k)}; return new }
+public func -<K, V> (left: [K : V], right: [K]) -> [K : V]{var new = [K : V](); for (k, v) in  left { new[k] = v }; for k in right {  new.removeValue(forKey: k)}; return new }
 
-func -=<K, V: Comparable> ( left: inout [K : V], right: [K : V]){for (k,v) in right { if let n = left[k] , n == v { left.removeValue(forKey: k)}}}
+public func -=<K, V: Comparable> ( left: inout [K : V], right: [K : V]){for (k,v) in right { if let n = left[k] , n == v { left.removeValue(forKey: k)}}}
 
-func -=<K, V> ( left: inout [K : V], right: [K]) {for k in right { left.removeValue(forKey: k)}}
+public func -=<K, V> ( left: inout [K : V], right: [K]) {for k in right { left.removeValue(forKey: k)}}
 
 extension CLLocationCoordinate2D: Equatable {
     func isZero() -> Bool {
@@ -51,7 +51,7 @@ public func ==(lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool
     return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
 }
 
-extension NSObject {
+public extension NSObject {
     @objc public var className: String {
         return type(of: self).className
     }
@@ -61,13 +61,13 @@ extension NSObject {
     }
 }
 
-extension Array {
+public extension Array {
     public mutating func rearrange(from: Int, to: Int) {
         insert(remove(at: from), at: to)
     }
 }
 
-extension UIColor {
+public extension UIColor {
     @objc public convenience init(hex: UInt32, alpha: Float = 1) {
         let divisor = CGFloat(255)
         let red     = CGFloat((hex & 0xFF0000) >> 16) / divisor
@@ -81,7 +81,7 @@ extension UIColor {
     }
 }
 
-extension NSString {
+public extension NSString {
     @objc func trimmed() -> NSString {
         return String(self).trimmed()
     }
@@ -123,7 +123,7 @@ extension NSString {
     }
 }
 
-extension String {
+public extension String {
     public subscript(integerIndex: Int) -> Character {
         let index = self.index(startIndex, offsetBy: integerIndex)
         return self[index]
@@ -349,7 +349,7 @@ public extension NSAttributedString {
     }
 }
 
-extension NSRange {
+public extension NSRange {
     init(location: Int, length: Int) {
         self.init()
         self.location = location
