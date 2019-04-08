@@ -47,11 +47,11 @@ import SDWebImage
         }
     }
     
-    @objc public func applyFullAutoresizingMask() {
+    @objc func applyFullAutoresizingMask() {
         self.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin]
     }
     
-    @objc public func screenshot() -> UIImage {
+    @objc func screenshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
         self.drawHierarchy(in: bounds, afterScreenUpdates: false)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -60,7 +60,7 @@ import SDWebImage
     }
     
     @discardableResult
-    @objc public func showLoadingHUD(_ show: Bool) -> MBProgressHUD? {
+    @objc func showLoadingHUD(_ show: Bool) -> MBProgressHUD? {
         if show {
             return showLoadingHUD()
         } else {
@@ -69,7 +69,7 @@ import SDWebImage
         }
     }
     
-    @discardableResult public func showLoadingHUD() -> MBProgressHUD {
+    @discardableResult func showLoadingHUD() -> MBProgressHUD {
         let hud = MBProgressHUD.showAdded(to: self, animated: true)
         hud.mode = .indeterminate
         hud.label.text = "Loading"
@@ -77,7 +77,7 @@ import SDWebImage
         return hud
     }
     
-    public func hideLoadingHUD() {
+    func hideLoadingHUD() {
         for view in subviews {
             if let hud = view as? MBProgressHUD {
                 hud.hide(animated: true)
@@ -85,7 +85,7 @@ import SDWebImage
         }
     }
     
-    @objc public func shake() {
+    @objc func shake() {
         let kAnimationShake = "Shake"
         let shakeAnimation = self.shakeAnimation()
         
@@ -139,56 +139,55 @@ import SDWebImage
 }
 
 public extension UIImageView {
-    @objc public func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorView.Style) {
+    @objc func setImageWithString(_ urlString: String?, placeholderImage: UIImage? = nil, activityIndicatorStyle: UIActivityIndicatorView.Style) {
         if urlString == nil || urlString?.count == 0 {
             image = placeholderImage
         } else {
-            sd_setShowActivityIndicatorView(true)
-            sd_setIndicatorStyle(activityIndicatorStyle)
             if let url = URL(string: urlString!) {
                 sd_setImage(with: url, placeholderImage: placeholderImage)
             }
         }
     }
     
-    @objc public func prepare(activityIndicatorStyle: UIActivityIndicatorView.Style) {
-        sd_setIndicatorStyle(activityIndicatorStyle)
-        sd_setShowActivityIndicatorView(true)
+    @objc func prepare(activityIndicatorStyle: UIActivityIndicatorView.Style) {
+        let indicator = SDWebImageActivityIndicator()
+        indicator.indicatorView.style = activityIndicatorStyle
+        sd_imageIndicator = indicator
     }
 }
 
 public extension UITextField {
-   @objc  public func setPlaceholderColor(_ color: UIColor) {
+   @objc  func setPlaceholderColor(_ color: UIColor) {
         if let text = placeholder {
             attributedPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: color])
         }
     }
     
-    @objc public func setLeft(padding: CGFloat) {
+    @objc func setLeft(padding: CGFloat) {
         leftView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
         leftViewMode = .always
     }
     
-    @objc public func setRight(padding: CGFloat) {
+    @objc func setRight(padding: CGFloat) {
         rightView = UIView(frame: CGRect(x: 0, y: 0, width: padding, height: 1))
         rightViewMode = .always
     }
     
-    @objc public func setPaddings(_ padding: CGFloat) {
+    @objc func setPaddings(_ padding: CGFloat) {
         setLeft(padding: padding)
         setRight(padding: padding)
     }
 }
 
 public extension UITextView {
-   @objc  public func clearInsets() {
+   @objc  func clearInsets() {
         textContainer.lineFragmentPadding = 0
         textContainerInset = .zero
     }
 }
 
 public extension UIButton {
-    @objc public func backgroundToImage() {
+    @objc func backgroundToImage() {
         if let color = backgroundColor {
             setBackgroundImageWithColor(color)
             backgroundColor = nil
@@ -196,14 +195,14 @@ public extension UIButton {
         }
     }
     
-    @objc public func setBackgroundImageWithColor(_ backgroundColor: UIColor) {
+    @objc func setBackgroundImageWithColor(_ backgroundColor: UIColor) {
         let background = UIImage.imageWithColor(backgroundColor)
         setBackgroundImage(background, for: .normal)
     }
 }
 
 public extension UIViewController {
-    @objc public class func top() -> UIViewController {
+    @objc class func top() -> UIViewController {
         var top = UIApplication.shared.keyWindow!.rootViewController!
         while top.presentedViewController != nil {
             top = top.presentedViewController!
@@ -211,7 +210,7 @@ public extension UIViewController {
         return top
     }
     
-    @objc public class func optionalTop() -> UIViewController? {
+    @objc class func optionalTop() -> UIViewController? {
         var top = UIApplication.shared.keyWindow?.rootViewController
         while top?.presentedViewController != nil {
             top = top?.presentedViewController
@@ -219,7 +218,7 @@ public extension UIViewController {
         return top
     }
     
-    @objc public func prepareForTransparency() {
+    @objc func prepareForTransparency() {
         providesPresentationContextTransitionStyle = true
         definesPresentationContext = true
         modalPresentationStyle = .overCurrentContext
@@ -227,7 +226,7 @@ public extension UIViewController {
 }
 
 public extension UIBarButtonItem {
-    @objc public class func spacerWithWidth(_ width: Float) -> UIBarButtonItem {
+    @objc class func spacerWithWidth(_ width: Float) -> UIBarButtonItem {
         let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         spacer.width = CGFloat(width)
         return spacer
@@ -250,7 +249,7 @@ extension UICollectionReusableView: Reusable { }
 extension MKAnnotationView: Reusable { }
 
 public extension UIScrollView {
-    @objc public func scrollToEnd(animated: Bool = true) {
+    @objc func scrollToEnd(animated: Bool = true) {
         var offset = CGPoint.zero
         let inset = contentInset
         if (contentSize.height > contentSize.width) {
@@ -261,7 +260,7 @@ public extension UIScrollView {
         self.setContentOffset(offset, animated: animated)
     }
     
-    @objc public var topRefreshControl: UIRefreshControl? {
+    @objc var topRefreshControl: UIRefreshControl? {
         set {
             if #available(iOS 10.0, *) {
                 self.refreshControl = newValue
@@ -291,7 +290,7 @@ public extension UIScrollView {
         }
     }
     
-    public func adjustForKeyboardChange(_ keyboardOffset: CGFloat) {
+    func adjustForKeyboardChange(_ keyboardOffset: CGFloat) {
         var insets = contentInset
         insets.bottom += keyboardOffset
         contentInset = insets
@@ -304,7 +303,7 @@ public extension UIScrollView {
 
 public extension UITableView {
     
-    @objc public func tv_scrollToEnd(animated: Bool = true) {
+    @objc func tv_scrollToEnd(animated: Bool = true) {
         guard let dataSource = self.dataSource else {
             return
         }
@@ -326,7 +325,7 @@ public extension UITableView {
         }
     }
     
-    public func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
+    func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
         let reuseIdentifier = cellClass.reuseIdentifier
         register(cellClass, forCellReuseIdentifier: reuseIdentifier)
         if withNib {
@@ -335,11 +334,11 @@ public extension UITableView {
         }
     }
     
-    public func dequeueReusableCellWithClass<T: UITableViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T {
+    func dequeueReusableCellWithClass<T: UITableViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T {
         return dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
-    public func registerReusableHeaderFooterViewClass(_ headerFooterViewClass: Reusable.Type, withNib: Bool = false) {
+    func registerReusableHeaderFooterViewClass(_ headerFooterViewClass: Reusable.Type, withNib: Bool = false) {
         let reuseIdentifier = headerFooterViewClass.reuseIdentifier
         register(headerFooterViewClass, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
         if withNib {
@@ -348,13 +347,13 @@ public extension UITableView {
         }
     }
     
-    public func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView>(_ headerFooterViewClass: T.Type = T.self) -> T {
+    func dequeueReusableHeaderFooterViewWithClass<T: UITableViewHeaderFooterView>(_ headerFooterViewClass: T.Type = T.self) -> T {
         return dequeueReusableHeaderFooterView(withIdentifier: T.reuseIdentifier) as! T
     }
 }
 
 public extension UICollectionView {
-    public func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
+    func registerReusable(_ cellClass: Reusable.Type, withNib: Bool = true) {
         let reuseIdentifier = cellClass.reuseIdentifier
         self.register(cellClass, forCellWithReuseIdentifier: reuseIdentifier)
         if withNib {
@@ -363,7 +362,7 @@ public extension UICollectionView {
         }
     }
     
-    public func registerReusable(_ viewClass: Reusable.Type, elementKind: String, withNib: Bool = true) {
+    func registerReusable(_ viewClass: Reusable.Type, elementKind: String, withNib: Bool = true) {
         let reuseIdentifier = viewClass.reuseIdentifier
         self.register(viewClass, forSupplementaryViewOfKind: elementKind, withReuseIdentifier: reuseIdentifier)
         if withNib {
@@ -372,17 +371,17 @@ public extension UICollectionView {
         }
     }
     
-    public func dequeueReusableCellWithClass<T: UICollectionViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T {
+    func dequeueReusableCellWithClass<T: UICollectionViewCell>(_ cellClass: T.Type, indexPath: IndexPath) -> T {
         return self.dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
     
-    public func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView>(_ viewClass: T.Type, elementKind: String, indexPath: IndexPath) -> T {
+    func dequeueReusableSupplementaryViewWithClass<T: UICollectionReusableView>(_ viewClass: T.Type, elementKind: String, indexPath: IndexPath) -> T {
         return self.dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: T.reuseIdentifier, for: indexPath) as! T
     }
 }
 
 public extension MKMapView {
-    public func dequeueReusableAnnotationViewWithClass<T: MKAnnotationView>(_ annotationViewClass: T.Type, annotation: MKAnnotation) -> T {
+    func dequeueReusableAnnotationViewWithClass<T: MKAnnotationView>(_ annotationViewClass: T.Type, annotation: MKAnnotation) -> T {
         
         let identifier = annotationViewClass.reuseIdentifier
         

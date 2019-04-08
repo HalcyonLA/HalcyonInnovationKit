@@ -15,7 +15,7 @@ import Foundation
 
 public extension UIAlertController {
     
-    @objc public class func show(title: String, messageObject: NSObject?) {
+    @objc class func show(title: String, messageObject: NSObject?) {
         var msg: String?
         if let message = messageObject as? String {
             msg = message
@@ -27,19 +27,19 @@ public extension UIAlertController {
         alert.show()
     }
     
-    @objc public class func show(title: String, message: String) {
+    @objc class func show(title: String, message: String) {
        show(title: title, messageObject: message as NSObject?)
     }
     
-    @objc public class func showError(_ message: String) {
+    @objc class func showError(_ message: String) {
         UIAlertController.show(title: "Error", message: message)
     }
     
-    @objc public func show() {
+    @objc func show() {
         show(true)
     }
     
-    @objc public func show(_ animated: Bool) {
+    @objc func show(_ animated: Bool) {
         alertWindow = UIWindow(frame: UIScreen.main.bounds)
         alertWindow!.rootViewController = AlertShowController()
         alertWindow!.windowLevel = .alert + 1
@@ -57,16 +57,16 @@ extension UIAlertController {
 }
 
 public extension Error {
-    public func showAlert() {
+    func showAlert() {
         (self as NSError).showAlert()
     }
 }
 
 public extension NSError {
     
-    @objc public static var errorDelegate: AlertErrorDelegate?
+    @objc static var errorDelegate: AlertErrorDelegate?
     
-    @objc public func showAlert() {
+    @objc func showAlert() {
         if let delegate = NSError.errorDelegate {
             if delegate.shouldShowError(self) {
                 UIAlertController.showError(delegate.textForError(self))
@@ -76,7 +76,7 @@ public extension NSError {
         }
     }
     
-    @objc public func showAlert(retryHandle: @escaping () -> ()) {
+    @objc func showAlert(retryHandle: @escaping () -> ()) {
         let text: String?
         if let delegate = NSError.errorDelegate {
             if delegate.shouldShowError(self) {

@@ -72,16 +72,16 @@ open class DataManagerRequest: NSObject {
 
 open class DataManager: NSObject {
     
-    open static var BaseURL = ""
-    open static var APIVersion = "1"
-    open static var globalParameters: [String: Any]?
+    public static var BaseURL = ""
+    public static var APIVersion = "1"
+    public static var globalParameters: [String: Any]?
     
-    open static var logEnabled = true
-    open static var secured = true
+    public static var logEnabled = true
+    public static var secured = true
     
     fileprivate let securedKeys = ["password", "token"]
     
-    open static let shared = DataManager()
+    public static let shared = DataManager()
     open var requestHeaders: [String: String]? {
         didSet {
             setHeaders(requestHeaders)
@@ -100,7 +100,7 @@ open class DataManager: NSObject {
     
     fileprivate let log = XCGLogger.default
     
-    open static var GlobalLoadingView: UIView { return UIApplication.shared.keyWindow! }
+    public static var GlobalLoadingView: UIView { return UIApplication.shared.keyWindow! }
     
     fileprivate var networkActivityCount = 0
     private lazy var sessionManager: AFHTTPSessionManager = {
@@ -164,13 +164,13 @@ open class DataManager: NSObject {
     // MARK: Loading Indicator
     
     @discardableResult
-    @objc open static func showLoading(_ show: Bool, inView: UIView) -> MBProgressHUD? {
+    @objc public static func showLoading(_ show: Bool, inView: UIView) -> MBProgressHUD? {
         return inView.showLoadingHUD(show)
     }
     
     // MARK: Error check
     
-    open static func isErrorFromAPI(_ error: NSError?) -> Bool {
+    public static func isErrorFromAPI(_ error: NSError?) -> Bool {
         if (error == nil) {
             return false
         }
@@ -261,7 +261,7 @@ open class DataManager: NSObject {
                     nullTasks += self.requests.filter({ $0.task === task })
                 }
                 for (_, request) in nullTasks.enumerated() {
-                    if let index = self.requests.index(of: request) {
+                    if let index = self.requests.firstIndex(of: request) {
                         self.requests.remove(at: index)
                     }
                 }

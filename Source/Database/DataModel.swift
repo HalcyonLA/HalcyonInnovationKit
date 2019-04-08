@@ -341,22 +341,22 @@ extension MappingProtocol where Self: NSManagedObject {
 }
 
 public extension NSEntityDescription {
-    public static func create<T: NSManagedObject>(entity: T.Type) -> T {
+    static func create<T: NSManagedObject>(entity: T.Type) -> T {
         let object = NSEntityDescription.insertNewObject(forEntityName: "\(entity)", into: DataModel.shared.managedObjectContext) as! T
         return object
     }
 }
 
 public extension NSManagedObject {
-    public func delete() {
+    func delete() {
         DataModel.deleteObject(self)
     }
     
-    public static func resetAll() {
+    static func resetAll() {
         DataModel.resetAllEntities(self.self)
     }
     
-    public static func reset(_ predicate: NSPredicate) {
+    static func reset(_ predicate: NSPredicate) {
         DataModel.resetEntities(self.self, predicate: predicate)
     }
 }
