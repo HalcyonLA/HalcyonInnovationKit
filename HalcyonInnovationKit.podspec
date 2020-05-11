@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
 
   s.platform = :ios
-  s.ios.deployment_target = '11.0'
+  s.ios.deployment_target = '9.0'
   s.name = "HalcyonInnovationKit"
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
   s.requires_arc = true
-  s.version = "1.3.39"
+  s.version = "1.3.40"
   s.author = { "Vlad Getman" => "ibrightsider@gmail.com" }
 
   s.license = { :type => "MIT", :file => "LICENSE" }
