@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.platform = :ios
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '11.0'
   s.name = "HalcyonInnovationKit"
   s.module_name = "HalcyonInnovationKit"
   s.summary = "Halcyon Innovation development kit."
@@ -35,7 +35,6 @@ Pod::Spec.new do |s|
   s.subspec 'Network' do |network|
 	  network.source_files = "Source/Network/*.{swift}"
       network.dependency 'AFNetworking', '~> 4.0.0'
-      network.dependency 'AFNetworking+RetryPolicy', '~> 1.0.4'
 	  network.dependency 'XCGLogger', '~> 7.0.0'
 	  network.dependency 'MBProgressHUD', '~> 1.1.0'
 	  network.dependency 'HalcyonInnovationKit/UI'
