@@ -330,7 +330,10 @@ open class DataManager: NSObject {
             }
             cleanFinishedRequests(task)
         }
-        let task = sessionManager.post(urlString, parameters: ["json":json], constructingBodyWithBlock: { (formData) in
+        
+        
+        
+        /*let task = sessionManager.post(urlString, parameters: ["json":json], constructingBodyWithBlock: { (formData) in
             let data = formData
         }, progress: nil, success: { (task, responseObject) in
             successBlock(task, responseObject)
@@ -340,7 +343,9 @@ open class DataManager: NSObject {
         if task != nil {
             requests.append(request)
         }
-        return task
+         return task
+         */
+        return nil
     }
     
     open func cancelAllRequets() {
