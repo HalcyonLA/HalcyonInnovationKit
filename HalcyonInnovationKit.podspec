@@ -34,6 +34,8 @@ Pod::Spec.new do |s|
   
   s.subspec 'Network' do |network|
 	  network.source_files = "Source/Network/*.{swift}"
+      network.dependency 'AFNetworking', '~> 4.0.0'
+      network.dependency 'AFNetworking+RetryPolicy', '~> 1.0.4'
 	  network.dependency 'XCGLogger', '~> 7.0.0'
 	  network.dependency 'MBProgressHUD', '~> 1.1.0'
 	  network.dependency 'HalcyonInnovationKit/UI'
